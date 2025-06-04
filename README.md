@@ -8,6 +8,19 @@
 2. 覆盖常用的构建能力：通过 Plugin 式开发，完美支持 esbuild 的构建功能
 3. 支持 ES5：借助 SWC 能力，支持构建至 ES5 环境
 
+## 技术选型
+
+- 包管理工具：pnpm；​
+- 命令行交互：cac；​
+- 基础构建工具：esbuild、rollup、swc；​
+- 文件读取工具：JoyCon；​
+- 代码runtime 转换工具：sucrase；​
+- 代码语法检查工具：typescript；​
+- 代码压缩：terser；​
+- 代码文件监听：chokidar；​
+- 静态站点：docusaurus；​
+- 测试工具：vitest；
+
 ## 安装
 
 ```bash
