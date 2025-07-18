@@ -1,82 +1,56 @@
 {
-  "name": "tsbuild",
+  "name": "robuild",
   "type": "module",
-  "version": "0.0.0",
-  "packageManager": "pnpm@6.32.3",
-  "description": "⚡️ Bundle your TypeScript library with no config, powered by esbuild、swc、rollup ...",
-  "author": "",
-  "license": "ISC",
-  "homepage": "https://github.com/Sunny-117/tsbuild#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Sunny-117/tsbuild.git"
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.11.1",
+  "description": "Zero-config ESM/TS package builder. Powered by Rolldown and Oxc",
+  "license": "MIT",
+  "repository": "Sunny-117/robuild",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./config": "./dist/config.mjs"
   },
-  "bugs": {
-    "url": "https://github.com/Sunny-117/tsbuild/issues"
-  },
-  "main": "index.js",
-  "engines": {
-    "node": ">=16"
-  },
+  "types": "./dist/index.d.mts",
+  "bin": "./dist/cli.mjs",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "dev": "tsup src/cli-*.ts --clean --splitting --dts --watch",
-    "test": "vitest",
-    "build": "tsup src/cli-*.ts --clean --splitting --dts",
-    "d": "tsup",
-    "prepublishOnly": "npm run build"
-  },
-  "peerDependencies": {
-    "@microsoft/api-extractor": "^7.36.0",
-    "@swc/core": "^1",
-    "postcss": "^8.4.12",
-    "typescript": ">=4.5.0"
+    "build": "pnpm robuild",
+    "dev": "pnpm vitest",
+    "lint": "eslint .",
+    "lint:fix": "automd && eslint . --fix",
+    "robuild": "esno src/cli.ts",
+    "prepack": "pnpm build",
+    "release": "pnpm test && changelogen --release && npm publish && git push --follow-tags",
+    "test": "pnpm lint && pnpm test:types",
+    "test:types": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "bundle-require": "^4.0.0",
-    "cac": "^6.7.12",
-    "chokidar": "^3.5.1",
-    "debug": "^4.3.1",
-    "esbuild": "^0.21.4",
-    "execa": "^5.0.0",
-    "globby": "^11.0.3",
-    "joycon": "^3.0.1",
-    "postcss-load-config": "^4.0.1",
-    "resolve-from": "^5.0.0",
-    "rollup": "^4.0.2",
-    "source-map": "0.8.0-beta.0",
-    "sucrase": "^3.20.3",
-    "tree-kill": "^1.2.2"
+    "c12": "^3.0.4",
+    "consola": "^3.4.2",
+    "defu": "^6.1.4",
+    "exsolve": "^1.0.5",
+    "magic-string": "^0.30.17",
+    "oxc-minify": "^0.72.3",
+    "oxc-parser": "^0.72.3",
+    "oxc-transform": "^0.72.3",
+    "pretty-bytes": "^7.0.0",
+    "rolldown": "1.0.0-beta.12",
+    "rolldown-plugin-dts": "^0.13.8",
+    "tinyglobby": "^0.2.14"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.21.1",
-    "@microsoft/api-extractor": "^7.38.3",
-    "@rollup/plugin-json": "6.0.1",
-    "@swc/core": "1.2.218",
-    "@types/debug": "4.1.7",
-    "@types/flat": "5.0.2",
-    "@types/fs-extra": "9.0.13",
-    "@types/node": "14.18.12",
-    "@types/resolve": "1.20.1",
-    "colorette": "2.0.16",
-    "consola": "2.15.3",
-    "eslint": "^8.56.0",
-    "flat": "5.0.2",
-    "fs-extra": "10.0.0",
-    "postcss": "8.4.12",
-    "postcss-simple-vars": "6.0.3",
-    "prettier": "2.5.1",
-    "resolve": "1.20.0",
-    "rollup-plugin-dts": "6.1.0",
-    "sass": "1.62.1",
-    "strip-json-comments": "4.0.0",
-    "svelte": "3.46.4",
-    "svelte-preprocess": "5.0.3",
-    "terser": "^5.16.0",
-    "ts-essentials": "9.1.2",
-    "tsconfig-paths": "3.12.0",
-    "tsup": "7.1.0",
-    "typescript": "5.0.2",
-    "vitest": "^1.6.0",
-    "wait-for-expect": "3.0.2"
+    "@antfu/eslint-config": "^4.17.0",
+    "@types/node": "^22.15.30",
+    "@vitest/coverage-v8": "^3.2.2",
+    "automd": "^0.4.0",
+    "changelogen": "^0.6.1",
+    "eslint": "^9.28.0",
+    "esno": "^4.8.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.2"
   }
 }

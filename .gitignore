@@ -1,7 +1,9 @@
 node_modules
-*.log
+coverage
 dist
-.cache
-playground
-.idea
+.vscode
 .DS_Store
+.eslintcache
+*.log*
+*.env*
+tsconfig.robuildinfo

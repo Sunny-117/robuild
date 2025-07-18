@@ -1,11 +1,115 @@
-// Taken from https://github.com/sindresorhus/slash/blob/main/index.js (MIT)
-export function slash(path: string) {
-  const isExtendedLengthPath = /^\\\\\?\\/.test(path)
-  // eslint-disable-next-line no-control-regex
-  const hasNonAscii = /[^\u0000-\u0080]+/.test(path)
+import type { Plugin } from 'rolldown'
+import { readdirSync, statSync } from 'node:fs'
 
-  if (isExtendedLengthPath || hasNonAscii) {
-    return path
+import { join, resolve } from 'node:path'
+import { gzipSync } from 'node:zlib'
+import { minify } from 'oxc-minify'
+import { rolldown } from 'rolldown'
+
+export function fmtPath(path: string): string {
+  return resolve(path).replace(process.cwd(), '.')
+}
+
+export function analyzeDir(dir: string | string[]): {
+  size: number
+  files: number
+} {
+  if (Array.isArray(dir)) {
+    let totalSize = 0
+    let totalFiles = 0
+    for (const d of dir) {
+      const { size, files } = analyzeDir(d)
+      totalSize += size
+      totalFiles += files
+    }
+    return { size: totalSize, files: totalFiles }
   }
-  return path.replace(/\\/g, '/')
+
+  let totalSize = 0
+
+  const files = readdirSync(dir, { withFileTypes: true, recursive: true })
+
+  for (const file of files) {
+    const fullPath = join(file.parentPath, file.name)
+    if (file.isFile()) {
+      const { size } = statSync(fullPath)
+      totalSize += size
+    }
+  }
+
+  return { size: totalSize, files: files.length }
+}
+
+export async function distSize(
+  dir: string,
+  entry: string,
+): Promise<{
+  size: number
+  minSize: number
+  minGzipSize: number
+}> {
+  const build = await rolldown({
+    input: join(dir, entry),
+    plugins: [],
+    platform: 'neutral',
+    external: id => id[0] !== '.' && !id.startsWith(dir),
+  })
+
+  const { output } = await build.generate({
+    inlineDynamicImports: true,
+  })
+
+  const code = output[0].code
+  const { code: minified } = await minify(entry, code)
+
+  return {
+    size: Buffer.byteLength(code),
+    minSize: Buffer.byteLength(minified),
+    minGzipSize: gzipSync(minified).length,
+  }
+}
+
+export async function sideEffectSize(
+  dir: string,
+  entry: string,
+): Promise<number> {
+  const virtualEntry: Plugin = {
+    name: 'virtual-entry',
+    async resolveId(id, importer, opts) {
+      if (id === '#entry') {
+        return { id }
+      }
+      const resolved = await this.resolve(id, importer, opts)
+      if (!resolved) {
+        return null
+      }
+      resolved.moduleSideEffects = null
+      return resolved
+    },
+    load(id) {
+      if (id === '#entry') {
+        return /* js */ `import * as _lib from "${join(dir, entry)}";`
+      }
+    },
+  }
+
+  const build = await rolldown({
+    input: '#entry',
+    platform: 'neutral',
+    external: id => id[0] !== '.' && !id.startsWith(dir),
+    plugins: [virtualEntry],
+  })
+
+  const { output } = await build.generate({
+    inlineDynamicImports: true,
+  })
+
+  if (process.env.INSPECT_BUILD) {
+    console.log('---------[side effects]---------')
+    console.log(entry)
+    console.log(output[0].code)
+    console.log('-------------------------------')
+  }
+
+  return Buffer.byteLength(output[0].code.trim())
 }

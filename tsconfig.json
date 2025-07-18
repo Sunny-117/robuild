@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "composite": true,
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowImportingTsExtensions": true,
     "strict": true,
-    "declaration": true,
-    "declarationDir": "dist",
-    "outDir": "./dist",
+    "noEmit": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "isolatedDeclarations": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src", "test"]
 }
