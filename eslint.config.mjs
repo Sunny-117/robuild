@@ -7,4 +7,5 @@ export default antfu({
     'node/prefer-global/buffer': 'off',
     'no-console': 'off',
   },
+  ignores: ['docs'],
 })
