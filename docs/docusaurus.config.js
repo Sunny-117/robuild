@@ -4,7 +4,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Encode Bundle',
+  title: 'robuild',
   tagline: '前端库构建工具，基于 esbuild 实现',
   favicon: 'img/avatar.png',
 
