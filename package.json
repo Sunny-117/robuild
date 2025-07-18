@@ -1,7 +1,7 @@
 {
   "name": "robuild",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "packageManager": "pnpm@10.11.1",
   "description": "Zero-config ESM/TS package builder. Powered by Rolldown and Oxc",
   "license": "MIT",
@@ -39,7 +39,8 @@
     "pretty-bytes": "^7.0.0",
     "rolldown": "1.0.0-beta.12",
     "rolldown-plugin-dts": "^0.13.8",
-    "tinyglobby": "^0.2.14"
+    "tinyglobby": "^0.2.14",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.17.0",
@@ -50,7 +51,6 @@
     "eslint": "^9.28.0",
     "esno": "^4.8.0",
     "prettier": "^3.5.3",
-    "typescript": "^5.8.3",
     "vitest": "^3.2.2"
   }
 }
