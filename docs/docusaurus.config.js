@@ -9,10 +9,10 @@ const config = {
   favicon: 'img/avatar.png',
 
   url: 'https://sunny-117.github.io',
-  baseUrl: '/tsbuild/',
+  baseUrl: '/robuild/',
 
   organizationName: 'sunny-117',
-  projectName: 'tsbuild',
+  projectName: 'robuild',
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -57,7 +57,7 @@ const config = {
             label: '完整功能',
           },
           {
-            href: 'https://github.com/Sunny-117/tsbuild',
+            href: 'https://github.com/Sunny-117/robuild',
             label: 'GitHub',
             position: 'right',
           },
@@ -84,7 +84,7 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/Sunny-117/tsbuild',
+                href: 'https://github.com/Sunny-117/robuild',
               },
             ],
           },

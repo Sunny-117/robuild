@@ -10,16 +10,16 @@ sidebar_position: 1
 
 ```bash
 # 建议当前项目中安装
-pnpm i tsbuild  -D
+pnpm i robuild  -D
 
 # 也可以全局安装，但不推荐
-pnpm i tsbuild -g
+pnpm i robuild -g
 ```
 
 ## 基础使用
 
 ```bash
-tsbuild [...files]
+robuild [...files]
 ```
 
 文件默认会构建至 `dist`目录下。
@@ -27,7 +27,7 @@ tsbuild [...files]
 ## 支持多入口
 
 ```bash
-tsbuild src/index.ts src/cli.ts
+robuild src/index.ts src/cli.ts
 ```
 
 会在`dist`目录下产出`index.js`与`cli.js`。
@@ -36,14 +36,14 @@ tsbuild src/index.ts src/cli.ts
 
 ```bash
 # 构建结果为 dist/index.js dist/cli.js
-tsbuild --entry src/index.ts --entry src/cli.ts
+robuild --entry src/index.ts --entry src/cli.ts
 ```
 
 也可以指定构建后的文件名称
 
 ```bash
 # 构建结果为 dist/foo.js 和 dist/bar.js
-tsbuild --entry.foo src/index.ts --entry.bar src/cli.ts
+robuild --entry.foo src/index.ts --entry.bar src/cli.ts
 ```
 
 也可以在 `encode-config.ts` 中配置：
@@ -68,16 +68,16 @@ export default defineConfig({
 
 可以使用如下配置
 
-- `tsbuild.config.ts`
-- `tsbuild.config.js`
-- `tsbuild.config.cjs`
-- `tsbuild.config.json`
-- 在`package.json`中的`tsbuild`
+- `robuild.config.ts`
+- `robuild.config.js`
+- `robuild.config.cjs`
+- `robuild.config.json`
+- 在`package.json`中的`robuild`
 
 也可以使用`defineConfig`来进行定制化配置。
 
 ```typescript
-import { defineConfig } from 'tsbuild';
+import { defineConfig } from 'robuild';
 
 export default defineConfig({
   entry: ['src/index.ts'],
@@ -91,7 +91,7 @@ export default defineConfig({
 
 ```json
 {
-  "tsbuild": {
+  "robuild": {
     "entry": ["src/index.ts"],
     "splitting": false,
     "sourcemap": true,
@@ -103,7 +103,7 @@ export default defineConfig({
 ## 生成声明文件
 
 ```bash
-tsbuild index.ts --dts
+robuild index.ts --dts
 ```
 
 以上指令会导出`./dist/index.js`和`./dist/index.d.ts`，当导出多种构建格式时，每种构建格式都会生成一个声明文件。
@@ -119,7 +119,7 @@ tsbuild index.ts --dts
 ## 生成 sourcemap
 
 ```bash
-tsbuild index.ts --sourcemap
+robuild index.ts --sourcemap
 ```
 
 会导出 `./dist/index.js` and `./dist/index.js.map`。
@@ -133,7 +133,7 @@ tsbuild index.ts --sourcemap
 可以一次性构建多种类型：
 
 ```bash
-tsbuild src/index.ts --format esm,cjs,iife
+robuild src/index.ts --format esm,cjs,iife
 ```
 
 将会生成以下文件结构：
@@ -157,7 +157,7 @@ dist
 如果不想使用诸如`.mjs`或者`.cjs`这类文件后缀，或者当前环境不支持此后缀，可以使用`--legacy-output`
 
 ```bash
-tsbuild src/index.ts --format esm,cjs,iife --legacy-output
+robuild src/index.ts --format esm,cjs,iife --legacy-output
 ```
 
 会构建成:
@@ -188,27 +188,27 @@ dist
 ## watch 模式
 
 ```bash
-tsbuild src/index.ts --watch
+robuild src/index.ts --watch
 ```
 
-启动`watch`模式，这意味着在初始构建后，tsbuild 会监听文件变化。
+启动`watch`模式，这意味着在初始构建后，robuild 会监听文件变化。
 
 可以使用`--ignore-watch`来取消指定文件的监听。
 
 ```bash
-tsbuild src src/index.ts --watch --ignore-watch folder1 --ignore-watch folder2
+robuild src src/index.ts --watch --ignore-watch folder1 --ignore-watch folder2
 ```
 
 ## 成功回调
 
 ```bash
-tsbuild src/index.ts --watch --onSuccess "node dist/index.js"
+robuild src/index.ts --watch --onSuccess "node dist/index.js"
 ```
 
 `--onSuccess`会返回`Promise`类型的函数，可以执行类似如下功能
 
 ```typescript
-import { defineConfig } from 'tsbuild';
+import { defineConfig } from 'robuild';
 
 export default defineConfig({
   async onSuccess() {
@@ -228,13 +228,13 @@ export default defineConfig({
 可以使用`--minify`来压缩代码
 
 ```bash
-tsbuild src/index.ts --minify
+robuild src/index.ts --minify
 ```
 
 或者使用`terser`而不是 esbuild 来压缩代码，前提条件是要先安装`terser`
 
 ```bash
-tsbuild src/index.ts --minify
+robuild src/index.ts --minify
 ```
 
 ## tree shaking
@@ -243,4 +243,4 @@ tsbuild src/index.ts --minify
 
 提供`--treeshake`指令来启用`rollup`的`tree shaking`。
 
-针对更多帮助，请使用`tsbuild --help`。
+针对更多帮助，请使用`robuild --help`。

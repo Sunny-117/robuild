@@ -16,7 +16,7 @@
 
 ### 📖 Documentation
 
-- Add tsbuild doc ([35fc241](https://github.com/Sunny-117/robuild/commit/35fc241))
+- Add robuild doc ([35fc241](https://github.com/Sunny-117/robuild/commit/35fc241))
 - Update readme and deploy shell ([66ff5cc](https://github.com/Sunny-117/robuild/commit/66ff5cc))
 
 ### 🏡 Chore

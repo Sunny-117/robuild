@@ -38,7 +38,7 @@ export function treeShakingPlugin({
         plugins: [
           hashbang(),
           {
-            name: 'tsbuild',
+            name: 'robuild',
             resolveId(source) {
               if (source === info.path)
                 return source

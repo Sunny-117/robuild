@@ -1,265 +1,117 @@
-# tsbuild
+# 📦 robuild 😯
 
-⚡️ Bundle your TypeScript library with no config, powered by esbuild、swc、rollup ...
+✅ Zero-config ESM/TS package builder.
 
-## 特点
+Powered by [**oxc**](https://oxc.rs/), [**rolldown**](https://rolldown.rs/) and [**rolldown-plugin-dts**](https://github.com/sxzz/rolldown-plugin-dts).
 
-1. 基于 esbuild 开发：无需关心内部构建逻辑，一键式构建
-2. 覆盖常用的构建能力：通过 Plugin 式开发，完美支持 esbuild 的构建功能
-3. 支持 ES5：借助 SWC 能力，支持构建至 ES5 环境
+- 👌 Focus on ESM compatibility.
+- 🌱 Fresh rewrite with cleanups and removal of legacy features.
+- 🚀 Using [**oxc**](https://oxc.rs/) (for transform) and [**rolldown**](https://rolldown.rs/) (for bundle) for much faster builds!
 
-## 技术选型
+Some differences are not easy to adopt. Developing as a standalone project allows for faster progress and dogfooding in real projects.
 
-- 包管理工具：pnpm；
-- 命令行交互：cac；
-- 基础构建工具：esbuild、rollup、swc；
-- 文件读取工具：JoyCon；
-- 代码runtime 转换工具：sucrase；
-- 代码语法检查工具：typescript；
-- 代码压缩：terser；
-- 代码文件监听：chokidar；
-- 静态站点：docusaurus；
-- 测试工具：vitest；
+## Proof of concept
 
-## 安装
+> [!IMPORTANT]
+>
+> This is a proof-of-concept project.
+>
+> Features are incomplete, and API and output behavior may change between 0.x versions.
+>
+> Feedback and contributions are very welcome! If you'd like to make changes with more than a few lines of code, please open an issue first to discuss.
 
-```bash
-# 建议当前项目中安装
-pnpm i tsbuild  -D
+## Usage
 
-# 也可以全局安装，但不推荐
-pnpm i tsbuild -g
+### CLI
+
+```sh
+# bundle
+npx robuild ./src/index.ts
+
+# transform
+npx robuild ./src/runtime/:./dist/runtime
 ```
 
-## 基础使用
+You can use `--dir` to set the working directory.
 
-```bash
-tsbuild [...files]
+If paths end with `/`, robuild uses transpile mode using [oxc-transform](https://www.npmjs.com/package/oxc-transform) instead of bundle mode with [rolldown](https://rolldown.rs/).
+
+### Programmatic
+
+```js
+import { build } from 'robuild'
+
+await build({
+  cwd: '.',
+  entries: ['./src/index.ts'],
+})
 ```
 
-文件默认会构建至 `dist`目录下。
+## Config
 
-## 支持多入口
+You can use `build.config.mjs` (or `.ts`) or pass config to `build()` function.
 
-```bash
-tsbuild src/index.ts src/cli.ts
-```
+```js
+import { defineBuildConfig } from 'robuild/config'
 
-会在`dist`目录下产出`index.js`与`cli.js`。
-
-也可以使用`CLI`的指令执行相同的功能
-
-```bash
-# 构建结果为 dist/index.js dist/cli.js
-tsbuild --entry src/index.ts --entry src/cli.ts
-```
-
-也可以指定构建后的文件名称
-
-```bash
-# 构建结果为 dist/foo.js 和 dist/bar.js
-tsbuild --entry.foo src/index.ts --entry.bar src/cli.ts
-```
-
-也可以在 `encode-config.ts` 中配置：
-
-```typescript
-export default defineConfig({
-  // 输出 dist/a.js 和 dist/b.js
-  entry: ['src/a.ts', 'src/b.ts'],
-  // 输出 dist/foo.js 和 dist/bar.js
-  entry: {
-    foo: 'src/a.ts',
-    bar: 'src/b.ts',
+export default defineBuildConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: ['./src/index.ts', './src/cli.ts'],
+      // outDir: "./dist",
+      // minify: false,
+      // stub: false,
+      // rolldown: {}, // https://rolldown.rs/reference/config-options
+      // dts: {}, // https://github.com/sxzz/rolldown-plugin-dts#options
+    },
+    {
+      type: 'transform',
+      input: './src/runtime',
+      outDir: './dist/runtime',
+      // minify: false,
+      // stub: false,
+      // oxc: {},
+      // resolve: {}
+    },
+  ],
+  hooks: {
+    // start: (ctx) => {},
+    // end: (ctx) => {},
+    // entries: (entries, ctx) => {},
+    // rolldownConfig: (config, ctx) => {},
+    // rolldownOutput: (output, res, ctx) => {},
   },
 })
 ```
 
-## 设置 exclude
+## Stub Mode
 
-默认情况下，除了生产环境下所依赖的模块(`peerDependencies`和`dependencies`)外，会自动构建其他的模块，如果不希望构建，可以使用`--external`避免构建。
+When working on a package locally, it can be tedious to rebuild or run the watch command every time.
 
-## 自定义配置
+You can use `stub: true` (per entry config) or the `--stub` CLI flag. In this mode, robuild skips the actual build and instead links the expected dist paths to the source files.
 
-可以使用如下配置
+- For bundle entries, `.mjs` and `.d.mts` files re-export the source file.
+- For transpile entries, src dir is symlinked to dist.
 
-- `tsbuild.config.ts`
-- `tsbuild.config.js`
-- `tsbuild.config.cjs`
-- `tsbuild.config.json`
-- 在`package.json`中的`tsbuild`
+**Caveats:**
 
-也可以使用`defineConfig`来进行定制化配置。
+- You need a runtime that natively supports TypeScript. Deno, Bun, Vite, and Node.js (1)
+- For transpile mode, you need to configure your bundler to resolve either `.ts` or `.mjs` extensions.
+- For bundle mode, if you add a new entry or add/remove a `default` export, you need to run the stub build again.
 
-```typescript
-import { defineConfig } from 'tsbuild'
+(1) For Node.js, you have several options:
 
-export default defineConfig({
-  entry: ['src/index.ts'],
-  splitting: false,
-  sourcemap: true,
-  clean: true,
-})
-```
+- Using `node --experimental-strip-types` (Available in [22.6](https://nodejs.org/en/blog/release/v22.6.0))
+- Using [jiti](https://github.com/unjs/jiti) (`node --import jiti/register`)
+- Using [oxc-node](https://github.com/oxc-project/oxc-node) (`node --import @oxc-node/core/register`)
+- Using [unloader](https://github.com/sxzz/unloader) (`node --import unloader/register`)
 
-也可以在`package.json`中进行配置。
+## Prior Arts
 
-```json
-{
-  "tsbuild": {
-    "entry": ["src/index.ts"],
-    "splitting": false,
-    "sourcemap": true,
-    "clean": true
-  }
-}
-```
+- [unbuild](https://github.com/unjs/unbuild): Stable solution based on rollup and [mkdist](https://github.com/unjs/mkdist).
+- [tsdown](https://tsdown.dev/): Alternative bundler based on rolldown.
 
-## 生成声明文件
+## License
 
-```bash
-tsbuild index.ts --dts
-```
-
-以上指令会导出`./dist/index.js`和`./dist/index.d.ts`，当导出多种构建格式时，每种构建格式都会生成一个声明文件。
-
-如果有多个入口文件，每个入口文件都会生成一个对应的`.d.ts`文件。因此，如果想对单个入口文件生成声明文件时，请使用 ` --dts <entry>`` 格式，例如 `--dts src/index.ts`。
-
-请注意，`--dts`不会解析 `.d.ts` 文件中使用的外部（比如`node_modules`）类型，如果这是某种要求，可以使用 `--dts-resolve`。
-
-## 只导出声明文件
-
-`--dts-only` 指令等同于`tsc`的`emitDeclarationOnly`。可以使用此指令只生成声明文件。
-
-## 生成 sourcemap
-
-```bash
-tsbuild index.ts --sourcemap
-```
-
-会导出 `./dist/index.js` and `./dist/index.js.map`。
-
-如果有多个入口文件，每个入口文件都会生成相对于的`.map`文件。
-
-## 构建产物格式
-
-支持`ESM`、`CJS`和`IIFE`。
-
-可以一次性构建多种类型：
-
-```bash
-tsbuild src/index.ts --format esm,cjs,iife
-```
-
-将会生成以下文件结构：
-
-```bash
-dist
-├── index.mjs         # esm
-├── index.global.js   # iife
-└── index.js          # cjs
-```
-
-如果`package.json`中的`type`配置为`module`，产出结果会有所不同：
-
-```bash
-dist
-├── index.js          # esm
-├── index.global.js   # iife
-└── index.cjs         # cjs
-```
-
-如果不想使用诸如`.mjs`或者`.cjs`这类文件后缀，或者当前环境不支持此后缀，可以使用`--legacy-output`
-
-```bash
-tsbuild src/index.ts --format esm,cjs,iife --legacy-output
-```
-
-会构建成:
-
-```bash
-dist
-├── esm
-│   └── index.js
-├── iife
-│   └── index.js
-└── index.js
-```
-
-## 代码分割
-
-目前代码分隔只支持`ESM`的产物类型，并且默认是开启的，如果想针对`CJS`的文件类型设置代码分隔，请设置`--splitting`，会启用`esbuild`的代码分隔功能。
-
-对应地，如果想关闭代码分隔，请使用`--no-splitting`。
-
-## 目标环境
-
-此处默认使用`tsconfig`中的`compilerOptions.target`，也可以使用`--target`来手动声明。
-
-## 支持 ES5
-
-可以使用`--target es5`指令来将代码编译构建至 ES5 版本，代码首先会构建成`ES2020`，然后借助 SWC 编译成`ES5`。
-
-## watch 模式
-
-```bash
-tsbuild src/index.ts --watch
-```
-
-启动`watch`模式，这意味着在初始构建后，tsbuild 会监听文件变化。
-
-可以使用`--ignore-watch`来取消指定文件的监听。
-
-```bash
-tsbuild src src/index.ts --watch --ignore-watch folder1 --ignore-watch folder2
-```
-
-## 成功回调
-
-```bash
-tsbuild src/index.ts --watch --onSuccess "node dist/index.js"
-```
-
-`--onSuccess`会返回`Promise`类型的函数，可以执行类似如下功能
-
-```typescript
-import { defineConfig } from 'tsbuild'
-
-export default defineConfig({
-  async onSuccess() {
-    const server = http.createServer((req, res) => {
-      res.end('Encode Studio!')
-    })
-    server.listen(3000)
-    return () => {
-      server.close()
-    }
-  },
-})
-```
-
-## 压缩代码
-
-可以使用`--minify`来压缩代码
-
-```bash
-tsbuild src/index.ts --minify
-```
-
-或者使用`terser`而不是 esbuild 来压缩代码，前提条件是要先安装`terser`
-
-```bash
-tsbuild src/index.ts --minify
-```
-
-## tree shaking
-
-`esbuild`默认开启`tree shaking`，但是特殊情况下（如：[external 模块](https://github.com/evanw/esbuild/issues/1794)或者[未使用的引用](https://github.com/evanw/esbuild/issues/1435)）等情况还是有些问题。
-
-提供`--treeshake`指令来启用`rollup`的`tree shaking`。
-
-针对更多帮助，请使用`tsbuild --help`。
-
-## how-a-package-is-resolved
-
-<img src="./assets/how-a-package-is-resolved.jpeg">
+💛 Released under the [MIT](./LICENSE) license.

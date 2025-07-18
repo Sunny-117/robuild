@@ -97,4 +97,4 @@ async function runRollup(options: RollupConfig) {
 }
 ```
 
-使用`JoyCon`识别指定文件或 package.json 中的`tsbuild`，作为相对用户配置项的返回。
+使用`JoyCon`识别指定文件或 package.json 中的`robuild`，作为相对用户配置项的返回。

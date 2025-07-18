@@ -6,23 +6,23 @@ sidebar_position: 2
 
 `CLI`支持两种功能：
 
-1. tsbuild: 构建除了`dependencies`和`peerDependencies`外的依赖；
-2. tsbuild-node: 除了不构建`dependencies`和`peerDependencies`的依赖外，还可以跳过所有的 Node.js 依赖包；
+1. robuild: 构建除了`dependencies`和`peerDependencies`外的依赖；
+2. robuild-node: 除了不构建`dependencies`和`peerDependencies`的依赖外，还可以跳过所有的 Node.js 依赖包；
 
 除了以上默认的使用外，还可以使用`--external`避免打特定的包。
 
-## tsbuild 与 tsbuild-node
+## robuild 与 robuild-node
 
 其中，`package.json`中指定特定 CLI 入口:
 
 ```json
 "bin": {
-  "tsbuild": "dist/cli-default.js",
-  "tsbuild-node": "dist/cli-node.js"
+  "robuild": "dist/cli-default.js",
+  "robuild-node": "dist/cli-node.js"
 }
 ```
 
-两者区别在于`tsbuild-node`传入了以下 option：
+两者区别在于`robuild-node`传入了以下 option：
 
 ```typescript
 skipNodeModulesBundle: true,

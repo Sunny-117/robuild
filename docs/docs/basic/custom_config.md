@@ -26,23 +26,23 @@ export async function loadEncodeBundleConfig(
     files: configFile
       ? [configFile]
       : [
-          'tsbuild.config.ts',
-          'tsbuild.config.js',
-          'tsbuild.config.cjs',
-          'tsbuild.config.mjs',
-          'tsbuild.config.json',
+          'robuild.config.ts',
+          'robuild.config.js',
+          'robuild.config.cjs',
+          'robuild.config.mjs',
+          'robuild.config.json',
           'package.json',
         ],
     cwd,
     stopDir: path.parse(cwd).root,
-    packageKey: 'tsbuild',
+    packageKey: 'robuild',
   })
 
   if (configPath) {
     if (configPath.endsWith('.json')) {
       let data = await loadJson(configPath)
       if (configPath.endsWith('package.json')) {
-        data = data['tsbuild']
+        data = data['robuild']
       }
       if (data) {
         return { path: configPath, data }
@@ -55,7 +55,7 @@ export async function loadEncodeBundleConfig(
     })
     return {
       path: configPath,
-      data: config.mod['tsbuild'] || config.mod.default || config.mod,
+      data: config.mod['robuild'] || config.mod.default || config.mod,
     }
   }
 
@@ -63,4 +63,4 @@ export async function loadEncodeBundleConfig(
 }
 ```
 
-使用`JoyCon`识别指定文件或 package.json 中的`tsbuild`，作为相对用户配置项的返回。
+使用`JoyCon`识别指定文件或 package.json 中的`robuild`，作为相对用户配置项的返回。

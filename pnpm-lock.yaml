@@ -44,6 +44,9 @@ importers:
       tinyglobby:
         specifier: ^0.2.14
         version: 0.2.14
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^4.17.0
@@ -69,9 +72,6 @@ importers:
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
       vitest:
         specifier: ^3.2.2
         version: 3.2.2(@types/debug@4.1.12)(@types/node@22.15.30)(jiti@2.4.2)(tsx@4.20.3)(yaml@2.8.0)
