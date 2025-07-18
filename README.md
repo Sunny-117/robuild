@@ -1,6 +1,6 @@
 # 📦 robuild 😯
 
-✅ Zero-config ESM/TS package builder.
+⚡️ Zero-config ESM/TS package builder. Powered by Rolldown and Oxc
 
 Powered by [**oxc**](https://oxc.rs/), [**rolldown**](https://rolldown.rs/) and [**rolldown-plugin-dts**](https://github.com/sxzz/rolldown-plugin-dts).
 
