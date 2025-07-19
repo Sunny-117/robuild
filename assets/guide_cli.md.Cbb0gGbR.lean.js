@@ -1,0 +1,1 @@
+import{_ as a,c as i,o as n,ag as e}from"./chunks/framework.C0_ZSu4a.js";const b=JSON.parse('{"title":"CLI 使用","description":"","frontmatter":{},"headers":[],"relativePath":"guide/cli.md","filePath":"guide/cli.md"}'),l={name:"guide/cli.md"};function p(t,s,r,h,d,k){return n(),i("div",null,s[0]||(s[0]=[e("",73)]))}const o=a(l,[["render",p]]);export{b as __pageData,o as default};

@@ -1,0 +1,1 @@
+import{_ as s,c as e,o as n,ag as i}from"./chunks/framework.C0_ZSu4a.js";const b=JSON.parse('{"title":"robuild 官网","description":"","frontmatter":{},"headers":[],"relativePath":"README.md","filePath":"README.md"}'),l={name:"README.md"};function r(p,a,t,d,o,h){return n(),e("div",null,a[0]||(a[0]=[i("",34)]))}const u=s(l,[["render",r]]);export{b as __pageData,u as default};
