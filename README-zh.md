@@ -1,4 +1,6 @@
-<img src="./docs/public/logo.png" alt="robuild" width="100%" /><br>
+<div align="center">
+  <img src="./docs/public/logo.png" alt="robuild" width="30%" />
+</div>
 
 # 📦 robuild 😯 [![npm](https://img.shields.io/npm/v/robuild.svg)](https://npmjs.com/package/robuild)
 
