@@ -7,7 +7,7 @@ export default defineConfig({
   lang: 'zh-CN',
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
-    ['meta', { name: 'theme-color', content: '#646cff' }],
+    ['meta', { name: 'theme-color', content: '#ff7e17' }],
   ],
   ignoreDeadLinks: true, // 忽略死链接检查
   themeConfig: {
@@ -84,7 +84,6 @@ export default defineConfig({
     }
   },
   markdown: {
-    theme: 'vitesse-dark',
     lineNumbers: true,
   }
 })
