@@ -1,6 +1,6 @@
 import type { ResolveOptions } from 'exsolve'
 
-import type { BuildContext, TransformEntry } from '../types.ts'
+import type { BuildContext, TransformEntry } from '../types'
 import { mkdir, readFile, symlink, writeFile } from 'node:fs/promises'
 import { dirname, extname, join, relative } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -12,8 +12,8 @@ import { minify } from 'oxc-minify'
 import oxcParser from 'oxc-parser'
 import oxcTransform from 'oxc-transform'
 import { glob } from 'tinyglobby'
-import { fmtPath } from '../utils.ts'
-import { makeExecutable, SHEBANG_RE } from './plugins/shebang.ts'
+import { fmtPath } from '../utils'
+import { makeExecutable, SHEBANG_RE } from './plugins/shebang'
 
 /**
  * Transform all .ts modules in a directory using oxc-transform.

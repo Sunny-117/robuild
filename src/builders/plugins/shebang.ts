@@ -1,4 +1,4 @@
-// Ported from https://github.com/Sunny-117/robuild/blob/main/src/builders/rollup/plugins/shebang.ts
+// Ported from https://github.com/unjs/unbuild/blob/main/src/builders/rollup/plugins/shebang.ts
 
 import type { Plugin } from 'rolldown'
 import { promises as fsp } from 'node:fs'

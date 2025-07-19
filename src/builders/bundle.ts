@@ -5,7 +5,7 @@ import type {
   Plugin,
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
-import type { BuildContext, BuildHooks, BundleEntry } from '../types.ts'
+import type { BuildContext, BuildHooks, BundleEntry } from '../types'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { builtinModules } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
@@ -19,8 +19,8 @@ import { rolldown } from 'rolldown'
 
 import { dts } from 'rolldown-plugin-dts'
 
-import { distSize, fmtPath, sideEffectSize } from '../utils.ts'
-import { makeExecutable, shebangPlugin } from './plugins/shebang.ts'
+import { distSize, fmtPath, sideEffectSize } from '../utils'
+import { makeExecutable, shebangPlugin } from './plugins/shebang'
 
 export async function rolldownBuild(
   ctx: BuildContext,

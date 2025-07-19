@@ -3,7 +3,7 @@ import type {
   BuildContext,
   BundleEntry,
   TransformEntry,
-} from './types.ts'
+} from './types'
 
 import { rm } from 'node:fs/promises'
 import { isAbsolute, join, resolve } from 'node:path'
@@ -11,9 +11,9 @@ import { fileURLToPath } from 'node:url'
 import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
 import prettyBytes from 'pretty-bytes'
-import { rolldownBuild } from './builders/bundle.ts'
-import { transformDir } from './builders/transform.ts'
-import { analyzeDir, fmtPath } from './utils.ts'
+import { rolldownBuild } from './builders/bundle'
+import { transformDir } from './builders/transform'
+import { analyzeDir, fmtPath } from './utils'
 
 /**
  * Build dist/ from src/

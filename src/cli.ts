@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import type { BuildConfig, BuildEntry } from './types.ts'
+import type { BuildConfig, BuildEntry } from './types'
 import { parseArgs } from 'node:util'
 import { loadConfig } from 'c12'
 import { consola } from 'consola'
 
-import { build } from './build.ts'
+import { build } from './build'
 
 // https://nodejs.org/api/util.html#utilparseargsconfig
 const args = parseArgs({

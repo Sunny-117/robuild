@@ -1,8 +1,10 @@
-export { build } from './build.ts'
+export { build } from './build'
+
+export { defineBuildConfig } from './config'
 
 export type {
   BuildConfig,
   BuildEntry,
   BundleEntry,
   TransformEntry,
-} from './types.ts'
+} from './types'
