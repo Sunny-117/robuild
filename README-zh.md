@@ -1,4 +1,6 @@
-# 📦 robuild 😯
+<img src="./docs/public/logo.png" alt="robuild" width="100%" /><br>
+
+# 📦 robuild 😯 [![npm](https://img.shields.io/npm/v/robuild.svg)](https://npmjs.com/package/robuild)
 
 简体中文 | <a href="./README-zh.md">English</a>
 
