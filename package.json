@@ -25,7 +25,10 @@
     "prepack": "pnpm build",
     "release": "pnpm test && changelogen --release && npm publish && git push --follow-tags",
     "test": "pnpm lint && pnpm test:types",
-    "test:types": "tsc --noEmit --skipLibCheck"
+    "test:types": "tsc --noEmit --skipLibCheck",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "c12": "^3.0.4",
@@ -51,6 +54,7 @@
     "eslint": "^9.28.0",
     "esno": "^4.8.0",
     "prettier": "^3.5.3",
+    "vitepress": "^1.6.3",
     "vitest": "^3.2.2"
   }
 }

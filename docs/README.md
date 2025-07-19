@@ -1,265 +1,112 @@
-# robuild
+# robuild 官网
 
-⚡️ Bundle your TypeScript library with no config, powered by esbuild、swc、rollup ...
+这是 robuild 项目的官方文档网站，基于 [VitePress](https://vitepress.dev/) 构建。
 
-## 特点
+## 开发
 
-1. 基于 esbuild 开发：无需关心内部构建逻辑，一键式构建
-2. 覆盖常用的构建能力：通过 Plugin 式开发，完美支持 esbuild 的构建功能
-3. 支持 ES5：借助 SWC 能力，支持构建至 ES5 环境
-
-## 技术选型
-
-- 包管理工具：pnpm；
-- 命令行交互：cac；
-- 基础构建工具：esbuild、rollup、swc；
-- 文件读取工具：JoyCon；
-- 代码runtime 转换工具：sucrase；
-- 代码语法检查工具：typescript；
-- 代码压缩：terser；
-- 代码文件监听：chokidar；
-- 静态站点：docusaurus；
-- 测试工具：vitest；
-
-## 安装
+### 安装依赖
 
 ```bash
-# 建议当前项目中安装
-pnpm i robuild  -D
-
-# 也可以全局安装，但不推荐
-pnpm i robuild -g
+pnpm install
 ```
 
-## 基础使用
+### 启动开发服务器
 
 ```bash
-robuild [...files]
+pnpm docs:dev
 ```
 
-文件默认会构建至 `dist`目录下。
+访问 http://localhost:5173 查看网站。
 
-## 支持多入口
+### 构建生产版本
 
 ```bash
-robuild src/index.ts src/cli.ts
+pnpm docs:build
 ```
 
-会在`dist`目录下产出`index.js`与`cli.js`。
+构建产物位于 `docs/.vitepress/dist` 目录。
 
-也可以使用`CLI`的指令执行相同的功能
+### 预览生产版本
 
 ```bash
-# 构建结果为 dist/index.js dist/cli.js
-robuild --entry src/index.ts --entry src/cli.ts
+pnpm docs:preview
 ```
 
-也可以指定构建后的文件名称
+## 部署
 
-```bash
-# 构建结果为 dist/foo.js 和 dist/bar.js
-robuild --entry.foo src/index.ts --entry.bar src/cli.ts
+### GitHub Pages
+
+网站已配置自动部署到 GitHub Pages。当推送到 `main` 分支时，GitHub Actions 会自动构建并部署网站。
+
+部署地址：https://sunny-117.github.io/robuild/
+
+### 手动部署
+
+如果需要手动部署到其他平台：
+
+1. 构建网站：
+   ```bash
+   pnpm docs:build
+   ```
+
+2. 将 `docs/.vitepress/dist` 目录的内容上传到你的 Web 服务器。
+
+## 网站结构
+
+```
+docs/
+├── .vitepress/
+│   ├── config.ts          # VitePress 配置
+│   └── theme/             # 主题配置
+├── public/                # 静态资源
+│   ├── logo.svg
+│   └── favicon.ico
+├── guide/                 # 指南文档
+│   ├── index.md
+│   ├── getting-started.md
+│   ├── cli.md
+│   ├── configuration.md
+│   ├── build-modes.md
+│   └── stub-mode.md
+├── api/                   # API 文档
+│   └── index.md
+├── architecture/          # 架构文档
+│   ├── index.md
+│   └── core.md
+└── index.md              # 首页
 ```
 
-也可以在 `encode-config.ts` 中配置：
+## 内容贡献
 
-```typescript
-export default defineConfig({
-  // 输出 dist/a.js 和 dist/b.js
-  entry: ['src/a.ts', 'src/b.ts'],
-  // 输出 dist/foo.js 和 dist/bar.js
-  entry: {
-    foo: 'src/a.ts',
-    bar: 'src/b.ts',
-  },
-})
-```
+### 添加新页面
 
-## 设置 exclude
+1. 在相应目录下创建 `.md` 文件
+2. 在 `docs/.vitepress/config.ts` 中添加导航和侧边栏配置
+3. 确保文件有适当的 frontmatter
 
-默认情况下，除了生产环境下所依赖的模块(`peerDependencies`和`dependencies`)外，会自动构建其他的模块，如果不希望构建，可以使用`--external`避免构建。
+### 编辑现有页面
 
-## 自定义配置
+直接编辑对应的 `.md` 文件即可。VitePress 支持：
 
-可以使用如下配置
+- Markdown 语法
+- Vue 组件
+- 代码高亮
+- 数学公式
+- Mermaid 图表
 
-- `robuild.config.ts`
-- `robuild.config.js`
-- `robuild.config.cjs`
-- `robuild.config.json`
-- 在`package.json`中的`robuild`
+### 样式定制
 
-也可以使用`defineConfig`来进行定制化配置。
+在 `docs/.vitepress/theme/` 目录下添加自定义样式和组件。
 
-```typescript
-import { defineConfig } from 'robuild'
+## 技术栈
 
-export default defineConfig({
-  entry: ['src/index.ts'],
-  splitting: false,
-  sourcemap: true,
-  clean: true,
-})
-```
+- **VitePress**: 静态站点生成器
+- **Vue**: 前端框架
+- **TypeScript**: 类型安全
+- **Markdown**: 内容编写
 
-也可以在`package.json`中进行配置。
+## 相关链接
 
-```json
-{
-  "robuild": {
-    "entry": ["src/index.ts"],
-    "splitting": false,
-    "sourcemap": true,
-    "clean": true
-  }
-}
-```
-
-## 生成声明文件
-
-```bash
-robuild index.ts --dts
-```
-
-以上指令会导出`./dist/index.js`和`./dist/index.d.ts`，当导出多种构建格式时，每种构建格式都会生成一个声明文件。
-
-如果有多个入口文件，每个入口文件都会生成一个对应的`.d.ts`文件。因此，如果想对单个入口文件生成声明文件时，请使用 ` --dts <entry>`` 格式，例如 `--dts src/index.ts`。
-
-请注意，`--dts`不会解析 `.d.ts` 文件中使用的外部（比如`node_modules`）类型，如果这是某种要求，可以使用 `--dts-resolve`。
-
-## 只导出声明文件
-
-`--dts-only` 指令等同于`tsc`的`emitDeclarationOnly`。可以使用此指令只生成声明文件。
-
-## 生成 sourcemap
-
-```bash
-robuild index.ts --sourcemap
-```
-
-会导出 `./dist/index.js` and `./dist/index.js.map`。
-
-如果有多个入口文件，每个入口文件都会生成相对于的`.map`文件。
-
-## 构建产物格式
-
-支持`ESM`、`CJS`和`IIFE`。
-
-可以一次性构建多种类型：
-
-```bash
-robuild src/index.ts --format esm,cjs,iife
-```
-
-将会生成以下文件结构：
-
-```bash
-dist
-├── index.mjs         # esm
-├── index.global.js   # iife
-└── index.js          # cjs
-```
-
-如果`package.json`中的`type`配置为`module`，产出结果会有所不同：
-
-```bash
-dist
-├── index.js          # esm
-├── index.global.js   # iife
-└── index.cjs         # cjs
-```
-
-如果不想使用诸如`.mjs`或者`.cjs`这类文件后缀，或者当前环境不支持此后缀，可以使用`--legacy-output`
-
-```bash
-robuild src/index.ts --format esm,cjs,iife --legacy-output
-```
-
-会构建成:
-
-```bash
-dist
-├── esm
-│   └── index.js
-├── iife
-│   └── index.js
-└── index.js
-```
-
-## 代码分割
-
-目前代码分隔只支持`ESM`的产物类型，并且默认是开启的，如果想针对`CJS`的文件类型设置代码分隔，请设置`--splitting`，会启用`esbuild`的代码分隔功能。
-
-对应地，如果想关闭代码分隔，请使用`--no-splitting`。
-
-## 目标环境
-
-此处默认使用`tsconfig`中的`compilerOptions.target`，也可以使用`--target`来手动声明。
-
-## 支持 ES5
-
-可以使用`--target es5`指令来将代码编译构建至 ES5 版本，代码首先会构建成`ES2020`，然后借助 SWC 编译成`ES5`。
-
-## watch 模式
-
-```bash
-robuild src/index.ts --watch
-```
-
-启动`watch`模式，这意味着在初始构建后，robuild 会监听文件变化。
-
-可以使用`--ignore-watch`来取消指定文件的监听。
-
-```bash
-robuild src src/index.ts --watch --ignore-watch folder1 --ignore-watch folder2
-```
-
-## 成功回调
-
-```bash
-robuild src/index.ts --watch --onSuccess "node dist/index.js"
-```
-
-`--onSuccess`会返回`Promise`类型的函数，可以执行类似如下功能
-
-```typescript
-import { defineConfig } from 'robuild'
-
-export default defineConfig({
-  async onSuccess() {
-    const server = http.createServer((req, res) => {
-      res.end('Encode Studio!')
-    })
-    server.listen(3000)
-    return () => {
-      server.close()
-    }
-  },
-})
-```
-
-## 压缩代码
-
-可以使用`--minify`来压缩代码
-
-```bash
-robuild src/index.ts --minify
-```
-
-或者使用`terser`而不是 esbuild 来压缩代码，前提条件是要先安装`terser`
-
-```bash
-robuild src/index.ts --minify
-```
-
-## tree shaking
-
-`esbuild`默认开启`tree shaking`，但是特殊情况下（如：[external 模块](https://github.com/evanw/esbuild/issues/1794)或者[未使用的引用](https://github.com/evanw/esbuild/issues/1435)）等情况还是有些问题。
-
-提供`--treeshake`指令来启用`rollup`的`tree shaking`。
-
-针对更多帮助，请使用`robuild --help`。
-
-## how-a-package-is-resolved
-
-<img src="./assets/how-a-package-is-resolved.jpeg">
+- [robuild GitHub 仓库](https://github.com/Sunny-117/robuild)
+- [VitePress 文档](https://vitepress.dev/)
+- [Vue 文档](https://vuejs.org/)

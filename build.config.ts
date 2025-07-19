@@ -1,6 +1,6 @@
-import { defineBuildConfig } from './src/config.ts'
+import { defineConfig } from './src/config.ts'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',

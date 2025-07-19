@@ -48,9 +48,9 @@ await build({
 You can use `build.config.mjs` (or `.ts`) or pass config to `build()` function.
 
 ```js
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
