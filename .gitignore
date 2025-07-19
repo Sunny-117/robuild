@@ -7,3 +7,4 @@ dist
 *.log*
 *.env*
 tsconfig.robuildinfo
+docs/.vitepress/cache
