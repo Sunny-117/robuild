@@ -18,9 +18,9 @@ robuild 提供了灵活的插件系统，允许你扩展和自定义构建功能
 用于 Bundle 模式的插件，基于 rolldown 的插件系统：
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -46,7 +46,7 @@ export default defineBuildConfig({
 用于 Transform 模式的插件，基于 oxc 的转换系统：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'transform',
@@ -77,7 +77,7 @@ export default defineBuildConfig({
 ```typescript
 import { shebangPlugin } from 'robuild/plugins'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -110,7 +110,7 @@ shebangPlugin({
 ```typescript
 import { jsonPlugin } from 'robuild/plugins'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -162,10 +162,10 @@ export function myPlugin(options: MyPluginOptions = {}) {
 ### 2. 使用自定义插件
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 import { myPlugin } from './my-plugin'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -440,7 +440,7 @@ npm install --save-dev typescript @types/node
 ### 1. 调试模式
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   rolldown: {
     plugins: [

@@ -26,9 +26,9 @@ interface BuildConfig {
 工作目录，默认为当前目录：
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   cwd: './packages/core',
   entries: ['./src/index.ts']
 })
@@ -39,7 +39,7 @@ export default defineBuildConfig({
 构建入口配置，支持字符串和对象两种格式：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     // 字符串格式
     './src/index.ts',
@@ -60,7 +60,7 @@ export default defineBuildConfig({
 构建生命周期钩子：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     start: (ctx) => {
@@ -101,7 +101,7 @@ interface BundleEntry {
 ### 基本配置
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -117,7 +117,7 @@ export default defineBuildConfig({
 ### 高级配置
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -170,7 +170,7 @@ interface TransformEntry {
 ### 基本配置
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'transform',
@@ -185,7 +185,7 @@ export default defineBuildConfig({
 ### 高级配置
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'transform',
@@ -227,7 +227,7 @@ interface MinifyOptions {
 ### 压缩示例
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -262,7 +262,7 @@ interface SourcemapOptions {
 ### 源码映射示例
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -295,7 +295,7 @@ interface DtsOptions {
 ### 声明文件示例
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -334,7 +334,7 @@ interface RolldownOptions {
 ### Rolldown 示例
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -379,7 +379,7 @@ interface OxcOptions {
 ### Oxc 示例
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'transform',
@@ -416,7 +416,7 @@ interface ResolveOptions {
 ### 解析示例
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'transform',
@@ -451,7 +451,7 @@ interface CleanOptions {
 ### 清理示例
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   clean: {
     enabled: true,
@@ -478,7 +478,7 @@ interface CacheOptions {
 ### 缓存示例
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   cache: {
     enabled: true,
@@ -506,7 +506,7 @@ interface WatchOptions {
 ### 监听示例
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   watch: {
     enabled: true,
@@ -550,9 +550,9 @@ ROBUILD_LOG_LEVEL=info
 robuild 会自动验证配置：
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -569,7 +569,7 @@ export default defineBuildConfig({
 使用 TypeScript 获得完整的类型安全：
 
 ```typescript
-import { defineBuildConfig, type BuildConfig } from 'robuild/config'
+import { defineConfig, type BuildConfig } from 'robuild/config'
 
 // 享受完整的类型提示和检查
 const config: BuildConfig = {
@@ -582,7 +582,7 @@ const config: BuildConfig = {
   ]
 }
 
-export default defineBuildConfig(config)
+export default defineConfig(config)
 ```
 
 ## 下一步

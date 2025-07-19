@@ -361,7 +361,7 @@ CLI 参数的优先级高于配置文件：
 
 ```typescript
 // build.config.ts
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   minify: false,
   sourcemap: false

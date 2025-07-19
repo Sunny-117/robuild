@@ -390,10 +390,10 @@ export function autoImportPlugin(options: AutoImportOptions): BundlePlugin {
 
 ```typescript
 // 使用自定义插件
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 import { myPlugin, autoImportPlugin } from './my-plugins'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -462,7 +462,7 @@ npm install robuild
 ### 1. 调试模式
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   rolldown: {
     plugins: [

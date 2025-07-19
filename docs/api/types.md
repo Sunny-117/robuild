@@ -455,7 +455,7 @@ export {
 ### 1. 基本配置类型
 
 ```typescript
-import { defineBuildConfig, type BuildConfig } from 'robuild/config'
+import { defineConfig, type BuildConfig } from 'robuild/config'
 
 const config: BuildConfig = {
   entries: [
@@ -467,13 +467,13 @@ const config: BuildConfig = {
   ]
 }
 
-export default defineBuildConfig(config)
+export default defineConfig(config)
 ```
 
 ### 2. 类型安全配置
 
 ```typescript
-import { defineBuildConfig, type BundleEntry } from 'robuild/config'
+import { defineConfig, type BundleEntry } from 'robuild/config'
 
 const bundleEntry: BundleEntry = {
   type: 'bundle',
@@ -484,7 +484,7 @@ const bundleEntry: BundleEntry = {
   }
 }
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [bundleEntry]
 })
 ```
@@ -492,7 +492,7 @@ export default defineBuildConfig({
 ### 3. 条件类型配置
 
 ```typescript
-import { defineBuildConfig, type BuildEntry } from 'robuild/config'
+import { defineConfig, type BuildEntry } from 'robuild/config'
 
 function createEntry(type: 'bundle' | 'transform'): BuildEntry {
   if (type === 'bundle') {
@@ -510,7 +510,7 @@ function createEntry(type: 'bundle' | 'transform'): BuildEntry {
   }
 }
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [createEntry('bundle')]
 })
 ```
@@ -518,9 +518,9 @@ export default defineBuildConfig({
 ### 4. 类型守卫使用
 
 ```typescript
-import { defineBuildConfig, isBundleEntry } from 'robuild/config'
+import { defineConfig, isBundleEntry } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -541,7 +541,7 @@ export default defineBuildConfig({
 ### 5. 深度部分类型
 
 ```typescript
-import { defineBuildConfig, type DeepPartial } from 'robuild/config'
+import { defineConfig, type DeepPartial } from 'robuild/config'
 
 const baseConfig = {
   entries: [
@@ -567,7 +567,7 @@ const overrideConfig: DeepPartial<typeof baseConfig> = {
   ]
 }
 
-export default defineBuildConfig({
+export default defineConfig({
   ...baseConfig,
   ...overrideConfig
 })
@@ -578,7 +578,7 @@ export default defineBuildConfig({
 ### 1. 扩展配置类型
 
 ```typescript
-import { defineBuildConfig, type BuildConfig } from 'robuild/config'
+import { defineConfig, type BuildConfig } from 'robuild/config'
 
 // 扩展配置类型
 interface ExtendedBuildConfig extends BuildConfig {
@@ -590,7 +590,7 @@ const config: ExtendedBuildConfig = {
   customOption: 'value'
 }
 
-export default defineBuildConfig(config)
+export default defineConfig(config)
 ```
 
 ### 2. 自定义插件类型

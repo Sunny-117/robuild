@@ -26,7 +26,7 @@ src/
 ```typescript
 // src/index.ts
 export { build } from './build'
-export { defineBuildConfig } from './config'
+export { defineConfig } from './config'
 export type {
   BuildConfig,
   BuildEntry,

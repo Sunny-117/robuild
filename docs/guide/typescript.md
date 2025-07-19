@@ -41,9 +41,9 @@ export interface User {
 ### 配置选项
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -137,9 +137,9 @@ const config: BuildConfig = {
 IDE 会提供完整的智能提示：
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',

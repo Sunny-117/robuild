@@ -29,9 +29,9 @@ robuild 基于以下高性能技术：
 robuild 自动并行处理多个入口：
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     './src/index.ts',
     './src/cli.ts',
@@ -46,7 +46,7 @@ export default defineBuildConfig({
 启用增量构建避免重复工作：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   // 自动启用增量构建
   // 只有变化的文件会被重新处理
@@ -58,7 +58,7 @@ export default defineBuildConfig({
 正确配置外部依赖避免打包：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -101,7 +101,7 @@ npx robuild ./src/index.ts --stub
 启用文件监听：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   watch: {
     // 监听文件变化
@@ -141,7 +141,7 @@ export default defineConfig({
 对于大文件，使用流式处理：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'transform',
@@ -165,7 +165,7 @@ NODE_OPTIONS="--max-old-space-size=4096" npx robuild ./src/index.ts
 ### 3. 垃圾回收优化
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   // 启用垃圾回收优化
   gc: {
@@ -182,7 +182,7 @@ export default defineBuildConfig({
 启用持久化缓存：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   cache: {
     // 启用持久化缓存
@@ -198,7 +198,7 @@ export default defineBuildConfig({
 ### 2. 缓存策略
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   cache: {
     // 缓存策略
@@ -216,7 +216,7 @@ export default defineBuildConfig({
 npx robuild --clean-cache
 
 # 或者在配置中设置
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   clean: {
     // 构建前清理缓存
@@ -242,7 +242,7 @@ export async function loadFeature(name: string) {
 ### 2. 手动代码分割
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -269,7 +269,7 @@ export default defineBuildConfig({
 ### 1. 智能压缩
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -291,7 +291,7 @@ export default defineBuildConfig({
 ### 2. 条件压缩
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -307,7 +307,7 @@ export default defineBuildConfig({
 ### 1. 构建时间监控
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     start: (ctx) => {
@@ -323,7 +323,7 @@ export default defineBuildConfig({
 ### 2. 性能分析
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   // 启用性能分析
   profile: {
@@ -336,7 +336,7 @@ export default defineBuildConfig({
 ### 3. 内存使用监控
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     afterBuild: (ctx, entry, result) => {
@@ -387,7 +387,7 @@ src/
 
 ```typescript
 // 生产环境配置
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   minify: true,
   sourcemap: false,
@@ -397,7 +397,7 @@ export default defineBuildConfig({
 })
 
 // 开发环境配置
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   minify: false,
   sourcemap: true,

@@ -5,7 +5,7 @@ robuild 提供了完整的 TypeScript API，支持程序化使用和自定义构
 ## 快速开始
 
 ```typescript
-import { build, defineBuildConfig } from 'robuild'
+import { build, defineConfig } from 'robuild'
 
 // 基本使用
 await build({
@@ -13,7 +13,7 @@ await build({
 })
 
 // 使用配置函数
-const config = defineBuildConfig({
+const config = defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -48,14 +48,14 @@ await build({
 })
 ```
 
-### `defineBuildConfig(config: BuildConfig): BuildConfig`
+### `defineConfig(config: BuildConfig): BuildConfig`
 
 配置定义函数，提供类型安全和智能提示。
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -139,9 +139,9 @@ await build({
 ### 2. 配置构建
 
 ```typescript
-import { build, defineBuildConfig } from 'robuild'
+import { build, defineConfig } from 'robuild'
 
-const config = defineBuildConfig({
+const config = defineConfig({
   cwd: './packages/core',
   entries: [
     {
@@ -209,7 +209,7 @@ try {
 ### 5. 自定义构建流程
 
 ```typescript
-import { build, defineBuildConfig } from 'robuild'
+import { build, defineConfig } from 'robuild'
 
 async function customBuild() {
   // 1. 验证环境
@@ -219,7 +219,7 @@ async function customBuild() {
   }
 
   // 2. 准备配置
-  const config = defineBuildConfig({
+  const config = defineConfig({
     entries: [
       {
         type: 'bundle',

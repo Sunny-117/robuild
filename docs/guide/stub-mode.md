@@ -29,9 +29,9 @@ robuild --stub ./src/index.ts ./src/runtime/:./dist/runtime
 ### 配置文件方式
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -198,9 +198,9 @@ import { runtime } from './dist/runtime/index.mjs'
 
 ```typescript
 // build.config.dev.ts
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -221,9 +221,9 @@ export default defineBuildConfig({
 
 ```typescript
 // build.config.prod.ts
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -245,11 +245,11 @@ export default defineBuildConfig({
 
 ```typescript
 // build.config.ts
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
 const isDev = process.env.NODE_ENV === 'development'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',

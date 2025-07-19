@@ -13,9 +13,9 @@ robuild 支持以下配置文件格式：
 ## 基本配置
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   cwd: '.',
   entries: [
     {
@@ -33,7 +33,7 @@ export default defineBuildConfig({
 工作目录，默认为当前目录。
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   cwd: './packages/core',
   // ...
 })
@@ -43,7 +43,7 @@ export default defineBuildConfig({
 构建入口配置数组，支持字符串和对象两种格式。
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     // 字符串格式
     './src/index.ts',
@@ -63,7 +63,7 @@ export default defineBuildConfig({
 构建钩子函数，用于自定义构建流程。
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   hooks: {
     start: (ctx) => {
       console.log('开始构建:', ctx.pkg.name)
@@ -344,9 +344,9 @@ hooks: {
 ### 1. 简单库配置
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -362,9 +362,9 @@ export default defineBuildConfig({
 ### 2. CLI 工具配置
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -383,9 +383,9 @@ export default defineBuildConfig({
 ### 3. 复杂项目配置
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -426,9 +426,9 @@ export default defineBuildConfig({
 ### 4. Monorepo 配置
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   cwd: './packages/core',
   entries: [
     {

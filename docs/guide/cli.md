@@ -160,7 +160,7 @@ robuild --dir ./packages/core
 
 ```typescript
 // build.config.ts
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     { type: 'bundle', input: './src/index.ts' }
   ]

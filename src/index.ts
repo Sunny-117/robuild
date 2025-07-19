@@ -1,6 +1,6 @@
 export { build } from './build'
 
-export { defineBuildConfig } from './config'
+export { defineConfig } from './config'
 
 export type {
   BuildConfig,

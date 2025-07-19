@@ -134,9 +134,9 @@ npx robuild ./src/index.ts --stub
 创建 `build.config.ts` 文件进行更精细的配置：
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',

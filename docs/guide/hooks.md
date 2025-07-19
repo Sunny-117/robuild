@@ -18,9 +18,9 @@ Hooks 是构建过程中的生命周期钩子，让你可以：
 在构建开始前执行：
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     start: (ctx) => {
@@ -36,7 +36,7 @@ export default defineBuildConfig({
 在构建完成后执行：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     end: (ctx) => {
@@ -52,7 +52,7 @@ export default defineBuildConfig({
 在每个构建入口开始前执行：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     beforeBuild: (ctx, entry) => {
@@ -72,7 +72,7 @@ export default defineBuildConfig({
 在每个构建入口完成后执行：
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     afterBuild: (ctx, entry, result) => {
@@ -130,11 +130,11 @@ interface BuildResult {
 ### 1. 环境检查和准备
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 import { existsSync, mkdirSync } from 'fs'
 import { join } from 'path'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     start: (ctx) => {
@@ -157,11 +157,11 @@ export default defineBuildConfig({
 ### 2. 构建后处理
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 import { copyFileSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     end: (ctx) => {
@@ -193,9 +193,9 @@ export default defineBuildConfig({
 ### 3. 条件构建
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     beforeBuild: (ctx, entry) => {
@@ -224,10 +224,10 @@ export default defineBuildConfig({
 ### 4. 集成测试
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 import { execSync } from 'child_process'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     afterBuild: async (ctx, entry, result) => {
@@ -253,9 +253,9 @@ export default defineBuildConfig({
 ### 5. 多阶段构建
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     './src/index.ts',
     './src/runtime/:./dist/runtime'
@@ -289,9 +289,9 @@ export default defineBuildConfig({
 Hooks 支持异步操作：
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     start: async (ctx) => {
@@ -314,7 +314,7 @@ export default defineBuildConfig({
 ### 1. Hook 错误处理
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     start: (ctx) => {
@@ -333,7 +333,7 @@ export default defineBuildConfig({
 ### 2. 构建错误处理
 
 ```typescript
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     afterBuild: (ctx, entry, result) => {
@@ -375,9 +375,9 @@ hooks: {
 ### 2. 使用类型安全
 
 ```typescript
-import { defineBuildConfig, type BuildContext } from 'robuild/config'
+import { defineConfig, type BuildContext } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     start: (ctx: BuildContext) => {

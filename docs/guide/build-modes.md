@@ -36,9 +36,9 @@ robuild ./src/index.ts:./lib
 ### 配置示例
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'bundle',
@@ -145,9 +145,9 @@ robuild ./src/:./dist/
 ### 配置示例
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     {
       type: 'transform',
@@ -244,9 +244,9 @@ dist/runtime/
 可以在同一个项目中混合使用两种模式：
 
 ```typescript
-import { defineBuildConfig } from 'robuild/config'
+import { defineConfig } from 'robuild/config'
 
-export default defineBuildConfig({
+export default defineConfig({
   entries: [
     // Bundle 模式 - 主库文件
     {
