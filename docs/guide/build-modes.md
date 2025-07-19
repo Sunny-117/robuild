@@ -36,7 +36,7 @@ robuild ./src/index.ts:./lib
 ### 配置示例
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -145,7 +145,7 @@ robuild ./src/:./dist/
 ### 配置示例
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -244,7 +244,7 @@ dist/runtime/
 可以在同一个项目中混合使用两种模式：
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [

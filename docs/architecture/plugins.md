@@ -390,7 +390,7 @@ export function autoImportPlugin(options: AutoImportOptions): BundlePlugin {
 
 ```typescript
 // 使用自定义插件
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 import { myPlugin, autoImportPlugin } from './my-plugins'
 
 export default defineConfig({

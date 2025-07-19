@@ -48,7 +48,7 @@ await build({
 You can use `build.config.mjs` (or `.ts`) or pass config to `build()` function.
 
 ```js
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [

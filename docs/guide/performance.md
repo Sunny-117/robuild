@@ -29,7 +29,7 @@ robuild 基于以下高性能技术：
 robuild 自动并行处理多个入口：
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [

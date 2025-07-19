@@ -29,7 +29,7 @@ robuild --stub ./src/index.ts ./src/runtime/:./dist/runtime
 ### 配置文件方式
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -198,7 +198,7 @@ import { runtime } from './dist/runtime/index.mjs'
 
 ```typescript
 // build.config.dev.ts
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -221,7 +221,7 @@ export default defineConfig({
 
 ```typescript
 // build.config.prod.ts
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -245,7 +245,7 @@ export default defineConfig({
 
 ```typescript
 // build.config.ts
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 const isDev = process.env.NODE_ENV === 'development'
 

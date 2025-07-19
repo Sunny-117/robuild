@@ -39,7 +39,7 @@ export const version = "1.0.0";
 虽然专注于 ESM，robuild 也支持其他格式：
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [

@@ -41,7 +41,7 @@ export interface User {
 ### 配置选项
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -137,7 +137,7 @@ const config: BuildConfig = {
 IDE 会提供完整的智能提示：
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [

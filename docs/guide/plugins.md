@@ -18,7 +18,7 @@ robuild 提供了灵活的插件系统，允许你扩展和自定义构建功能
 用于 Bundle 模式的插件，基于 rolldown 的插件系统：
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -162,7 +162,7 @@ export function myPlugin(options: MyPluginOptions = {}) {
 ### 2. 使用自定义插件
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 import { myPlugin } from './my-plugin'
 
 export default defineConfig({

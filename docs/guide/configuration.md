@@ -13,7 +13,7 @@ robuild 支持以下配置文件格式：
 ## 基本配置
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   cwd: '.',
@@ -344,7 +344,7 @@ hooks: {
 ### 1. 简单库配置
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -362,7 +362,7 @@ export default defineConfig({
 ### 2. CLI 工具配置
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -383,7 +383,7 @@ export default defineConfig({
 ### 3. 复杂项目配置
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -426,7 +426,7 @@ export default defineConfig({
 ### 4. Monorepo 配置
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   cwd: './packages/core',

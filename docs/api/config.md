@@ -26,7 +26,7 @@ interface BuildConfig {
 工作目录，默认为当前目录：
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   cwd: './packages/core',
@@ -550,7 +550,7 @@ ROBUILD_LOG_LEVEL=info
 robuild 会自动验证配置：
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -569,7 +569,7 @@ export default defineConfig({
 使用 TypeScript 获得完整的类型安全：
 
 ```typescript
-import { defineConfig, type BuildConfig } from 'robuild/config'
+import { defineConfig, type BuildConfig } from 'robuild'
 
 // 享受完整的类型提示和检查
 const config: BuildConfig = {

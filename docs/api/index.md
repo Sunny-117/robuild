@@ -53,7 +53,7 @@ await build({
 配置定义函数，提供类型安全和智能提示。
 
 ```typescript
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [

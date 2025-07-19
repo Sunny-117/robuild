@@ -48,7 +48,7 @@ await build({
 可在 `build.config.mjs`（或 `.ts`）中定义配置，或直接传入 `build()` 函数。
 
 ```js
-import { defineConfig } from 'robuild/config'
+import { defineConfig } from 'robuild'
 
 export default defineConfig({
   entries: [

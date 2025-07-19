@@ -455,7 +455,7 @@ export {
 ### 1. 基本配置类型
 
 ```typescript
-import { defineConfig, type BuildConfig } from 'robuild/config'
+import { defineConfig, type BuildConfig } from 'robuild'
 
 const config: BuildConfig = {
   entries: [
@@ -473,7 +473,7 @@ export default defineConfig(config)
 ### 2. 类型安全配置
 
 ```typescript
-import { defineConfig, type BundleEntry } from 'robuild/config'
+import { defineConfig, type BundleEntry } from 'robuild'
 
 const bundleEntry: BundleEntry = {
   type: 'bundle',
@@ -492,7 +492,7 @@ export default defineConfig({
 ### 3. 条件类型配置
 
 ```typescript
-import { defineConfig, type BuildEntry } from 'robuild/config'
+import { defineConfig, type BuildEntry } from 'robuild'
 
 function createEntry(type: 'bundle' | 'transform'): BuildEntry {
   if (type === 'bundle') {
@@ -518,7 +518,7 @@ export default defineConfig({
 ### 4. 类型守卫使用
 
 ```typescript
-import { defineConfig, isBundleEntry } from 'robuild/config'
+import { defineConfig, isBundleEntry } from 'robuild'
 
 export default defineConfig({
   entries: [
@@ -541,7 +541,7 @@ export default defineConfig({
 ### 5. 深度部分类型
 
 ```typescript
-import { defineConfig, type DeepPartial } from 'robuild/config'
+import { defineConfig, type DeepPartial } from 'robuild'
 
 const baseConfig = {
   entries: [
@@ -578,7 +578,7 @@ export default defineConfig({
 ### 1. 扩展配置类型
 
 ```typescript
-import { defineConfig, type BuildConfig } from 'robuild/config'
+import { defineConfig, type BuildConfig } from 'robuild'
 
 // 扩展配置类型
 interface ExtendedBuildConfig extends BuildConfig {
@@ -596,7 +596,7 @@ export default defineConfig(config)
 ### 2. 自定义插件类型
 
 ```typescript
-import { type Plugin } from 'robuild/config'
+import { type Plugin } from 'robuild'
 
 interface MyPlugin extends Plugin {
   customMethod?: () => void
