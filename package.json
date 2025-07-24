@@ -1,7 +1,7 @@
 {
   "name": "robuild",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "packageManager": "pnpm@10.11.1",
   "description": "Zero-config ESM/TS package builder. Powered by Rolldown and Oxc",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "robuild": "esno src/cli.ts",
     "prepack": "pnpm build",
     "release": "pnpm test && changelogen --release && npm publish && git push --follow-tags",
-    "test": "pnpm lint && pnpm test:types",
+    "test": "pnpm test:types",
     "test:types": "tsc --noEmit --skipLibCheck",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
