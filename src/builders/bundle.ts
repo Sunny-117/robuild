@@ -13,7 +13,7 @@ import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
 import { defu } from 'defu'
 import { resolveModulePath } from 'exsolve'
-import oxcParser from 'oxc-parser'
+import { parseSync } from 'oxc-parser'
 import prettyBytes from 'pretty-bytes'
 import { rolldown } from 'rolldown'
 
@@ -40,7 +40,7 @@ export async function rolldownBuild(
         `${c.magenta('[stub bundle] ')} ${c.underline(fmtPath(distPath))}`,
       )
       const srcContents = await readFile(srcPath, 'utf8')
-      const parsed = oxcParser.parseSync(srcPath, srcContents)
+      const parsed = parseSync(srcPath, srcContents)
       const exportNames = parsed.module.staticExports.flatMap(e =>
         e.entries.map(e =>
           e.exportName.kind === 'Default' ? 'default' : e.exportName.name,

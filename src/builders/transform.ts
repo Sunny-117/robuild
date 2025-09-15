@@ -9,8 +9,8 @@ import { colors as c } from 'consola/utils'
 import { resolveModulePath } from 'exsolve'
 import MagicString from 'magic-string'
 import { minify } from 'oxc-minify'
-import oxcParser from 'oxc-parser'
-import oxcTransform from 'oxc-transform'
+import { parseSync } from 'oxc-parser'
+import { transform } from 'oxc-transform'
 import { glob } from 'tinyglobby'
 import { fmtPath } from '../utils'
 import { makeExecutable, SHEBANG_RE } from './plugins/shebang'
@@ -101,7 +101,7 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
     sourceType: 'module',
   } as const
 
-  const parsed = oxcParser.parseSync(entryPath, sourceText, {
+  const parsed = parseSync(entryPath, sourceText, {
     ...sourceOptions,
   })
 
@@ -167,7 +167,7 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
 
   sourceText = magicString.toString()
 
-  const transformed = oxcTransform.transform(entryPath, sourceText, {
+  const transformed = transform(entryPath, sourceText, {
     ...entry.oxc,
     ...sourceOptions,
     cwd: dirname(entryPath),
