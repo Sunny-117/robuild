@@ -63,7 +63,7 @@ npx robuild -c build.config.ts
 
 ### `--watch, -w`
 
-启用监听模式：
+启用监听模式，文件变化时自动重新构建：
 
 ```bash
 # 启用监听模式
@@ -71,7 +71,21 @@ npx robuild --watch ./src/index.ts
 
 # 简写形式
 npx robuild -w ./src/index.ts
+
+# 监听转换模式
+npx robuild --watch ./src/runtime/:./dist/runtime
+
+# 结合其他选项
+npx robuild --watch --dir ./my-project ./src/index.ts
 ```
+
+**监听模式特性：**
+- 自动检测文件变化并重新构建
+- 智能确定要监听的文件模式
+- 防抖机制避免频繁重建
+- 构建错误后继续监听
+- 清晰的变化和重建日志
+- 使用 Ctrl+C 优雅退出
 
 ### `--clean`
 

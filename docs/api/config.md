@@ -496,24 +496,71 @@ export default defineConfig({
 ```typescript
 interface WatchOptions {
   enabled?: boolean                      // 是否启用监听
-  include?: string[]                     // 包含的文件
-  exclude?: string[]                     // 排除的文件
+  include?: string[]                     // 包含的文件模式
+  exclude?: string[]                     // 排除的文件模式
+  delay?: number                         // 重建延迟时间（毫秒）
   ignoreInitial?: boolean                // 是否忽略初始构建
-  delay?: number                         // 延迟时间
+  watchNewFiles?: boolean                // 是否监听新文件
 }
 ```
 
+**选项说明：**
+
+- `enabled`: 启用监听模式，默认 `false`
+- `include`: 要监听的文件 glob 模式数组，默认根据构建条目自动推断
+- `exclude`: 要排除的文件 glob 模式数组，默认排除 `node_modules`、`dist` 等
+- `delay`: 文件变化后的重建延迟时间，默认 `100` 毫秒
+- `ignoreInitial`: 是否跳过启动时的初始构建，默认 `false`
+- `watchNewFiles`: 是否监听新增的文件，默认 `true`
+
 ### 监听示例
+
+#### 基本监听配置
+
+```typescript
+export default defineConfig({
+  entries: ['./src/index.ts'],
+  watch: {
+    enabled: true,                        // 启用监听模式
+    delay: 100,                          // 100ms 延迟
+  }
+})
+```
+
+#### 自定义监听模式
 
 ```typescript
 export default defineConfig({
   entries: ['./src/index.ts'],
   watch: {
     enabled: true,
-    include: ['src/**/*'],
-    exclude: ['src/**/*.test.ts', 'src/**/*.spec.ts'],
-    ignoreInitial: false,
-    delay: 100
+    include: [                           // 自定义监听文件
+      'src/**/*.ts',
+      'src/**/*.js',
+      'config/**/*'
+    ],
+    exclude: [                           // 排除文件
+      'src/**/*.test.ts',
+      'src/**/*.spec.ts',
+      'src/temp/**/*'
+    ],
+    delay: 200,                          // 增加延迟时间
+    ignoreInitial: false,                // 启动时执行初始构建
+    watchNewFiles: true,                 // 监听新文件
+  }
+})
+```
+
+#### 开发环境配置
+
+```typescript
+// build.config.dev.ts
+export default defineConfig({
+  entries: ['./src/index.ts'],
+  watch: {
+    enabled: true,
+    delay: 50,                           // 更快的响应
+    watchNewFiles: true,
   }
 })
 ```

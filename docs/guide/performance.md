@@ -98,18 +98,37 @@ npx robuild ./src/index.ts --stub
 
 ### 2. 监听模式
 
-启用文件监听：
+启用文件监听实现自动重建：
+
+```bash
+# CLI 方式启用监听
+npx robuild ./src/index.ts --watch
+```
 
 ```typescript
+// 配置文件方式
 export default defineConfig({
   entries: ['./src/index.ts'],
   watch: {
-    // 监听文件变化
-    include: ['src/**/*'],
-    exclude: ['src/**/*.test.ts']
+    enabled: true,
+    include: ['src/**/*'],           // 监听源码目录
+    exclude: [                       // 排除不必要的文件
+      'src/**/*.test.ts',
+      'src/**/*.spec.ts',
+      'src/temp/**/*'
+    ],
+    delay: 100,                      // 防抖延迟
+    watchNewFiles: true,             // 监听新文件
   }
 })
 ```
+
+**性能优化建议：**
+
+- **合理设置延迟**: 根据项目大小调整 `delay` 参数
+- **精确监听范围**: 使用 `include` 限制监听范围
+- **排除无关文件**: 通过 `exclude` 排除测试文件、临时文件等
+- **避免监听大目录**: 不要监听 `node_modules`、`dist` 等大目录
 
 ### 3. 开发服务器集成
 

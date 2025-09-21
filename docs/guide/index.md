@@ -36,6 +36,11 @@ robuild 是一个零配置的 ESM/TypeScript 包构建器，它基于以下核�
 - 提升开发体验，支持热重载
 - 支持多种运行时环境
 
+### 👀 监听模式
+- 文件变化时自动重新构建
+- 智能文件检测和防抖机制
+- 错误恢复和清晰的状态反馈
+
 ## 使用场景
 
 ### 库开发
@@ -60,6 +65,9 @@ npx robuild ./src/runtime/:./dist/runtime
 ```bash
 # 使用 stub 模式快速开发
 npx robuild ./src/index.ts --stub
+
+# 使用监听模式自动重建
+npx robuild ./src/index.ts --watch
 ```
 
 ## 与其他工具对比
@@ -71,6 +79,7 @@ npx robuild ./src/index.ts --stub
 | ESM 原生 | ✅ | ✅ | ✅ | ✅ |
 | TypeScript | ✅ | ✅ | ✅ | ❌ |
 | Stub 模式 | ✅ | ❌ | ❌ | ❌ |
+| 监听模式 | ✅ | ✅ | ✅ | ❌ |
 
 ## 技术栈
 
@@ -88,3 +97,5 @@ robuild 的技术栈经过精心选择，确保性能和易用性：
 - [CLI 使用](./cli.md) - 命令行工具详解
 - [配置](./configuration.md) - 配置文件选项
 - [构建模式](./build-modes.md) - Bundle 和 Transform 模式详解
+- [监听模式](./watch-mode.md) - 开发时自动重建
+- [Stub 模式](./stub-mode.md) - 快速开发链接

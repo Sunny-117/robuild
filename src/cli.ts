@@ -23,6 +23,7 @@ const args = parseArgs({
     watch: {
       type: 'boolean',
       default: false,
+      short: 'w',
     },
   },
 })

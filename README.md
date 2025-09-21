@@ -30,9 +30,12 @@ npx robuild ./src/index.ts
 
 # transform
 npx robuild ./src/runtime/:./dist/runtime
+
+# watch mode - rebuild on file changes
+npx robuild ./src/index.ts --watch
 ```
 
-You can use `--dir` to set the working directory.
+You can use `--dir` to set the working directory and `--watch` to enable watch mode.
 
 If paths end with `/`, robuild uses transpile mode using [oxc-transform](https://www.npmjs.com/package/oxc-transform) instead of bundle mode with [rolldown](https://rolldown.rs/).
 
@@ -84,6 +87,52 @@ export default defineConfig({
   },
 })
 ```
+
+## Watch Mode
+
+For development, robuild provides a watch mode that automatically rebuilds your project when files change.
+
+### CLI Usage
+
+```sh
+# Enable watch mode for any build
+npx robuild ./src/index.ts --watch
+
+# Watch mode with transform
+npx robuild ./src/runtime/:./dist/runtime --watch
+
+# Watch mode with custom working directory
+npx robuild ./src/index.ts --watch --dir ./my-project
+```
+
+### Configuration
+
+You can configure watch behavior in your `build.config.ts`:
+
+```js
+import { defineConfig } from 'robuild'
+
+export default defineConfig({
+  entries: ['./src/index.ts'],
+  watch: {
+    enabled: true, // Enable watch mode by default
+    include: ['src/**/*'], // Files to watch
+    exclude: ['**/*.test.ts'], // Files to ignore
+    delay: 100, // Rebuild delay in ms
+    ignoreInitial: false, // Skip initial build
+    watchNewFiles: true, // Watch for new files
+  },
+})
+```
+
+### Features
+
+- **Real-time rebuilding**: Automatically rebuilds when source files change
+- **Smart file detection**: Automatically determines what files to watch based on your entries
+- **Debounced rebuilds**: Configurable delay to prevent excessive rebuilds
+- **Error recovery**: Continues watching even after build errors
+- **Clear feedback**: Shows file changes and rebuild status
+- **Graceful shutdown**: Clean exit with Ctrl+C
 
 ## Stub Mode
 

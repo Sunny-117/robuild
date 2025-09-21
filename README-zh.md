@@ -30,9 +30,12 @@ npx robuild ./src/index.ts
 
 # transform
 npx robuild ./src/runtime/:./dist/runtime
+
+# 监听模式 - 文件变化时自动重新构建
+npx robuild ./src/index.ts --watch
 ```
 
-可通过 `--dir` 指定工作目录。
+可通过 `--dir` 指定工作目录，`--watch` 启用监听模式。
 
 若路径以 `/` 结尾，robuild 将使用 [oxc-transform](https://www.npmjs.com/package/oxc-transform) 进行代码转换（而非 [rolldown](https://rolldown.rs/) 打包）。
 
@@ -84,6 +87,52 @@ export default defineConfig({
   },
 })
 ```
+
+## 监听模式
+
+在开发过程中，robuild 提供了监听模式，可在文件变化时自动重新构建项目。
+
+### CLI 使用
+
+```sh
+# 为任何构建启用监听模式
+npx robuild ./src/index.ts --watch
+
+# 转换模式的监听
+npx robuild ./src/runtime/:./dist/runtime --watch
+
+# 指定工作目录的监听模式
+npx robuild ./src/index.ts --watch --dir ./my-project
+```
+
+### 配置
+
+可在 `build.config.ts` 中配置监听行为：
+
+```js
+import { defineConfig } from 'robuild'
+
+export default defineConfig({
+  entries: ['./src/index.ts'],
+  watch: {
+    enabled: true, // 默认启用监听模式
+    include: ['src/**/*'], // 要监听的文件
+    exclude: ['**/*.test.ts'], // 要忽略的文件
+    delay: 100, // 重建延迟（毫秒）
+    ignoreInitial: false, // 跳过初始构建
+    watchNewFiles: true, // 监听新文件
+  },
+})
+```
+
+### 特性
+
+- **实时重建**：源文件变化时自动重新构建
+- **智能文件检测**：根据构建条目自动确定要监听的文件
+- **防抖重建**：可配置延迟以防止过度重建
+- **错误恢复**：即使构建出错也会继续监听
+- **清晰反馈**：显示文件变化和重建状态
+- **优雅退出**：使用 Ctrl+C 清理退出
 
 ## Stub Mode
 
