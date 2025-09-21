@@ -111,8 +111,53 @@ export interface BuildHooks {
   ) => void | Promise<void>
 }
 
+export interface WatchOptions {
+  /**
+   * Enable watch mode.
+   *
+   * Defaults to `false` if not provided.
+   */
+  enabled?: boolean
+
+  /**
+   * Glob patterns for files to watch.
+   *
+   * Defaults to watching all source files if not provided.
+   */
+  include?: string[]
+
+  /**
+   * Glob patterns for files to ignore.
+   *
+   * Defaults to common ignore patterns if not provided.
+   */
+  exclude?: string[]
+
+  /**
+   * Delay in milliseconds before rebuilding after a file change.
+   *
+   * Defaults to `100` if not provided.
+   */
+  delay?: number
+
+  /**
+   * Whether to ignore the initial build when starting watch mode.
+   *
+   * Defaults to `false` if not provided.
+   */
+  ignoreInitial?: boolean
+
+  /**
+   * Whether to watch for new files being added.
+   *
+   * Defaults to `true` if not provided.
+   */
+  watchNewFiles?: boolean
+}
+
 export interface BuildConfig {
   cwd?: string | URL
   entries?: (BuildEntry | string)[]
   hooks?: BuildHooks
+  watch?: WatchOptions
 }

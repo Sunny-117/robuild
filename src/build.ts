@@ -14,21 +14,56 @@ import prettyBytes from 'pretty-bytes'
 import { rolldownBuild } from './builders/bundle'
 import { transformDir } from './builders/transform'
 import { analyzeDir, fmtPath } from './utils'
+import { startWatch } from './watch'
 
 /**
  * Build dist/ from src/
  */
 export async function build(config: BuildConfig): Promise<void> {
-  const start = Date.now()
+  // const start = Date.now()
 
   const pkgDir = normalizePath(config.cwd)
   const pkg = await readJSON(join(pkgDir, 'package.json')).catch(() => ({}))
   const ctx: BuildContext = { pkg, pkgDir }
 
+  // Check if watch mode is enabled
+  if (config.watch?.enabled) {
+    consola.log(
+      `👀 Starting watch mode for \`${ctx.pkg.name || '<no name>'}\` (\`${ctx.pkgDir}\`)`,
+    )
+
+    // Perform initial build
+    await performBuild(config, ctx)
+
+    // Start watching
+    const stopWatch = await startWatch(config, ctx, build)
+
+    // Handle graceful shutdown
+    const cleanup = () => {
+      consola.info('🛑 Stopping watch mode...')
+      stopWatch()
+      process.exit(0)
+    }
+
+    process.on('SIGINT', cleanup)
+    process.on('SIGTERM', cleanup)
+
+    // Keep the process alive
+    return new Promise(() => {}) // Never resolves, keeps watching
+  }
+
   consola.log(
     `📦 Building \`${ctx.pkg.name || '<no name>'}\` (\`${ctx.pkgDir}\`)`,
   )
 
+  await performBuild(config, ctx)
+}
+
+/**
+ * Perform the actual build process
+ */
+async function performBuild(config: BuildConfig, ctx: BuildContext): Promise<void> {
+  const start = Date.now()
   const hooks = config.hooks || {}
 
   await hooks.start?.(ctx)
@@ -55,10 +90,10 @@ export async function build(config: BuildConfig): Promise<void> {
       )
     }
     entry = { ...entry }
-    entry.outDir = normalizePath(entry.outDir || 'dist', pkgDir)
+    entry.outDir = normalizePath(entry.outDir || 'dist', ctx.pkgDir)
     entry.input = Array.isArray(entry.input)
-      ? entry.input.map(p => normalizePath(p, pkgDir))
-      : normalizePath(entry.input, pkgDir)
+      ? entry.input.map(p => normalizePath(p, ctx.pkgDir))
+      : normalizePath(entry.input, ctx.pkgDir)
     return entry
   })
 

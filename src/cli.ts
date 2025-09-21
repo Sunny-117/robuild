@@ -20,6 +20,10 @@ const args = parseArgs({
       type: 'boolean',
       default: false,
     },
+    watch: {
+      type: 'boolean',
+      default: false,
+    },
   },
 })
 
@@ -59,4 +63,5 @@ await build({
   cwd: args.values.dir,
   ...config,
   entries,
+  watch: args.values.watch ? { enabled: true, ...config.watch } : config.watch,
 })
