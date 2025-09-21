@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.5...v0.0.6)
+
+### 🚀 Enhancements
+
+- Watch mode ([fce51ab](https://github.com/Sunny-117/robuild/commit/fce51ab))
+- Watch mode usage ([f48fafd](https://github.com/Sunny-117/robuild/commit/f48fafd))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.5
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.4...v0.0.5)
