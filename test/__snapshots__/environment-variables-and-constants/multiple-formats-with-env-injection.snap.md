@@ -1,4 +1,4 @@
-## index.cjs
+## cjs/index.cjs
 
 ```js
 

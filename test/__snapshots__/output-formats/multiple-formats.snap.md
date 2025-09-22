@@ -1,4 +1,4 @@
-## index.cjs
+## cjs/index.cjs
 
 ```js
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -16,18 +16,7 @@ exports.hello = hello;
 exports.version = version;
 ```
 
-## index.d.mts
-
-```ts
-//#region index.d.ts
-declare function hello(name: string): string;
-declare const version: string;
-declare const _default: string;
-//#endregion
-export { _default as default, hello, version };
-```
-
-## index.js
+## iife/index.js
 
 ```js
 var TestLib = (function(exports) {
@@ -47,6 +36,17 @@ exports.hello = hello;
 exports.version = version;
 return exports;
 })({});
+```
+
+## index.d.mts
+
+```ts
+//#region index.d.ts
+declare function hello(name: string): string;
+declare const version: string;
+declare const _default: string;
+//#endregion
+export { _default as default, hello, version };
 ```
 
 ## index.mjs

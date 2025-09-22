@@ -47,7 +47,7 @@ function formatToRolldownFormat(format: OutputFormat): ModuleFormat {
 function getFormatExtension(format: OutputFormat, platform: Platform): string {
   switch (format) {
     case 'esm':
-      return platform === 'node' ? '.mjs' : '.js'
+      return '.mjs' // Always use .mjs for ESM to be explicit about module type
     case 'cjs':
       return platform === 'node' ? '.cjs' : '.js'
     case 'iife':
@@ -102,6 +102,7 @@ export async function rolldownBuild(
   const platform = entry.platform || 'node'
   const outDir = entry.outDir || 'dist'
   const fullOutDir = resolve(ctx.pkgDir, outDir)
+  const isMultiFormat = formats.length > 1
 
   // Clean output directory if requested
   await cleanOutputDir(ctx.pkgDir, fullOutDir, entry.clean ?? true)
@@ -201,6 +202,7 @@ export async function rolldownBuild(
     minGzipSize: number
     sideEffectSize: number
   }> = []
+  const filePathMap = new Map<string, string>() // Map filename to full path for logging
 
   for (const format of formats) {
     const rolldownFormat = formatToRolldownFormat(format)
@@ -216,10 +218,34 @@ export async function rolldownBuild(
 
     const res = await rolldown(formatConfig)
 
+    // Determine output directory for this format
+    let formatOutDir = fullOutDir
+    let entryFileName = `[name]${extension}`
+
+    if (isMultiFormat) {
+      // For multi-format builds, create subdirectories
+      if (format === 'cjs') {
+        formatOutDir = join(fullOutDir, 'cjs')
+        entryFileName = `[name].cjs`
+      }
+      else if (format === 'iife' || format === 'umd') {
+        formatOutDir = join(fullOutDir, platform === 'browser' ? 'browser' : format)
+        entryFileName = `[name].js`
+      }
+      // ESM stays in root directory as index.mjs
+    }
+    else {
+      // For single format builds, still create subdirectories for IIFE/UMD on browser platform
+      if ((format === 'iife' || format === 'umd') && platform === 'browser') {
+        formatOutDir = join(fullOutDir, 'browser')
+        entryFileName = `[name].js`
+      }
+    }
+
     const outConfig: OutputOptions = {
-      dir: fullOutDir,
+      dir: formatOutDir,
       format: rolldownFormat,
-      entryFileNames: `[name]${extension}`,
+      entryFileNames: entryFileName,
       chunkFileNames: `_chunks/[name]-[hash]${extension}`,
       minify: entry.minify,
       name: entry.globalName, // For IIFE/UMD formats
@@ -262,13 +288,16 @@ export async function rolldownBuild(
       if (chunk.fileName.endsWith('ts'))
         continue
 
+      // Store full path for logging
+      filePathMap.set(chunk.fileName, join(formatOutDir, chunk.fileName))
+
       allOutputEntries.push({
         format,
         name: chunk.fileName,
         exports: chunk.exports,
         deps: resolveDeps(chunk),
-        ...(await distSize(fullOutDir, chunk.fileName)),
-        sideEffectSize: await sideEffectSize(fullOutDir, chunk.fileName),
+        ...(await distSize(formatOutDir, chunk.fileName)),
+        sideEffectSize: await sideEffectSize(formatOutDir, chunk.fileName),
       })
     }
   }
@@ -278,7 +307,7 @@ export async function rolldownBuild(
     `\n${allOutputEntries
       .map(o =>
         [
-          `${c.magenta(`[bundle] `)}${c.underline(fmtPath(join(fullOutDir, o.name)))}`,
+          `${c.magenta(`[bundle] `)}${c.underline(fmtPath(filePathMap.get(o.name) || join(fullOutDir, o.name)))}`,
           c.dim(
             `${c.bold('Size:')} ${prettyBytes(o.size)}, ${c.bold(prettyBytes(o.minSize))} minified, ${prettyBytes(o.minGzipSize)} min+gzipped (Side effects: ${prettyBytes(o.sideEffectSize)})`,
           ),

@@ -50,8 +50,48 @@ const args = parseArgs({
       type: 'string',
       multiple: true,
     },
+    'help': {
+      type: 'boolean',
+    },
+    'version': {
+      type: 'boolean',
+    },
   },
 })
+
+// Handle help and version flags
+if (args.values.help) {
+  console.log(`
+Usage: robuild [options] [entries...]
+
+Options:
+  --dir <dir>              Working directory (default: ".")
+  --stub                   Generate stub files instead of building
+  -w, --watch              Enable watch mode
+  --format <format>        Output format(s): esm, cjs, iife, umd (can be used multiple times)
+  --platform <platform>    Target platform: browser, node, neutral
+  --global-name <name>     Global variable name for IIFE/UMD formats
+  --clean                  Clean output directory before build (default: true)
+  --no-clean               Disable cleaning output directory
+  --external <module>      Mark dependencies as external (can be used multiple times)
+  --no-external <module>   Force bundle dependencies (can be used multiple times)
+  --help                   Show this help message
+  --version                Show version number
+
+Examples:
+  robuild src/index.ts                    # Bundle single file
+  robuild src/index.ts --format esm cjs  # Multiple formats
+  robuild src/ --watch                   # Transform directory in watch mode
+  robuild --help                         # Show help
+`)
+  process.exit(0)
+}
+
+if (args.values.version) {
+  const pkg = await import('../package.json', { with: { type: 'json' } })
+  console.log(pkg.default.version)
+  process.exit(0)
+}
 
 const { config = {} } = await loadConfig<BuildConfig>({
   name: 'robuild',

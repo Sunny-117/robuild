@@ -1,4 +1,4 @@
-## index.js
+## index.mjs
 
 ```js
 import fs from "fs";

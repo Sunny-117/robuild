@@ -1,0 +1,1 @@
+export const multiFormat = "watch multi format"

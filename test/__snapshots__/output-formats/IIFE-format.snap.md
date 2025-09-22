@@ -1,4 +1,4 @@
-## index.js
+## browser/index.js
 
 ```js
 var TestLib = (function(exports) {

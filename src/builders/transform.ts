@@ -2,7 +2,7 @@ import type { ResolveOptions } from 'exsolve'
 
 import type { BuildContext, TransformEntry } from '../types'
 import { mkdir, readFile, symlink, writeFile } from 'node:fs/promises'
-import { dirname, extname, join, relative } from 'node:path'
+import { dirname, extname, join, relative, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
@@ -14,6 +14,35 @@ import { transform } from 'oxc-transform'
 import { glob } from 'tinyglobby'
 import { fmtPath } from '../utils'
 import { makeExecutable, SHEBANG_RE } from './plugins/shebang'
+
+/**
+ * Clean output directory for transform entries
+ */
+async function cleanOutputDir(projectRoot: string, outDir: string, cleanPaths?: boolean | string[]): Promise<void> {
+  if (!cleanPaths)
+    return
+
+  const { rm } = await import('node:fs/promises')
+  const { existsSync } = await import('node:fs')
+
+  if (cleanPaths === true) {
+    // Clean the entire output directory
+    if (existsSync(outDir)) {
+      consola.log(`🧻 Cleaning up ${fmtPath(outDir)}`)
+      await rm(outDir, { recursive: true, force: true })
+    }
+  }
+  else if (Array.isArray(cleanPaths)) {
+    // Clean specific paths relative to project root
+    for (const path of cleanPaths) {
+      const fullPath = resolve(projectRoot, path)
+      if (existsSync(fullPath)) {
+        consola.log(`🧻 Cleaning up ${fmtPath(fullPath)}`)
+        await rm(fullPath, { recursive: true, force: true })
+      }
+    }
+  }
+}
 
 /**
  * Transform all .ts modules in a directory using oxc-transform.
@@ -29,6 +58,10 @@ export async function transformDir(
     await symlink(entry.input, entry.outDir!, 'junction')
     return
   }
+
+  // Clean output directory if requested
+  const fullOutDir = resolve(ctx.pkgDir, entry.outDir!)
+  await cleanOutputDir(ctx.pkgDir, fullOutDir, entry.clean ?? true)
 
   const promises: Promise<string>[] = []
 

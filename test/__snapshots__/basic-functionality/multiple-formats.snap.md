@@ -1,4 +1,4 @@
-## index.cjs
+## cjs/index.cjs
 
 ```js
 Object.defineProperty(exports, '__esModule', { value: true });

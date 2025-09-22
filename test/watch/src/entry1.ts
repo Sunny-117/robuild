@@ -1,0 +1,1 @@
+export const entry1 = "first entry"

@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process'
+import { existsSync } from 'node:fs'
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { beforeAll, describe, expect, it } from 'vitest'
 
@@ -27,6 +28,23 @@ function runCLI(args: string[], cwd: string): Promise<{ stdout: string, stderr: 
     child.on('close', (code) => {
       resolve({ stdout, stderr, code: code || 0 })
     })
+
+    child.on('error', (error) => {
+      resolve({ stdout, stderr: error.message, code: 1 })
+    })
+
+    // For watch mode, kill the process after a short delay to test startup
+    if (args.includes('--watch') || args.includes('-w')) {
+      setTimeout(() => {
+        child.kill('SIGTERM')
+        // Give it a moment to exit gracefully
+        setTimeout(() => {
+          if (!child.killed) {
+            child.kill('SIGKILL')
+          }
+        }, 100)
+      }, 1000) // Wait 1 second to ensure watch mode starts
+    }
   })
 }
 
@@ -64,8 +82,15 @@ describe('cLI', () => {
 
     expect(code).toBe(0)
 
-    const esmContent = await readFile(new URL('index.mjs', distDir), 'utf8')
-    const cjsContent = await readFile(new URL('cjs/index.cjs', distDir), 'utf8')
+    // Check files exist first
+    const esmFile = new URL('index.mjs', distDir)
+    const cjsFile = new URL('cjs/index.cjs', distDir)
+
+    expect(existsSync(esmFile)).toBe(true)
+    expect(existsSync(cjsFile)).toBe(true)
+
+    const esmContent = await readFile(esmFile, 'utf8')
+    const cjsContent = await readFile(cjsFile, 'utf8')
 
     expect(esmContent).toContain('CLI test')
     expect(cjsContent).toContain('CLI test')
@@ -80,7 +105,9 @@ describe('cLI', () => {
 
     expect(code).toBe(0)
 
-    const content = await readFile(new URL('index.mjs', distDir), 'utf8')
+    const file = new URL('index.mjs', distDir)
+    expect(existsSync(file)).toBe(true)
+    const content = await readFile(file, 'utf8')
     expect(content).toContain('CLI test')
   })
 
@@ -89,32 +116,38 @@ describe('cLI', () => {
       'src/index.ts',
       '--format',
       'iife',
+      '--platform',
+      'browser',
       '--global-name',
       'TestCLI',
     ], fixtureDir.pathname)
 
     expect(code).toBe(0)
 
-    const content = await readFile(new URL('browser/index.js', distDir), 'utf8')
+    const file = new URL('browser/index.js', distDir)
+    expect(existsSync(file)).toBe(true)
+    const content = await readFile(file, 'utf8')
     expect(content).toContain('TestCLI')
   })
 
   it('should support --external option', async () => {
     await writeFile(
-      new URL('src/with-lodash.ts', fixtureDir),
-      'import _ from "lodash"\nexport const test = _.version',
+      new URL('src/with-external.ts', fixtureDir),
+      'import { someFunction } from "some-external-package"\nexport const test: any = someFunction()',
     )
 
     const { code } = await runCLI([
-      'src/with-lodash.ts',
+      'src/with-external.ts',
       '--external',
-      'lodash',
+      'some-external-package',
     ], fixtureDir.pathname)
 
     expect(code).toBe(0)
 
-    const content = await readFile(new URL('with-lodash.mjs', distDir), 'utf8')
-    expect(content).toContain('from "lodash"')
+    const file = new URL('with-external.mjs', distDir)
+    expect(existsSync(file)).toBe(true)
+    const content = await readFile(file, 'utf8')
+    expect(content).toContain('from "some-external-package"')
   })
 
   it('should support --no-external option', async () => {
@@ -274,15 +307,19 @@ describe('cLI', () => {
       'cjs',
       '--platform',
       'node',
-      '--external',
-      'lodash',
       '--no-clean',
     ], fixtureDir.pathname)
 
     expect(code).toBe(0)
 
-    const esmContent = await readFile(new URL('index.mjs', distDir), 'utf8')
-    const cjsContent = await readFile(new URL('cjs/index.cjs', distDir), 'utf8')
+    const esmFile = new URL('index.mjs', distDir)
+    const cjsFile = new URL('cjs/index.cjs', distDir)
+
+    expect(existsSync(esmFile)).toBe(true)
+    expect(existsSync(cjsFile)).toBe(true)
+
+    const esmContent = await readFile(esmFile, 'utf8')
+    const cjsContent = await readFile(cjsFile, 'utf8')
 
     expect(esmContent).toContain('CLI test')
     expect(cjsContent).toContain('CLI test')

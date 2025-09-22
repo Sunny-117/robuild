@@ -1,4 +1,4 @@
-## index.js
+## browser/index.js
 
 ```js
 var MathUtils = (function(exports) {
