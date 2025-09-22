@@ -341,4 +341,70 @@ export interface BuildConfig {
    * @default false
    */
   fromVite?: boolean
+
+  /**
+   * Workspace configuration for monorepo support.
+   */
+  workspace?: WorkspaceConfig
+
+  /**
+   * Package exports generation configuration.
+   */
+  exports?: ExportsConfig
+
+  /**
+   * Package filter for workspace builds.
+   */
+  filter?: string | string[]
+}
+
+// Workspace types
+export interface WorkspaceConfig {
+  /**
+   * Workspace package patterns.
+   */
+  packages?: string[]
+
+  /**
+   * Package filter patterns.
+   */
+  filter?: string | string[]
+
+  /**
+   * Package exclude patterns.
+   */
+  exclude?: string | string[]
+
+  /**
+   * Build packages in dependency order.
+   */
+  dependencyOrder?: boolean
+}
+
+// Exports generation types
+export interface ExportsConfig {
+  /**
+   * Whether to generate package.json exports field.
+   */
+  enabled?: boolean
+
+  /**
+   * Custom exports mapping.
+   */
+  custom?: Record<string, string | { import?: string, require?: string, types?: string }>
+
+  /**
+   * Whether to include types in exports.
+   */
+  includeTypes?: boolean
+
+  /**
+   * Base directory for exports (relative to package root).
+   */
+  baseDir?: string
+
+  /**
+   * Whether to update package.json automatically.
+   */
+  autoUpdate?: boolean
 }

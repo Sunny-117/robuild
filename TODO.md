@@ -93,10 +93,10 @@
 
 ### 🏢 企业级功能
 
-- [ ] **工作区支持** - Monorepo 多包构建 (`workspace`)
-- [ ] **包过滤** - 工作区包过滤功能 (`filter`)
-- [ ] **包导出生成** - 自动生成 package.json exports (`exports`)
-- [ ] **迁移工具** - 从其他工具迁移的命令行工具
+- [x] **工作区支持** - Monorepo 多包构建 (`workspace`)
+- [x] **包过滤** - 工作区包过滤功能 (`filter`)
+- [x] **包导出生成** - 自动生成 package.json exports (`exports`)
+- [x] **迁移工具** - 从其他工具迁移的命令行工具
 
 ### 🔌 插件和扩展
 
