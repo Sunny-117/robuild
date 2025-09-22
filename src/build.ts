@@ -140,7 +140,7 @@ async function performBuild(config: BuildConfig, ctx: BuildContext, startTime: n
 
   for (const entry of entries) {
     await (entry.type === 'bundle'
-      ? rolldownBuild(ctx, entry, hooks)
+      ? rolldownBuild(ctx, entry, hooks, config)
       : transformDir(ctx, entry))
   }
 

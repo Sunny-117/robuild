@@ -6,7 +6,7 @@ import type {
   Plugin,
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
-import type { BuildContext, BuildHooks, BundleEntry, OutputFormat, Platform } from '../types'
+import type { BuildContext, BuildHooks, BundleEntry, OutputFormat, Platform, RobuildPlugin } from '../types'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { builtinModules } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
@@ -17,12 +17,14 @@ import { resolveModulePath } from 'exsolve'
 import { parseSync } from 'oxc-parser'
 import prettyBytes from 'pretty-bytes'
 import { rolldown } from 'rolldown'
-
 import { dts } from 'rolldown-plugin-dts'
-
 import { resolveChunkAddon } from '../features/banner'
+
 import { copyFiles } from '../features/copy'
+
+import { createGlobImportPlugin } from '../features/glob-import'
 import { addHashToFilename, hasHash } from '../features/hash'
+import { loadPlugins, PluginManager } from '../features/plugins'
 import { distSize, fmtPath, sideEffectSize } from '../utils'
 import { nodeProtocolPlugin } from './plugins/node-protocol'
 import { makeExecutable, shebangPlugin } from './plugins/shebang'
@@ -104,11 +106,16 @@ export async function rolldownBuild(
   ctx: BuildContext,
   entry: BundleEntry,
   hooks: BuildHooks,
+  config?: any,
 ): Promise<void> {
   const inputs: Record<string, string> = normalizeBundleInputs(
     entry.input,
     ctx,
   )
+
+  // Initialize plugin manager
+  const pluginManager = new PluginManager(config || {}, entry)
+  await pluginManager.initialize()
 
   // Get configuration with defaults
   const formats = Array.isArray(entry.format) ? entry.format : [entry.format || 'esm']
@@ -117,6 +124,9 @@ export async function rolldownBuild(
   const outDir = entry.outDir || 'dist'
   const fullOutDir = resolve(ctx.pkgDir, outDir)
   const isMultiFormat = formats.length > 1
+
+  // Execute plugin buildStart hooks
+  await pluginManager.executeHook('buildStart', { inputs, formats, platform, target })
 
   // Clean output directory if requested
   await cleanOutputDir(ctx.pkgDir, fullOutDir, entry.clean ?? true)
@@ -192,13 +202,53 @@ export async function rolldownBuild(
     }
   }
 
+  // Convert robuild plugins to rolldown plugins
+  const rolldownPlugins: Plugin[] = []
+
+  // Add built-in plugins
+  rolldownPlugins.push(
+    shebangPlugin(),
+    nodeProtocolPlugin(entry.nodeProtocol || false),
+  )
+
+  // Add glob import plugin if enabled
+  if (config?.globImport?.enabled) {
+    const globPlugin = createGlobImportPlugin(config.globImport)
+    if (globPlugin.transform) {
+      // Convert to rolldown plugin format
+      rolldownPlugins.push({
+        name: 'glob-import',
+        transform: async (code: string, id: string) => {
+          const result = await globPlugin.transform!(code, id)
+          return result ? { code: result } : null
+        },
+      } as Plugin)
+    }
+  }
+
+  // Add user plugins
+  if (config?.plugins) {
+    for (const plugin of pluginManager.getPlugins()) {
+      if (plugin.transform || plugin.resolveId || plugin.load) {
+        rolldownPlugins.push({
+          name: plugin.name,
+          resolveId: plugin.resolveId,
+          load: plugin.load,
+          transform: plugin.transform
+            ? async (code: string, id: string) => {
+              const result = await plugin.transform!(code, id)
+              return result ? (typeof result === 'string' ? { code: result } : result) : null
+            }
+            : undefined,
+        } as Plugin)
+      }
+    }
+  }
+
   const baseRolldownConfig = defu(entry.rolldown, {
     cwd: ctx.pkgDir,
     input: inputs,
-    plugins: [
-      shebangPlugin(),
-      nodeProtocolPlugin(entry.nodeProtocol || false),
-    ] as Plugin[],
+    plugins: rolldownPlugins,
     platform: platform === 'node' ? 'node' : 'neutral',
     external: typeof entry.external === 'function'
       ? entry.external
@@ -348,6 +398,9 @@ export async function rolldownBuild(
   if (entry.copy) {
     await copyFiles(ctx.pkgDir, fullOutDir, entry.copy)
   }
+
+  // Execute plugin buildEnd hooks
+  await pluginManager.executeHook('buildEnd', { allOutputEntries })
 
   // Display build results
   consola.log(

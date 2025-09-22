@@ -229,6 +229,75 @@ export type TransformEntry = _BuildEntry & {
 
 export type BuildEntry = BundleEntry | TransformEntry
 
+// Plugin system types
+export interface RobuildPlugin {
+  name: string
+  setup?: (build: PluginBuild) => void | Promise<void>
+  // Rollup plugin compatibility
+  buildStart?: (opts: any) => void | Promise<void>
+  buildEnd?: (error?: Error) => void | Promise<void>
+  resolveId?: (id: string, importer?: string) => string | null | Promise<string | null>
+  load?: (id: string) => string | null | Promise<string | null>
+  transform?: (code: string, id: string) => string | { code: string, map?: any } | null | Promise<string | { code: string, map?: any } | null>
+  generateBundle?: (options: any, bundle: any) => void | Promise<void>
+  writeBundle?: (options: any, bundle: any) => void | Promise<void>
+  // Vite plugin compatibility
+  config?: (config: any, env: any) => any | Promise<any>
+  configResolved?: (config: any) => void | Promise<void>
+  configureServer?: (server: any) => void | Promise<void>
+  // Unplugin compatibility
+  unplugin?: boolean
+  meta?: {
+    framework?: string
+    rollup?: boolean
+    vite?: boolean
+    webpack?: boolean
+    esbuild?: boolean
+  }
+}
+
+export interface PluginBuild {
+  onResolve: (options: { filter: RegExp, namespace?: string }, callback: (args: any) => any) => void
+  onLoad: (options: { filter: RegExp, namespace?: string }, callback: (args: any) => any) => void
+  onTransform: (options: { filter: RegExp }, callback: (args: any) => any) => void
+  resolve: (path: string, options?: any) => Promise<any>
+  getConfig: () => BuildConfig
+}
+
+export interface PluginContext {
+  config: BuildConfig
+  entry: BuildEntry
+  plugins: RobuildPlugin[]
+  hooks: BuildHooks
+}
+
+// Glob import types
+export interface GlobImportOptions {
+  /**
+   * Enable glob imports support
+   * @default false
+   */
+  enabled?: boolean
+
+  /**
+   * Glob patterns to match
+   * @default ['**\/*']
+   */
+  patterns?: string[]
+
+  /**
+   * Whether to import as URLs
+   * @default false
+   */
+  asUrls?: boolean
+
+  /**
+   * Whether to import eagerly
+   * @default false
+   */
+  eager?: boolean
+}
+
 export interface BuildHooks {
   start?: (ctx: BuildContext) => void | Promise<void>
   end?: (ctx: BuildContext) => void | Promise<void>
@@ -242,6 +311,14 @@ export interface BuildHooks {
     res: RolldownBuild,
     ctx: BuildContext,
   ) => void | Promise<void>
+  // Plugin hooks
+  buildStart?: (ctx: BuildContext) => void | Promise<void>
+  buildEnd?: (ctx: BuildContext, result?: any) => void | Promise<void>
+  resolveId?: (id: string, importer?: string, ctx?: BuildContext) => string | null | Promise<string | null>
+  load?: (id: string, ctx?: BuildContext) => string | null | Promise<string | null>
+  transform?: (code: string, id: string, ctx?: BuildContext) => string | { code: string, map?: any } | null | Promise<string | { code: string, map?: any } | null>
+  generateBundle?: (options: any, bundle: any, ctx?: BuildContext) => void | Promise<void>
+  writeBundle?: (options: any, bundle: any, ctx?: BuildContext) => void | Promise<void>
 }
 
 export interface WatchOptions {
@@ -310,6 +387,16 @@ export interface BuildConfig {
   entries?: (BuildEntry | string)[]
   hooks?: BuildHooks
   watch?: WatchOptions
+
+  /**
+   * Plugins to use during build
+   */
+  plugins?: RobuildPlugin[]
+
+  /**
+   * Glob import configuration
+   */
+  globImport?: GlobImportOptions
 
   /**
    * Log level for build output.

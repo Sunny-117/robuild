@@ -100,11 +100,11 @@
 
 ### 🔌 插件和扩展
 
-- [ ] **Rollup 插件兼容** - 完整的 Rollup 插件生态支持
-- [ ] **Vite 插件兼容** - 部分 Vite 插件支持
-- [ ] **Unplugin 支持** - Universal 插件支持
-- [ ] **自定义 Hooks** - 更丰富的构建钩子系统
-- [ ] **Glob Import** - `import.meta.glob` 支持
+- [x] **Rollup 插件兼容** - 完整的 Rollup 插件生态支持
+- [x] **Vite 插件兼容** - 部分 Vite 插件支持
+- [x] **Unplugin 支持** - Universal 插件支持
+- [x] **自定义 Hooks** - 更丰富的构建钩子系统
+- [x] **Glob Import** - `import.meta.glob` 支持
 
 ### 📦 高级构建选项
 
