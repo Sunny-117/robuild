@@ -435,6 +435,42 @@ You can use `stub: true` (per entry config) or the `--stub` CLI flag. In this mo
 >
 > Feedback and contributions are very welcome! If you'd like to make changes with more than a few lines of code, please open an issue first to discuss.
 
+## 📚 Documentation
+
+### 🎯 Guides
+- [Getting Started](./docs/guide/getting-started.md) - Get up and running in 5 minutes
+- [CLI Usage](./docs/guide/cli.md) - Complete command-line interface guide
+- [Configuration](./docs/guide/configuration.md) - Detailed configuration reference
+- [Build Modes](./docs/guide/build-modes.md) - Bundle vs Transform modes
+- [Watch Mode](./docs/guide/watch-mode.md) - Real-time development builds
+- [Stub Mode](./docs/guide/stub-mode.md) - Lightning-fast development mode
+- [TypeScript](./docs/guide/typescript.md) - TypeScript best practices
+- [ESM](./docs/guide/esm.md) - ES modules support
+- [Performance](./docs/guide/performance.md) - Build performance optimization
+
+### 🔧 Feature Guides
+- [CLI & Config Enhancements](./docs/guide/cli-config-enhancements.md) - Multi-format output, platform targets, environment variables
+- [Build Enhancements](./docs/guide/build-enhancements.md) - File copying, hashing, banner/footer, extensions
+- [Development Experience](./docs/guide/dev-experience.md) - Success callbacks, watch optimization, Vite integration
+
+### 🏢 Enterprise Features
+- [Enterprise Features](./docs/guide/enterprise.md) - Workspace, filtering, exports, migration
+- [Plugin System](./docs/guide/plugins.md) - Plugin development and usage
+- [Advanced Build Options](./docs/guide/advanced-build.md) - Loaders, shims, CJS handling
+- [Hooks](./docs/guide/hooks.md) - Build lifecycle hooks
+
+### 📖 API Reference
+- [API Overview](./docs/api/index.md) - Programmatic API overview
+- [Configuration API](./docs/api/config.md) - Configuration options
+- [CLI API](./docs/api/cli.md) - Command-line interface
+- [Type Definitions](./docs/api/types.md) - TypeScript type definitions
+
+### 🏗️ Architecture
+- [Core Architecture](./docs/architecture/core.md) - robuild core design
+- [Builders](./docs/architecture/builders.md) - Bundle and Transform builders
+- [Plugin System](./docs/architecture/plugins.md) - Plugin architecture design
+- [Performance](./docs/architecture/performance.md) - Performance optimization strategies
+
 ## Prior Arts
 
 - [unbuild](https://github.com/unjs/unbuild): Stable solution based on rollup and [mkdist](https://github.com/unjs/mkdist).
