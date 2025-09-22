@@ -31,12 +31,18 @@ features:
   - icon: 📦
     title: 双模式构建
     details: 支持 bundle 模式和 transform 模式，满足不同构建需求
+  - icon: 🏢
+    title: 企业级功能
+    details: 工作区支持、包过滤、导出生成、迁移工具等企业级特性
+  - icon: 🔌
+    title: 插件生态
+    details: 兼容 Rollup/Vite/Unplugin，支持自定义钩子和 Glob 导入
   - icon: 🚀
-    title: Stub 模式
-    details: 开发时快速链接源码，提升开发体验
+    title: 高级构建
+    details: CJS/ESM 互操作、兼容性垫片、文件加载器等高级功能
   - icon: 🎨
-    title: 插件化架构
-    details: 灵活的插件系统，支持自定义构建流程
+    title: 开发体验
+    details: Stub 模式、监听模式、调试模式、成功回调等优秀开发体验
 
 ---
 
