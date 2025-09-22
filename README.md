@@ -10,46 +10,12 @@ English | <a href="./README-zh.md">简体中文</a>
 
 ## Features
 
-### 🚀 Core Features
-- **Fast**: Built on top of [rolldown](https://rolldown.rs/) and [oxc](https://oxc.rs/)
-- **Bundle**: Bundle your library with dependencies
-- **Transform**: Transform your source code to different formats
-- **TypeScript**: First-class TypeScript support with `.d.ts` generation
-- **Multiple entries**: Support multiple entry points
-- **Zero config**: Works out of the box, configurable when needed
-
-### 🎨 Output Formats
-- **Multi-format**: Support ESM, CJS, IIFE, UMD output formats
-- **Platform targets**: Browser, Node.js, and neutral platform targets
-- **File loaders**: Built-in support for JSON, CSS, text, and asset files
-- **Advanced loaders**: Custom file type processing with configurable loaders
-
-### 🔧 Development Experience
-- **Watch Mode**: Real-time file watching and automatic rebuilds
-- **Stub Mode**: Lightning-fast development with file linking
-- **Debug Mode**: Comprehensive debugging and logging
-- **Success Callbacks**: Execute commands or functions after successful builds
-- **Vite Config**: Reuse existing Vite configuration
-
-### 🏢 Enterprise Features
-- **Workspace Support**: Monorepo multi-package builds with dependency ordering
-- **Package Filtering**: Advanced filtering for workspace packages
-- **Exports Generation**: Automatic package.json exports field generation
-- **Migration Tools**: Migrate from tsup, unbuild, vite, and webpack
-
-### 🔌 Plugin System
-- **Rollup Plugins**: Full compatibility with Rollup plugin ecosystem
-- **Vite Plugins**: Partial support for Vite plugins
-- **Unplugin**: Universal plugin support across bundlers
-- **Custom Hooks**: Rich build lifecycle hooks
-- **Glob Imports**: `import.meta.glob` support with eager/lazy loading
-
-### 📦 Advanced Build Options
-- **CJS/ESM Interop**: Smart CommonJS to ESM transformation
-- **Shims**: Compatibility shims for Node.js globals and browser environments
-- **Skip Node Modules**: Optional external dependency handling
-- **Unbundle Mode**: Preserve file structure without bundling
-- **Environment Variables**: Compile-time variable injection and replacement
+⚡ **Fast**: Built on top of [rolldown](https://rolldown.rs/) and [oxc](https://oxc.rs/)
+📦 **Zero config**: Works out of the box, configurable when needed
+🎯 **TypeScript**: First-class TypeScript support with `.d.ts` generation
+🔄 **Dual mode**: Bundle or transform your source code
+🚀 **Stub mode**: Lightning-fast development with file linking
+🏢 **Enterprise**: Workspace support, package filtering, migration tools
 
 ## Installation
 

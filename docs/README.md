@@ -51,7 +51,7 @@ pnpm docs:preview
 
 2. 将 `docs/.vitepress/dist` 目录的内容上传到你的 Web 服务器。
 
-## 网站结构
+## 文档结构
 
 ```
 docs/
@@ -59,20 +59,37 @@ docs/
 │   ├── config.ts          # VitePress 配置
 │   └── theme/             # 主题配置
 ├── public/                # 静态资源
-│   ├── logo.svg
+│   ├── logo.png
 │   └── favicon.ico
-├── guide/                 # 指南文档
-│   ├── index.md
-│   ├── getting-started.md
-│   ├── cli.md
-│   ├── configuration.md
-│   ├── build-modes.md
-│   └── stub-mode.md
+├── guide/                 # 用户指南
+│   ├── index.md           # 介绍
+│   ├── getting-started.md # 快速开始
+│   ├── cli.md             # CLI 使用（包含高级功能）
+│   ├── configuration.md   # 配置文件
+│   ├── build-modes.md     # 构建模式
+│   ├── watch-mode.md      # 监听模式
+│   ├── stub-mode.md       # Stub 模式
+│   ├── typescript.md      # TypeScript 支持
+│   ├── esm.md             # ESM 兼容性
+│   ├── build-enhancements.md    # 构建功能增强
+│   ├── dev-experience.md        # 开发体验功能
+│   ├── enterprise.md            # 企业级功能
+│   ├── plugins.md               # 插件系统
+│   ├── advanced-build.md        # 高级构建选项
+│   ├── hooks.md                 # Hooks 钩子
+│   └── performance.md           # 性能优化
 ├── api/                   # API 文档
-│   └── index.md
+│   ├── index.md           # API 概述
+│   ├── config.md          # 配置选项
+│   ├── cli.md             # CLI 参数
+│   └── types.md           # 类型定义
 ├── architecture/          # 架构文档
-│   ├── index.md
-│   └── core.md
+│   ├── index.md           # 架构概述
+│   ├── core.md            # 核心架构
+│   ├── builders.md        # 构建器
+│   ├── plugins.md         # 插件架构
+│   └── performance.md     # 性能分析
+├── api-examples.md        # API 示例
 └── index.md              # 首页
 ```
 

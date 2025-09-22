@@ -1,6 +1,6 @@
 # CLI 命令行
 
-robuild 提供了强大的命令行界面，支持多种构建选项和模式，包括企业级功能和高级构建选项。
+robuild 提供了强大的命令行界面，支持多种构建选项和模式，包括基础功能、企业级功能和高级构建选项。
 
 ## 基本用法
 
@@ -31,6 +31,84 @@ npx robuild ./src/index.ts -w
 
 # 指定工作目录
 npx robuild ./src/index.ts --watch --dir ./my-project
+```
+
+## 🎨 高级功能
+
+### 多格式输出
+
+robuild 支持同时输出多种格式，满足不同环境的需求：
+
+```bash
+# 单一格式
+npx robuild ./src/index.ts --format esm
+
+# 多种格式
+npx robuild ./src/index.ts --format esm --format cjs
+
+# 所有格式
+npx robuild ./src/index.ts --format esm --format cjs --format iife --format umd
+```
+
+**支持的格式：**
+- `esm` - ES 模块，适用于现代 JavaScript 环境
+- `cjs` - CommonJS，适用于 Node.js 环境
+- `iife` - 立即执行函数，适用于浏览器脚本标签
+- `umd` - 通用模块定义，兼容多种环境
+
+### 平台目标配置
+
+指定构建目标平台，优化输出代码：
+
+```bash
+# 浏览器平台
+npx robuild ./src/index.ts --platform browser
+
+# Node.js 平台
+npx robuild ./src/index.ts --platform node
+
+# 中性平台（跨平台兼容）
+npx robuild ./src/index.ts --platform neutral
+```
+
+### 全局变量名
+
+为 IIFE 和 UMD 格式指定全局变量名：
+
+```bash
+npx robuild ./src/index.ts --format iife --global-name MyLibrary
+```
+
+### 环境变量和常量
+
+在构建时注入环境变量和定义常量：
+
+```bash
+# 注入环境变量
+npx robuild ./src/index.ts --env NODE_ENV=production --env VERSION=1.0.0
+
+# 定义常量
+npx robuild ./src/index.ts --define __DEV__=false --define API_URL="https://api.example.com"
+```
+
+### 外部依赖配置
+
+控制哪些依赖应该被外部化或强制打包：
+
+```bash
+# 外部化依赖
+npx robuild ./src/index.ts --external lodash --external react
+
+# 强制打包依赖
+npx robuild ./src/index.ts --no-external some-package
+```
+
+### 别名配置
+
+设置模块路径别名：
+
+```bash
+npx robuild ./src/index.ts --alias @=./src --alias @utils=./src/utils
 ```
 
 ## 🏢 企业级功能

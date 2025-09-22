@@ -22,28 +22,43 @@ export default defineConfig({
     sidebar: {
       '/guide/': [
         {
-          text: '入门',
+          text: '入门指南',
           items: [
             { text: '介绍', link: '/guide/' },
             { text: '快速开始', link: '/guide/getting-started' },
             { text: 'CLI 使用', link: '/guide/cli' },
-            { text: '配置', link: '/guide/configuration' },
+            { text: '配置文件', link: '/guide/configuration' },
           ]
         },
         {
           text: '核心概念',
           items: [
             { text: '构建模式', link: '/guide/build-modes' },
+            { text: '监听模式', link: '/guide/watch-mode' },
             { text: 'Stub 模式', link: '/guide/stub-mode' },
             { text: 'TypeScript 支持', link: '/guide/typescript' },
             { text: 'ESM 兼容性', link: '/guide/esm' },
           ]
         },
         {
-          text: '高级功能',
+          text: '功能特性',
           items: [
-            { text: 'Hooks', link: '/guide/hooks' },
+            { text: '构建功能增强', link: '/guide/build-enhancements' },
+            { text: '开发体验功能', link: '/guide/dev-experience' },
+          ]
+        },
+        {
+          text: '企业级功能',
+          items: [
+            { text: '企业级特性', link: '/guide/enterprise' },
             { text: '插件系统', link: '/guide/plugins' },
+            { text: '高级构建选项', link: '/guide/advanced-build' },
+          ]
+        },
+        {
+          text: '进阶主题',
+          items: [
+            { text: 'Hooks 钩子', link: '/guide/hooks' },
             { text: '性能优化', link: '/guide/performance' },
           ]
         }
