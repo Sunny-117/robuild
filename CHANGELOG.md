@@ -1,6 +1,46 @@
 # Changelog
 
 
+## v0.0.7
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.6...v0.0.7)
+
+### 🚀 Enhancements
+
+- Todo ([d369728](https://github.com/Sunny-117/robuild/commit/d369728))
+- 多格式输出支持,清理,环境注入 ([102c53a](https://github.com/Sunny-117/robuild/commit/102c53a))
+- Clean output directory for transform entries ([9184154](https://github.com/Sunny-117/robuild/commit/9184154))
+- CLI 和配置增强 ([7c6f909](https://github.com/Sunny-117/robuild/commit/7c6f909))
+- 构建功能增强 ([ba6771e](https://github.com/Sunny-117/robuild/commit/ba6771e))
+- Workspace, filter, exports and migrate tool ([e07a75f](https://github.com/Sunny-117/robuild/commit/e07a75f))
+- Plugin system ([1b69411](https://github.com/Sunny-117/robuild/commit/1b69411))
+- Loader and shims support ([ab9b801](https://github.com/Sunny-117/robuild/commit/ab9b801))
+
+### 🩹 Fixes
+
+- Cli and watch test cases ([5d75f84](https://github.com/Sunny-117/robuild/commit/5d75f84))
+- 开发体验增强 ([67ded37](https://github.com/Sunny-117/robuild/commit/67ded37))
+- Types error ([c33f4c1](https://github.com/Sunny-117/robuild/commit/c33f4c1))
+
+### 💅 Refactors
+
+- **test:** Robuild test infra ([4551ba3](https://github.com/Sunny-117/robuild/commit/4551ba3))
+
+### 📖 Documentation
+
+- Optimize and update usage documentation ([a4c9d39](https://github.com/Sunny-117/robuild/commit/a4c9d39))
+- Guide index ([1cae314](https://github.com/Sunny-117/robuild/commit/1cae314))
+- Build enhance and cli config ([4dce18c](https://github.com/Sunny-117/robuild/commit/4dce18c))
+- Remove cli conig enhance and simplify readme ([7a0bd18](https://github.com/Sunny-117/robuild/commit/7a0bd18))
+
+### 🏡 Chore
+
+- Update todo ([a1a69db](https://github.com/Sunny-117/robuild/commit/a1a69db))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.6
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.5...v0.0.6)
