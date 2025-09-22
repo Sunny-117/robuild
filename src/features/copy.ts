@@ -1,4 +1,4 @@
-import type { CopyEntry, CopyOptions } from '../types'
+import type { CopyOptions } from '../types'
 import { cp } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
 import { consola } from 'consola'

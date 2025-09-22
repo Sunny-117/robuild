@@ -1,4 +1,3 @@
-import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'

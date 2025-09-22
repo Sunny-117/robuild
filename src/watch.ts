@@ -3,10 +3,8 @@ import { join, relative } from 'node:path'
 import { watch as chokidarWatch } from 'chokidar'
 import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
-import { glob } from 'tinyglobby'
+import { normalizeIgnorePatterns } from './features/ignore-watch'
 import { fmtPath } from './utils'
-import { createWatchFilter, normalizeIgnorePatterns } from './features/ignore-watch'
-import { logger } from './features/logger'
 
 export interface WatchContext {
   config: BuildConfig

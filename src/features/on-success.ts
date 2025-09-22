@@ -1,6 +1,6 @@
+import type { BuildResult, OnSuccessCallback } from '../types'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
-import type { BuildResult, OnSuccessCallback } from '../types'
 import { logger } from './logger'
 
 const execAsync = promisify(exec)
@@ -22,21 +22,23 @@ export async function executeOnSuccess(
       // Execute command
       logger.verbose(`Executing onSuccess command: ${onSuccess}`)
       const { stdout, stderr } = await execAsync(onSuccess, { cwd })
-      
+
       if (stdout) {
         logger.verbose(`onSuccess stdout: ${stdout.trim()}`)
       }
       if (stderr) {
         logger.warn(`onSuccess stderr: ${stderr.trim()}`)
       }
-    } else {
+    }
+    else {
       // Execute function
       logger.verbose('Executing onSuccess callback function')
       await onSuccess(result)
     }
-    
+
     logger.verbose('onSuccess callback completed successfully')
-  } catch (error) {
+  }
+  catch (error) {
     logger.error('onSuccess callback failed:', error)
     throw error
   }

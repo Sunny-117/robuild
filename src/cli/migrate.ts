@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import type { MigrationResult } from '../features/migration'
-import { writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { cac } from 'cac'
 import { consola } from 'consola'

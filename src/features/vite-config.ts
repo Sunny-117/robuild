@@ -1,6 +1,6 @@
-import { resolve } from 'node:path'
-import { existsSync } from 'node:fs'
 import type { BuildConfig, BuildEntry } from '../types'
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { logger } from './logger'
 
 /**
@@ -56,13 +56,14 @@ export async function loadViteConfig(cwd: string): Promise<Partial<BuildConfig>>
 
   try {
     logger.verbose(`Loading Vite config from: ${configPath}`)
-    
+
     // Dynamic import to load the config
     const configModule = await import(configPath)
     const viteConfig: ViteConfig = configModule.default || configModule
 
     return convertViteConfig(viteConfig)
-  } catch (error) {
+  }
+  catch (error) {
     logger.error(`Failed to load Vite config from ${configPath}:`, error)
     return {}
   }
@@ -89,7 +90,8 @@ function convertViteConfig(viteConfig: ViteConfig): Partial<BuildConfig> {
         target: convertTarget(viteConfig.build.target),
         external: convertExternal(viteConfig.build.rollupOptions?.external),
       })
-    } else if (Array.isArray(lib.entry)) {
+    }
+    else if (Array.isArray(lib.entry)) {
       for (const entry of lib.entry) {
         entries.push({
           type: 'bundle',
@@ -101,7 +103,8 @@ function convertViteConfig(viteConfig: ViteConfig): Partial<BuildConfig> {
           external: convertExternal(viteConfig.build.rollupOptions?.external),
         })
       }
-    } else if (lib.entry && typeof lib.entry === 'object') {
+    }
+    else if (lib.entry && typeof lib.entry === 'object') {
       for (const [name, entry] of Object.entries(lib.entry)) {
         entries.push({
           type: 'bundle',
@@ -127,7 +130,8 @@ function convertViteConfig(viteConfig: ViteConfig): Partial<BuildConfig> {
  * Convert Vite formats to robuild formats
  */
 function convertFormats(formats?: string[]): any[] | undefined {
-  if (!formats) return undefined
+  if (!formats)
+    return undefined
 
   const formatMap: Record<string, string> = {
     es: 'esm',
@@ -143,7 +147,8 @@ function convertFormats(formats?: string[]): any[] | undefined {
  * Convert Vite target to robuild target
  */
 function convertTarget(target?: string): import('../types').Target | undefined {
-  if (!target) return undefined
+  if (!target)
+    return undefined
 
   // Map common Vite targets to robuild targets
   const targetMap: Record<string, import('../types').Target> = {

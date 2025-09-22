@@ -1,7 +1,6 @@
-import { glob } from 'glob'
-import { resolve, relative, dirname, extname, basename } from 'node:path'
-import { readFile } from 'node:fs/promises'
 import type { GlobImportOptions, RobuildPlugin } from '../types'
+import { dirname, relative, resolve } from 'node:path'
+import { glob } from 'glob'
 
 /**
  * Create a glob import plugin for robuild
@@ -11,12 +10,12 @@ export function createGlobImportPlugin(options: GlobImportOptions = {}): Robuild
     enabled = false,
     patterns = ['**/*'],
     asUrls = false,
-    eager = false
+    eager = false,
   } = options
 
   if (!enabled) {
     return {
-      name: 'glob-import-disabled'
+      name: 'glob-import-disabled',
     }
   }
 
@@ -24,8 +23,8 @@ export function createGlobImportPlugin(options: GlobImportOptions = {}): Robuild
     name: 'glob-import',
     transform: async (code: string, id: string) => {
       // Look for import.meta.glob() calls
-      const globImportRegex = /import\.meta\.glob\s*\(\s*(['"`])(.*?)\1\s*(?:,\s*({[^}]*}))?\s*\)/g
-      
+      const globImportRegex = /import\.meta\.glob\s*\(\s*(['"`])(.*?)\1\s*(?:,\s*(\{[^}]*\})\s*)?\)/g
+
       let match
       let hasGlobImports = false
       let transformedCode = code
@@ -33,14 +32,15 @@ export function createGlobImportPlugin(options: GlobImportOptions = {}): Robuild
       while ((match = globImportRegex.exec(code)) !== null) {
         hasGlobImports = true
         const [fullMatch, quote, pattern, optionsStr] = match
-        
+
         // Parse options if provided
         let globOptions: any = {}
         if (optionsStr) {
           try {
             // Simple options parsing (in real implementation, use a proper parser)
             globOptions = parseGlobOptions(optionsStr)
-          } catch (error) {
+          }
+          catch (error) {
             console.warn('Failed to parse glob options:', optionsStr)
           }
         }
@@ -54,16 +54,17 @@ export function createGlobImportPlugin(options: GlobImportOptions = {}): Robuild
             id,
             isEager,
             isAsUrls,
-            patterns
+            patterns,
           )
           transformedCode = transformedCode.replace(fullMatch, replacement)
-        } catch (error) {
+        }
+        catch (error) {
           console.error(`Failed to process glob import ${pattern}:`, error)
         }
       }
 
       return hasGlobImports ? transformedCode : null
-    }
+    },
   }
 }
 
@@ -75,7 +76,7 @@ async function generateGlobImport(
   importer: string,
   eager: boolean,
   asUrls: boolean,
-  allowedPatterns: string[]
+  allowedPatterns: string[],
 ): Promise<string> {
   const importerDir = dirname(importer)
 
@@ -89,9 +90,10 @@ async function generateGlobImport(
   try {
     const absolutePattern = resolve(importerDir, pattern)
     files = await glob(absolutePattern, {
-      ignore: ['**/node_modules/**', '**/.git/**']
+      ignore: ['**/node_modules/**', '**/.git/**'],
     })
-  } catch (error) {
+  }
+  catch (error) {
     // In test environment, create mock files based on pattern
     if (pattern.includes('*.js')) {
       files = [resolve(importerDir, pattern.replace('*', 'module1')), resolve(importerDir, pattern.replace('*', 'module2'))]
@@ -100,7 +102,8 @@ async function generateGlobImport(
 
   if (eager) {
     return generateEagerImport(files, importerDir, asUrls)
-  } else {
+  }
+  else {
     return generateLazyImport(files, importerDir, asUrls)
   }
 }
@@ -119,7 +122,8 @@ function generateEagerImport(files: string[], importerDir: string, asUrls: boole
 
     if (asUrls) {
       exports.push(`  "${key}": "${relativePath}"`)
-    } else {
+    }
+    else {
       imports.push(`import * as ${varName} from "${relativePath}";`)
       exports.push(`  "${key}": ${varName}`)
     }
@@ -127,7 +131,8 @@ function generateEagerImport(files: string[], importerDir: string, asUrls: boole
 
   if (asUrls) {
     return `{\n${exports.join(',\n')}\n}`
-  } else {
+  }
+  else {
     return `${imports.join('\n')}\n{\n${exports.join(',\n')}\n}`
   }
 }
@@ -138,13 +143,14 @@ function generateEagerImport(files: string[], importerDir: string, asUrls: boole
 function generateLazyImport(files: string[], importerDir: string, asUrls: boolean): string {
   const exports: string[] = []
 
-  files.forEach(file => {
+  files.forEach((file) => {
     const relativePath = relative(importerDir, file)
     const key = `./${relativePath}`
 
     if (asUrls) {
       exports.push(`  "${key}": "${relativePath}"`)
-    } else {
+    }
+    else {
       exports.push(`  "${key}": () => import("${relativePath}")`)
     }
   })
@@ -157,8 +163,9 @@ function generateLazyImport(files: string[], importerDir: string, asUrls: boolea
  */
 function isPatternAllowed(pattern: string, allowedPatterns: string[]): boolean {
   // Simple pattern matching - in real implementation, use minimatch
-  return allowedPatterns.some(allowed => {
-    if (allowed === '**/*') return true
+  return allowedPatterns.some((allowed) => {
+    if (allowed === '**/*')
+      return true
     return pattern.startsWith(allowed.replace('**/*', ''))
   })
 }
@@ -170,7 +177,7 @@ function parseGlobOptions(optionsStr: string): any {
   // Simple parser for basic options
   // In real implementation, use a proper AST parser
   const options: any = {}
-  
+
   // Extract eager option
   if (optionsStr.includes('eager:') || optionsStr.includes('eager ')) {
     const eagerMatch = optionsStr.match(/eager\s*:\s*(true|false)/)
@@ -194,13 +201,14 @@ function parseGlobOptions(optionsStr: string): any {
 export function createGlobVirtualModule(
   pattern: string,
   files: string[],
-  options: { eager?: boolean, asUrls?: boolean } = {}
+  options: { eager?: boolean, asUrls?: boolean } = {},
 ): string {
   const { eager = false, asUrls = false } = options
 
   if (eager) {
     return generateEagerImport(files, '', asUrls)
-  } else {
+  }
+  else {
     return generateLazyImport(files, '', asUrls)
   }
 }
@@ -210,7 +218,7 @@ export function createGlobVirtualModule(
  */
 export async function resolveGlobPatterns(
   patterns: string[],
-  cwd: string = process.cwd()
+  cwd: string = process.cwd(),
 ): Promise<Record<string, string[]>> {
   const result: Record<string, string[]> = {}
 
@@ -218,10 +226,11 @@ export async function resolveGlobPatterns(
     try {
       const files = await glob(pattern, {
         cwd,
-        ignore: ['**/node_modules/**', '**/.git/**']
+        ignore: ['**/node_modules/**', '**/.git/**'],
       })
       result[pattern] = files
-    } catch (error) {
+    }
+    catch (error) {
       console.error(`Failed to resolve glob pattern ${pattern}:`, error)
       result[pattern] = []
     }
@@ -236,7 +245,7 @@ export async function resolveGlobPatterns(
 export async function transformGlobImports(
   code: string,
   id: string,
-  options: GlobImportOptions = {}
+  options: GlobImportOptions = {},
 ): Promise<string | null> {
   const plugin = createGlobImportPlugin(options)
   if (plugin.transform) {
@@ -251,12 +260,12 @@ export async function transformGlobImports(
 export function extractGlobPatterns(code: string): string[] {
   const patterns: string[] = []
   const globImportRegex = /import\.meta\.glob\s*\(\s*(['"`])(.*?)\1/g
-  
+
   let match
   while ((match = globImportRegex.exec(code)) !== null) {
     patterns.push(match[2])
   }
-  
+
   return patterns
 }
 

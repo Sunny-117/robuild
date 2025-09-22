@@ -1,1 +1,1 @@
-export const test = "debug test"
+export const test = 'debug test'

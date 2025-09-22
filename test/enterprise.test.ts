@@ -1,5 +1,5 @@
 import type { BuildConfig } from '../src/types'
-import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { generatePackageExports } from '../src/features/exports'
@@ -11,9 +11,7 @@ import {
 import {
   discoverWorkspacePackages,
   filterWorkspacePackages,
-  loadWorkspaceConfig,
 } from '../src/features/workspace'
-import { testBuild } from './utils'
 
 describe('enterprise Features', () => {
   describe('workspace Support', () => {

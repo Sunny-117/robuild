@@ -1,5 +1,4 @@
 import type { RobuildPlugin } from '../types'
-import { createGlobImportPlugin } from '../features/glob-import'
 
 /**
  * Built-in plugin for JSON imports

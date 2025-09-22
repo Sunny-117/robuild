@@ -1,7 +1,7 @@
 import type { BuildContext, RobuildPlugin, TransformEntry } from '../types'
 import { existsSync } from 'node:fs'
-import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
-import { basename, dirname, extname, join, relative } from 'node:path'
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { dirname, extname, join } from 'node:path'
 
 /**
  * Create skip node_modules plugin

@@ -7,6 +7,6 @@ export function createServer() {
     timeout,
     start() {
       console.log(`Server starting on port ${port} with timeout ${timeout}ms`)
-    }
+    },
   }
 }

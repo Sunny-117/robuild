@@ -1,7 +1,6 @@
 import type { BuildConfig, BuildEntry } from '../types'
 import { readFile, writeFile } from 'node:fs/promises'
-import { dirname, join, relative } from 'node:path'
-import { glob } from 'glob'
+import { join } from 'node:path'
 
 export interface ExportsConfig {
   /**

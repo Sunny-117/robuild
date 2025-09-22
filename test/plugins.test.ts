@@ -4,7 +4,6 @@ import {
   createGlobImportPlugin,
   extractGlobPatterns,
   hasGlobImports,
-  transformGlobImports,
 } from '../src/features/glob-import'
 import {
   adaptPlugin,

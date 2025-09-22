@@ -5,7 +5,6 @@ import type {
   TransformEntry,
 } from './types'
 
-import { rm } from 'node:fs/promises'
 import { isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { consola } from 'consola'
@@ -23,7 +22,7 @@ import {
   filterWorkspacePackages,
   loadWorkspaceConfig,
 } from './features/workspace'
-import { analyzeDir, fmtPath } from './utils'
+import { analyzeDir } from './utils'
 import { startWatch } from './watch'
 
 /**

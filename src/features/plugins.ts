@@ -1,10 +1,9 @@
-import type { 
-  RobuildPlugin, 
-  PluginBuild, 
-  PluginContext, 
-  BuildConfig, 
+import type {
+  BuildConfig,
   BuildEntry,
-  BuildHooks 
+  PluginBuild,
+  PluginContext,
+  RobuildPlugin,
 } from '../types'
 
 /**
@@ -19,7 +18,7 @@ export class PluginManager {
       config,
       entry,
       plugins: config.plugins || [],
-      hooks: config.hooks || {}
+      hooks: config.hooks || {},
     }
     this.plugins = config.plugins || []
   }
@@ -41,20 +40,21 @@ export class PluginManager {
    */
   async executeHook(hookName: keyof RobuildPlugin, ...args: any[]): Promise<any[]> {
     const results: any[] = []
-    
+
     for (const plugin of this.plugins) {
       const hook = plugin[hookName] as Function
       if (typeof hook === 'function') {
         try {
           const result = await hook.apply(plugin, args)
           results.push(result)
-        } catch (error) {
+        }
+        catch (error) {
           console.error(`Plugin ${plugin.name} hook ${hookName} failed:`, error)
           throw error
         }
       }
     }
-    
+
     return results
   }
 
@@ -81,12 +81,13 @@ export class PluginManager {
         for (const { filter, callback } of resolveCallbacks) {
           if (filter.test(path)) {
             const result = await callback({ path, ...options })
-            if (result) return result
+            if (result)
+              return result
           }
         }
         return null
       },
-      getConfig: () => this.context.config
+      getConfig: () => this.context.config,
     }
   }
 
@@ -127,8 +128,8 @@ export function createRollupPluginAdapter(rollupPlugin: any): RobuildPlugin {
     name: rollupPlugin.name || 'rollup-plugin',
     meta: {
       framework: 'rollup',
-      rollup: true
-    }
+      rollup: true,
+    },
   }
 
   // Map Rollup hooks to robuild hooks
@@ -165,8 +166,8 @@ export function createVitePluginAdapter(vitePlugin: any): RobuildPlugin {
     name: vitePlugin.name || 'vite-plugin',
     meta: {
       framework: 'vite',
-      vite: true
-    }
+      vite: true,
+    },
   }
 
   // Map Vite hooks to robuild hooks
@@ -207,8 +208,8 @@ export function createUnpluginAdapter(unplugin: any): RobuildPlugin {
       rollup: true,
       vite: true,
       webpack: true,
-      esbuild: true
-    }
+      esbuild: true,
+    },
   }
 
   // Unplugin provides a unified interface
@@ -258,7 +259,7 @@ export function adaptPlugin(plugin: any): RobuildPlugin {
  * Load and adapt plugins from configuration
  */
 export function loadPlugins(plugins: any[]): RobuildPlugin[] {
-  return plugins.map(plugin => {
+  return plugins.map((plugin) => {
     if (typeof plugin === 'function') {
       // Plugin factory function
       return adaptPlugin(plugin())
