@@ -1,0 +1,1 @@
+export const CONSTANTS = { API_URL: 'https://api.example.com' } as const

@@ -61,7 +61,7 @@ function getFormatExtension(format: OutputFormat, platform: Platform): string {
 /**
  * Clean output directory
  */
-async function cleanOutputDir(outDir: string, cleanPaths?: boolean | string[]): Promise<void> {
+async function cleanOutputDir(projectRoot: string, outDir: string, cleanPaths?: boolean | string[]): Promise<void> {
   if (!cleanPaths)
     return
 
@@ -76,9 +76,9 @@ async function cleanOutputDir(outDir: string, cleanPaths?: boolean | string[]): 
     }
   }
   else if (Array.isArray(cleanPaths)) {
-    // Clean specific paths
+    // Clean specific paths relative to project root
     for (const path of cleanPaths) {
-      const fullPath = resolve(outDir, path)
+      const fullPath = resolve(projectRoot, path)
       if (existsSync(fullPath)) {
         consola.log(`🧻 Cleaning up ${fmtPath(fullPath)}`)
         await rm(fullPath, { recursive: true, force: true })
@@ -104,7 +104,7 @@ export async function rolldownBuild(
   const fullOutDir = resolve(ctx.pkgDir, outDir)
 
   // Clean output directory if requested
-  await cleanOutputDir(fullOutDir, entry.clean ?? true)
+  await cleanOutputDir(ctx.pkgDir, fullOutDir, entry.clean ?? true)
 
   if (entry.stub) {
     for (const [distName, srcPath] of Object.entries(inputs)) {

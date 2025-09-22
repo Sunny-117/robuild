@@ -1,0 +1,1 @@
+export const cleaned: string = 'this should clean old files'

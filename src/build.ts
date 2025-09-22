@@ -99,15 +99,12 @@ async function performBuild(config: BuildConfig, ctx: BuildContext): Promise<voi
 
   await hooks.entries?.(entries, ctx)
 
+  // Collect unique output directories for size analysis
   const outDirs: Array<string> = []
   for (const outDir of entries.map(e => e.outDir).sort() as string[]) {
     if (!outDirs.some(dir => outDir.startsWith(dir))) {
       outDirs.push(outDir)
     }
-  }
-  for (const outDir of outDirs) {
-    consola.log(`🧻 Cleaning up \`${fmtPath(outDir)}\``)
-    await rm(outDir, { recursive: true, force: true })
   }
 
   for (const entry of entries) {
