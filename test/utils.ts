@@ -1,5 +1,5 @@
 import type { RunnerTask, TestContext } from 'vitest'
-import type { BuildOptions } from '../src/build'
+import type { BuildConfig } from '../src/types'
 import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
@@ -85,7 +85,7 @@ export interface TestBuildOptions {
   /**
    * The options for the build.
    */
-  options?: BuildOptions | ((cwd: string) => BuildOptions)
+  options?: BuildConfig | ((cwd: string) => BuildConfig)
 
   /**
    * The working directory of the test. It's a relative path to the test directory.
@@ -126,7 +126,7 @@ export async function testBuild({
   const workingDir = path.join(testDir, cwd || '.')
   const restoreCwd = chdir(workingDir)
 
-  const resolvedOptions: BuildOptions = {
+  const resolvedOptions: BuildConfig = {
     cwd: workingDir,
     entries: ['index.ts'],
     ...(typeof options === 'function' ? options(workingDir) : options),
@@ -134,7 +134,7 @@ export async function testBuild({
 
   // Ensure DTS is disabled by default unless explicitly enabled
   if (resolvedOptions.entries) {
-    resolvedOptions.entries = resolvedOptions.entries.map((entry) => {
+    resolvedOptions.entries = resolvedOptions.entries.map((entry: any) => {
       if (typeof entry === 'string')
         return entry
       if (entry.type === 'bundle' && entry.dts === undefined) {

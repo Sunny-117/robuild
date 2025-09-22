@@ -14,12 +14,12 @@ export class Logger {
     this.updateConsolaLevel()
   }
 
-  setLevel(level: LogLevel) {
+  setLevel(level: LogLevel): void {
     this.level = level
     this.updateConsolaLevel()
   }
 
-  private updateConsolaLevel() {
+  private updateConsolaLevel(): void {
     const levelMap = {
       silent: 0,
       error: 1,
@@ -30,36 +30,36 @@ export class Logger {
     consola.level = levelMap[this.level]
   }
 
-  silent(message: string, ...args: any[]) {
+  silent(message: string, ...args: any[]): void {
     // Always log silent messages
     console.log(message, ...args)
   }
 
-  error(message: string, ...args: any[]) {
+  error(message: string, ...args: any[]): void {
     this.errorCount++
     consola.error(message, ...args)
   }
 
-  warn(message: string, ...args: any[]) {
+  warn(message: string, ...args: any[]): void {
     this.warningCount++
     consola.warn(message, ...args)
   }
 
-  info(message: string, ...args: any[]) {
+  info(message: string, ...args: any[]): void {
     consola.info(message, ...args)
   }
 
-  verbose(message: string, ...args: any[]) {
+  verbose(message: string, ...args: any[]): void {
     if (this.level === 'verbose') {
       consola.debug(message, ...args)
     }
   }
 
-  success(message: string, ...args: any[]) {
+  success(message: string, ...args: any[]): void {
     consola.success(message, ...args)
   }
 
-  log(message: string, ...args: any[]) {
+  log(message: string, ...args: any[]): void {
     consola.log(message, ...args)
   }
 
@@ -71,7 +71,7 @@ export class Logger {
     return this.errorCount
   }
 
-  resetCounts() {
+  resetCounts(): void {
     this.warningCount = 0
     this.errorCount = 0
   }
@@ -82,19 +82,19 @@ export class Logger {
 }
 
 // Global logger instance
-export const logger = new Logger()
+export const logger: Logger = new Logger()
 
 /**
  * Configure global logger
  */
-export function configureLogger(level: LogLevel) {
+export function configureLogger(level: LogLevel): void {
   logger.setLevel(level)
 }
 
 /**
  * Get current warning and error counts
  */
-export function getLogCounts() {
+export function getLogCounts(): { warnings: number, errors: number } {
   return {
     warnings: logger.getWarningCount(),
     errors: logger.getErrorCount(),
@@ -104,7 +104,7 @@ export function getLogCounts() {
 /**
  * Reset warning and error counts
  */
-export function resetLogCounts() {
+export function resetLogCounts(): void {
   logger.resetCounts()
 }
 

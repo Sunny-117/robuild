@@ -139,7 +139,7 @@ describe('build features enhancement', () => {
               type: 'bundle',
               input: 'src/index.ts',
               outDir: 'dist',
-              formats: ['esm', 'cjs'],
+              format: ['esm', 'cjs'],
               banner: {
                 js: '// ESM Banner',
                 cjs: '// CJS Banner',

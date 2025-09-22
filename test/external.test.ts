@@ -167,7 +167,7 @@ describe('external dependencies', () => {
             external: [
               'lodash',
               /^@types\//,
-              (id: string) => id.includes('external'),
+              'custom-external-lib',
             ],
             noExternal: ['force-bundled'],
           },
@@ -344,7 +344,7 @@ describe('external dependencies', () => {
             external: [
               /^@company\//, // Company packages
               'lodash', // Specific package
-              (id: string) => id === 'axios', // Function check
+              'axios', // String check instead of function
             ],
             noExternal: [
               /^@utils\//, // Bundle utils packages

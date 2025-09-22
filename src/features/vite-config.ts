@@ -83,7 +83,7 @@ function convertViteConfig(viteConfig: ViteConfig): Partial<BuildConfig> {
       entries.push({
         type: 'bundle',
         input: lib.entry,
-        formats: convertFormats(lib.formats),
+        format: convertFormats(lib.formats),
         globalName: lib.name,
         minify: viteConfig.build.minify,
         target: convertTarget(viteConfig.build.target),
@@ -94,7 +94,7 @@ function convertViteConfig(viteConfig: ViteConfig): Partial<BuildConfig> {
         entries.push({
           type: 'bundle',
           input: entry,
-          formats: convertFormats(lib.formats),
+          format: convertFormats(lib.formats),
           globalName: lib.name,
           minify: viteConfig.build.minify,
           target: convertTarget(viteConfig.build.target),
@@ -106,7 +106,7 @@ function convertViteConfig(viteConfig: ViteConfig): Partial<BuildConfig> {
         entries.push({
           type: 'bundle',
           input: entry,
-          formats: convertFormats(lib.formats),
+          format: convertFormats(lib.formats),
           globalName: lib.name || name,
           minify: viteConfig.build.minify,
           target: convertTarget(viteConfig.build.target),
@@ -142,11 +142,11 @@ function convertFormats(formats?: string[]): any[] | undefined {
 /**
  * Convert Vite target to robuild target
  */
-function convertTarget(target?: string): string | undefined {
+function convertTarget(target?: string): import('../types').Target | undefined {
   if (!target) return undefined
 
   // Map common Vite targets to robuild targets
-  const targetMap: Record<string, string> = {
+  const targetMap: Record<string, import('../types').Target> = {
     es2015: 'es2015',
     es2016: 'es2016',
     es2017: 'es2017',
@@ -158,7 +158,7 @@ function convertTarget(target?: string): string | undefined {
     esnext: 'esnext',
   }
 
-  return targetMap[target] || target
+  return targetMap[target as keyof typeof targetMap] || undefined
 }
 
 /**

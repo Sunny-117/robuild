@@ -304,7 +304,7 @@ export async function rolldownBuild(
         }
         deps.add(id)
       }
-      return [...deps].sort()
+      return Array.from(deps).sort()
     }
 
     for (const chunk of output) {

@@ -53,7 +53,7 @@ import { helper } from '@/utils/helper'
 export const test = helper
         `.trim(),
       },
-      options: (cwd) => ({
+      options: (cwd: string) => ({
         entries: [
           {
             type: 'bundle',
@@ -83,7 +83,7 @@ import { helper } from '@/utils/helper'
 export const test = helper
         `.trim(),
       },
-      options: (cwd) => ({
+      options: (cwd: string) => ({
         entries: [
           {
             type: 'transform',

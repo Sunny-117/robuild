@@ -169,9 +169,9 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
   })
 
   if (parsed.errors.length > 0) {
-    throw new Error(`Errors while parsing ${entryPath}:`, {
-      cause: parsed.errors,
-    })
+    const error = new Error(`Errors while parsing ${entryPath}:`)
+    ;(error as any).cause = parsed.errors
+    throw error
   }
 
   const resolveOptions: ResolveOptions = {
@@ -268,12 +268,11 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
       `/** Error dump for ${entryPath} */\n\n${sourceText}`,
       'utf8',
     )
-    throw new Error(
+    const error = new Error(
       `Errors while transforming ${entryPath}: (hint: check build-dump.ts)`,
-      {
-        cause: transformErrors,
-      },
     )
+    ;(error as any).cause = transformErrors
+    throw error
   }
 
   if (entry.minify) {
