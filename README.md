@@ -10,18 +10,46 @@ English | <a href="./README-zh.md">简体中文</a>
 
 ## Features
 
-- 🚀 **Fast**: Built on top of [rolldown](https://rolldown.rs/) and [oxc](https://oxc.rs/)
-- 📦 **Bundle**: Bundle your library with dependencies
-- 🔄 **Transform**: Transform your source code to different formats
-- 🎯 **TypeScript**: First-class TypeScript support with `.d.ts` generation
-- 📁 **Multiple entries**: Support multiple entry points
-- 🔧 **Zero config**: Works out of the box, configurable when needed
-- 👀 **Watch Mode**: Real-time file watching and automatic rebuilds
-- 🎨 **Multi-format**: Support ESM, CJS, IIFE, UMD output formats
-- 🧹 **Clean**: Automatic output directory cleaning
-- 🌍 **Environment**: Compile-time environment variable injection
-- 🎯 **Platform**: Browser, Node.js, and neutral platform targets
-- 📦 **External**: Enhanced external dependency configuration
+### 🚀 Core Features
+- **Fast**: Built on top of [rolldown](https://rolldown.rs/) and [oxc](https://oxc.rs/)
+- **Bundle**: Bundle your library with dependencies
+- **Transform**: Transform your source code to different formats
+- **TypeScript**: First-class TypeScript support with `.d.ts` generation
+- **Multiple entries**: Support multiple entry points
+- **Zero config**: Works out of the box, configurable when needed
+
+### 🎨 Output Formats
+- **Multi-format**: Support ESM, CJS, IIFE, UMD output formats
+- **Platform targets**: Browser, Node.js, and neutral platform targets
+- **File loaders**: Built-in support for JSON, CSS, text, and asset files
+- **Advanced loaders**: Custom file type processing with configurable loaders
+
+### 🔧 Development Experience
+- **Watch Mode**: Real-time file watching and automatic rebuilds
+- **Stub Mode**: Lightning-fast development with file linking
+- **Debug Mode**: Comprehensive debugging and logging
+- **Success Callbacks**: Execute commands or functions after successful builds
+- **Vite Config**: Reuse existing Vite configuration
+
+### 🏢 Enterprise Features
+- **Workspace Support**: Monorepo multi-package builds with dependency ordering
+- **Package Filtering**: Advanced filtering for workspace packages
+- **Exports Generation**: Automatic package.json exports field generation
+- **Migration Tools**: Migrate from tsup, unbuild, vite, and webpack
+
+### 🔌 Plugin System
+- **Rollup Plugins**: Full compatibility with Rollup plugin ecosystem
+- **Vite Plugins**: Partial support for Vite plugins
+- **Unplugin**: Universal plugin support across bundlers
+- **Custom Hooks**: Rich build lifecycle hooks
+- **Glob Imports**: `import.meta.glob` support with eager/lazy loading
+
+### 📦 Advanced Build Options
+- **CJS/ESM Interop**: Smart CommonJS to ESM transformation
+- **Shims**: Compatibility shims for Node.js globals and browser environments
+- **Skip Node Modules**: Optional external dependency handling
+- **Unbundle Mode**: Preserve file structure without bundling
+- **Environment Variables**: Compile-time variable injection and replacement
 
 ## Installation
 
@@ -71,11 +99,34 @@ npx robuild ./src/index.ts --format esm --format cjs --format iife
 npx robuild ./src/index.ts --format iife --platform browser --global-name MyLib
 ```
 
-### Advanced Options
+### Enterprise Features
+
+```sh
+# Workspace builds (monorepo)
+npx robuild --workspace
+
+# Filter workspace packages
+npx robuild --workspace --filter "@mycompany/*" --filter "packages/core"
+
+# Generate package.json exports
+npx robuild ./src/index.ts --generate-exports
+
+# Migration from other tools
+npx robuild migrate from tsup tsup.config.ts
+npx robuild migrate from unbuild build.config.ts
+```
+
+### Advanced Build Options
 
 ```sh
 # External dependencies
 npx robuild ./src/index.ts --external lodash --external /^@types\//
+
+# Advanced build features
+npx robuild ./src/index.ts --cjs-default auto --shims --skip-node-modules
+
+# Unbundle mode (preserve file structure)
+npx robuild ./src/ --unbundle
 
 # Disable cleaning
 npx robuild ./src/index.ts --no-clean
@@ -86,6 +137,7 @@ npx robuild ./src/index.ts --dir ./my-project
 
 ### CLI Options
 
+#### Basic Options
 | Option | Description | Example |
 |--------|-------------|---------|
 | `--format` | Output format(s) | `--format esm --format cjs` |
@@ -97,6 +149,29 @@ npx robuild ./src/index.ts --dir ./my-project
 | `--watch` / `-w` | Watch mode | `--watch` |
 | `--dir` | Working directory | `--dir ./my-project` |
 | `--stub` | Generate stub files | `--stub` |
+
+#### Enterprise Options
+| Option | Description | Example |
+|--------|-------------|---------|
+| `--workspace` | Enable workspace mode | `--workspace` |
+| `--filter` | Filter workspace packages | `--filter "@mycompany/*"` |
+| `--generate-exports` | Generate package.json exports | `--generate-exports` |
+
+#### Advanced Build Options
+| Option | Description | Example |
+|--------|-------------|---------|
+| `--cjs-default` | CommonJS default export handling | `--cjs-default auto` |
+| `--shims` | Enable CJS/ESM compatibility shims | `--shims` |
+| `--skip-node-modules` | Skip bundling node_modules | `--skip-node-modules` |
+| `--unbundle` | Preserve file structure | `--unbundle` |
+
+#### Development Options
+| Option | Description | Example |
+|--------|-------------|---------|
+| `--log-level` | Set log level | `--log-level debug` |
+| `--on-success` | Execute command on success | `--on-success "echo done"` |
+| `--fail-on-warn` | Fail build on warnings | `--fail-on-warn` |
+| `--ignore-watch` | Ignore watch patterns | `--ignore-watch "**/*.test.ts"` |
 
 ## Configuration
 
@@ -119,6 +194,13 @@ Create `build.config.ts` (or `.mjs`) in your project root:
 import { defineConfig } from 'robuild'
 
 export default defineConfig({
+  // Enterprise features
+  workspace: {
+    packages: ['packages/*', 'apps/*'],
+    filter: '@mycompany/*',
+    dependencyOrder: true
+  },
+
   entries: [
     {
       type: 'bundle',
@@ -127,6 +209,8 @@ export default defineConfig({
       platform: 'node', // 'browser' | 'node' | 'neutral'
       globalName: 'MyLib', // For IIFE/UMD formats
       clean: true, // Clean output directory
+
+      // Environment & constants
       env: {
         VERSION: '1.0.0',
         NODE_ENV: 'production'
@@ -135,15 +219,57 @@ export default defineConfig({
         __DEV__: 'false',
         BUILD_MODE: '"production"'
       },
+
+      // Dependencies
       external: ['lodash', /^@types\//],
       noExternal: ['some-internal-package'],
+
+      // Advanced build options
+      cjsDefault: 'auto', // CommonJS interop
+      shims: true, // Node.js/browser shims
+      skipNodeModules: false, // Bundle node_modules
+      unbundle: false, // Preserve file structure
+
+      // File loaders
+      loaders: {
+        '.json': { loader: 'json' },
+        '.css': { loader: 'css' },
+        '.txt': { loader: 'text' }
+      },
+
+      // Plugin system
+      plugins: [
+        // Rollup/Vite/Unplugin support
+      ]
     },
     {
       type: 'transform',
       input: './src/runtime',
       outDir: './dist/runtime',
+      unbundle: true, // Preserve directory structure
     },
   ],
+
+  // Development experience
+  watch: {
+    enabled: false,
+    exclude: ['**/*.test.ts'],
+    ignoreWatch: ['dist/**']
+  },
+
+  // Success callbacks
+  onSuccess: 'echo "Build completed!"',
+
+  // Logging
+  logLevel: 'info',
+  failOnWarn: false,
+
+  // Package exports generation
+  exports: {
+    enabled: true,
+    includeTypes: true,
+    autoUpdate: true
+  }
 })
 ```
 

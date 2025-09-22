@@ -1,51 +1,64 @@
-# CLI 使用
+# CLI 命令行
 
-robuild 提供了强大的命令行接口，支持多种构建模式和选项。
+robuild 提供了强大的命令行界面，支持多种构建选项和模式，包括企业级功能和高级构建选项。
 
-## 基本语法
+## 基本用法
+
+### 构建命令
 
 ```bash
-robuild [options] <entries...>
+# 基本构建
+npx robuild ./src/index.ts
+
+# 指定输出目录
+npx robuild ./src/index.ts --outDir ./lib
+
+# 多个入口文件
+npx robuild ./src/index.ts ./src/cli.ts
+
+# Transform 模式（路径以 / 结尾）
+npx robuild ./src/runtime/:./dist/runtime
 ```
 
-## 参数说明
-
-### 位置参数
-
-#### `<entries...>`
-构建入口文件或目录，支持多种格式：
+### 监听模式
 
 ```bash
-# 单个文件
-robuild ./src/index.ts
+# 启用监听模式
+npx robuild ./src/index.ts --watch
 
-# 多个文件
-robuild ./src/index.ts ./src/cli.ts
+# 监听模式简写
+npx robuild ./src/index.ts -w
 
-# 使用逗号分隔
-robuild ./src/index.ts,./src/cli.ts
-
-# Transform 模式（目录）
-robuild ./src/runtime/:./dist/runtime
-
-# 混合模式
-robuild ./src/index.ts ./src/runtime/:./dist/runtime
+# 指定工作目录
+npx robuild ./src/index.ts --watch --dir ./my-project
 ```
 
-### 选项参数
+## 🏢 企业级功能
 
-#### `--dir <directory>`
-设置工作目录，默认为当前目录。
+### 工作区支持
 
 ```bash
-robuild --dir ./packages/core ./src/index.ts
+# 启用工作区模式
+npx robuild --workspace
+
+# 过滤特定包
+npx robuild --workspace --filter "@mycompany/core"
+
+# 多个过滤器
+npx robuild --workspace --filter "@mycompany/*" --filter "packages/utils"
+
+# 排除模式
+npx robuild --workspace --filter "!@mycompany/test-*"
 ```
 
-#### `--stub`
-启用 stub 模式，跳过实际构建，创建源码链接。
+### 包导出生成
 
 ```bash
-robuild --stub ./src/index.ts
+# 生成 package.json exports 字段
+npx robuild ./src/index.ts --generate-exports
+
+# 结合工作区使用
+npx robuild --workspace --generate-exports
 ```
 
 ## 构建模式

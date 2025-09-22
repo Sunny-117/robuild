@@ -1,53 +1,74 @@
 # 插件系统
 
-robuild 提供了灵活的插件系统，允许你扩展和自定义构建功能。
+robuild 提供了强大的插件系统，支持 Rollup、Vite、Unplugin 等多种插件格式，让你能够轻松扩展构建功能。
 
-## 什么是插件？
+## 🔌 插件兼容性
 
-插件是扩展 robuild 功能的模块，可以：
+### Rollup 插件支持
 
-- **转换代码**: 修改源码内容
-- **处理资源**: 处理非 JavaScript 文件
-- **添加功能**: 集成外部工具和服务
-- **自定义输出**: 修改构建结果
-
-## 插件类型
-
-### 1. Rolldown 插件
-
-用于 Bundle 模式的插件，基于 rolldown 的插件系统：
+robuild 完全兼容 Rollup 插件生态系统：
 
 ```typescript
 import { defineConfig } from 'robuild'
+import json from '@rollup/plugin-json'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 
 export default defineConfig({
   entries: [
     {
       type: 'bundle',
       input: './src/index.ts',
-      rolldown: {
-        plugins: [
-          // 使用 rolldown 插件
-          {
-            name: 'my-plugin',
-            setup(build) {
-              // 插件逻辑
-            }
-          }
-        ]
-      }
+      plugins: [
+        resolve(),
+        commonjs(),
+        json()
+      ]
     }
   ]
 })
 ```
 
-### 2. Oxc 插件
+### Vite 插件支持
 
-用于 Transform 模式的插件，基于 oxc 的转换系统：
+部分支持 Vite 插件（自动适配）：
 
 ```typescript
+import { defineConfig } from 'robuild'
+import react from '@vitejs/plugin-react'
+
 export default defineConfig({
   entries: [
+    {
+      type: 'bundle',
+      input: './src/index.tsx',
+      plugins: [
+        react() // 自动适配 Vite 插件
+      ]
+    }
+  ]
+})
+```
+
+### Unplugin 支持
+
+Universal 插件支持，跨平台兼容：
+
+```typescript
+import { defineConfig } from 'robuild'
+import { unpluginExample } from 'unplugin-example'
+
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      plugins: [
+        unpluginExample() // 自动适配 Unplugin
+      ]
+    }
+  ]
+})
     {
       type: 'transform',
       input: './src/runtime',
