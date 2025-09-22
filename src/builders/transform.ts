@@ -12,6 +12,11 @@ import { minify } from 'oxc-minify'
 import { parseSync } from 'oxc-parser'
 import { transform } from 'oxc-transform'
 import { glob } from 'tinyglobby'
+import { addBannerFooter, resolveChunkAddon } from '../features/banner'
+import { copyFiles } from '../features/copy'
+import { createFilename } from '../features/extensions'
+import { addHashToFilename, hasHash } from '../features/hash'
+import { transformNodeProtocol } from '../features/node-protocol'
 import { fmtPath } from '../utils'
 import { makeExecutable, SHEBANG_RE } from './plugins/shebang'
 
@@ -74,20 +79,40 @@ export async function transformDir(
           case '.ts': {
             {
               const transformed = await transformModule(entryPath, entry)
-              const entryDistPath = join(
-                entry.outDir!,
-                entryName.replace(/\.ts$/, '.mjs'),
-              )
+
+              // Determine output filename with proper extension
+              const baseName = entryName.replace(/\.ts$/, '')
+              const outputFileName = createFilename(baseName, 'esm', false, {
+                platform: entry.platform,
+                fixedExtension: entry.fixedExtension,
+                outExtensions: entry.outExtensions,
+              })
+
+              let entryDistPath = join(entry.outDir!, outputFileName)
               await mkdir(dirname(entryDistPath), { recursive: true })
               await writeFile(entryDistPath, transformed.code, 'utf8')
+
+              // Add hash to filename if requested
+              if (entry.hash && !hasHash(entryDistPath)) {
+                const hashedPath = addHashToFilename(entryDistPath, transformed.code)
+                const { rename } = await import('node:fs/promises')
+                await rename(entryDistPath, hashedPath)
+                entryDistPath = hashedPath
+              }
 
               if (SHEBANG_RE.test(transformed.code)) {
                 await makeExecutable(entryDistPath)
               }
 
               if (transformed.declaration) {
+                const dtsFileName = createFilename(baseName, 'esm', true, {
+                  platform: entry.platform,
+                  fixedExtension: entry.fixedExtension,
+                  outExtensions: entry.outExtensions,
+                })
+                const dtsPath = join(entry.outDir!, dtsFileName)
                 await writeFile(
-                  entryDistPath.replace(/\.mjs$/, '.d.mts'),
+                  dtsPath,
                   transformed.declaration,
                   'utf8',
                 )
@@ -115,6 +140,11 @@ export async function transformDir(
   }
 
   const writtenFiles = await Promise.all(promises)
+
+  // Copy files if specified
+  if (entry.copy) {
+    await copyFiles(ctx.pkgDir, fullOutDir, entry.copy)
+  }
 
   consola.log(
     `\n${c.magenta('[transform] ')}${c.underline(`${fmtPath(entry.outDir!)}/`)}\n${writtenFiles
@@ -172,7 +202,7 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
     // Handle aliases first
     if (entry.alias) {
       for (const [alias, target] of Object.entries(entry.alias)) {
-        if (moduleId === alias || moduleId.startsWith(alias + '/')) {
+        if (moduleId === alias || moduleId.startsWith(`${alias}/`)) {
           moduleId = moduleId.replace(alias, target)
           wasAliasResolved = true
           break
@@ -254,6 +284,16 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
     )
     transformed.code = res.code
     transformed.map = res.map
+  }
+
+  // Apply banner/footer
+  const banner = resolveChunkAddon(entry.banner, 'esm') // Transform mode uses ESM
+  const footer = resolveChunkAddon(entry.footer, 'esm')
+  transformed.code = addBannerFooter(transformed.code, banner, footer)
+
+  // Apply Node.js protocol handling
+  if (entry.nodeProtocol) {
+    transformed.code = transformNodeProtocol(transformed.code, entry.nodeProtocol)
   }
 
   return transformed

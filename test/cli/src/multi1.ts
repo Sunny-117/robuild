@@ -1,0 +1,1 @@
+export const multi1 = "first"

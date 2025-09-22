@@ -20,7 +20,11 @@ import { rolldown } from 'rolldown'
 
 import { dts } from 'rolldown-plugin-dts'
 
+import { resolveChunkAddon } from '../features/banner'
+import { copyFiles } from '../features/copy'
+import { addHashToFilename, hasHash } from '../features/hash'
 import { distSize, fmtPath, sideEffectSize } from '../utils'
+import { nodeProtocolPlugin } from './plugins/node-protocol'
 import { makeExecutable, shebangPlugin } from './plugins/shebang'
 
 /**
@@ -44,7 +48,16 @@ function formatToRolldownFormat(format: OutputFormat): ModuleFormat {
 /**
  * Get file extension for format
  */
-function getFormatExtension(format: OutputFormat, platform: Platform): string {
+function getFormatExtension(
+  format: OutputFormat,
+  platform: Platform,
+  fixedExtension = false,
+): string {
+  if (fixedExtension) {
+    // Force .cjs/.mjs extensions
+    return format === 'cjs' ? '.cjs' : '.mjs'
+  }
+
   switch (format) {
     case 'esm':
       return '.mjs' // Always use .mjs for ESM to be explicit about module type
@@ -182,7 +195,10 @@ export async function rolldownBuild(
   const baseRolldownConfig = defu(entry.rolldown, {
     cwd: ctx.pkgDir,
     input: inputs,
-    plugins: [shebangPlugin()] as Plugin[],
+    plugins: [
+      shebangPlugin(),
+      nodeProtocolPlugin(entry.nodeProtocol || false),
+    ] as Plugin[],
     platform: platform === 'node' ? 'node' : 'neutral',
     external: typeof entry.external === 'function'
       ? entry.external
@@ -213,7 +229,7 @@ export async function rolldownBuild(
 
   for (const format of formats) {
     const rolldownFormat = formatToRolldownFormat(format)
-    const extension = getFormatExtension(format, platform)
+    const extension = getFormatExtension(format, platform, entry.fixedExtension)
 
     // Create config for this format
     const formatConfig = { ...baseRolldownConfig }
@@ -256,6 +272,8 @@ export async function rolldownBuild(
       chunkFileNames: `_chunks/[name]-[hash]${extension}`,
       minify: entry.minify,
       name: entry.globalName, // For IIFE/UMD formats
+      banner: resolveChunkAddon(entry.banner, format),
+      footer: resolveChunkAddon(entry.footer, format),
     }
 
     await hooks.rolldownOutput?.(outConfig, res, ctx)
@@ -295,18 +313,40 @@ export async function rolldownBuild(
       if (chunk.fileName.endsWith('ts'))
         continue
 
+      let finalFileName = chunk.fileName
+      let finalFilePath = join(formatOutDir, chunk.fileName)
+
+      // Add hash to filename if requested
+      if (entry.hash && !hasHash(chunk.fileName)) {
+        const content = chunk.code
+        const hashedFileName = addHashToFilename(chunk.fileName, content)
+        const hashedFilePath = join(formatOutDir, hashedFileName)
+
+        // Rename the file to include hash
+        const { rename } = await import('node:fs/promises')
+        await rename(finalFilePath, hashedFilePath)
+
+        finalFileName = hashedFileName
+        finalFilePath = hashedFilePath
+      }
+
       // Store full path for logging
-      filePathMap.set(chunk.fileName, join(formatOutDir, chunk.fileName))
+      filePathMap.set(finalFileName, finalFilePath)
 
       allOutputEntries.push({
         format,
-        name: chunk.fileName,
+        name: finalFileName,
         exports: chunk.exports,
         deps: resolveDeps(chunk),
-        ...(await distSize(formatOutDir, chunk.fileName)),
-        sideEffectSize: await sideEffectSize(formatOutDir, chunk.fileName),
+        ...(await distSize(formatOutDir, finalFileName)),
+        sideEffectSize: await sideEffectSize(formatOutDir, finalFileName),
       })
     }
+  }
+
+  // Copy files if specified
+  if (entry.copy) {
+    await copyFiles(ctx.pkgDir, fullOutDir, entry.copy)
   }
 
   // Display build results

@@ -15,6 +15,23 @@ export type OutputFormat = 'esm' | 'cjs' | 'iife' | 'umd'
 export type Platform = 'browser' | 'node' | 'neutral'
 export type Target = 'es5' | 'es2015' | 'es2016' | 'es2017' | 'es2018' | 'es2019' | 'es2020' | 'es2021' | 'es2022' | 'esnext'
 
+// Copy functionality types
+export interface CopyEntry {
+  from: string
+  to: string
+}
+
+export type CopyOptions = Array<string | CopyEntry>
+
+// Banner/Footer types
+export type ChunkAddon = string | Record<string, string>
+
+// Output extensions types
+export type OutExtensionFactory = (format: OutputFormat) => {
+  js?: string
+  dts?: string
+}
+
 export interface BuildContext {
   pkgDir: string
   pkg: { name: string } & Record<string, unknown>
@@ -65,6 +82,58 @@ export interface _BuildEntry {
    * Allows defining path mappings for imports.
    */
   alias?: Record<string, string>
+
+  /**
+   * Copy files to output directory.
+   *
+   * @example
+   * ```ts
+   * copy: ['src/assets', { from: 'src/assets', to: 'dist/assets' }]
+   * ```
+   */
+  copy?: CopyOptions
+
+  /**
+   * Add banner/footer to output files.
+   *
+   * @example
+   * ```ts
+   * banner: '// Copyright 2024'
+   * footer: '// End of file'
+   * ```
+   */
+  banner?: string | ChunkAddon
+  footer?: string | ChunkAddon
+
+  /**
+   * Add content hash to output filenames.
+   *
+   * @default false
+   */
+  hash?: boolean
+
+  /**
+   * Use fixed extensions (.cjs/.mjs) for output files.
+   *
+   * @default false
+   */
+  fixedExtension?: boolean
+
+  /**
+   * Custom output file extensions.
+   */
+  outExtensions?: OutExtensionFactory
+
+  /**
+   * Handle Node.js protocol imports.
+   *
+   * - `true`: Add `node:` prefix to built-in modules
+   * - `'strip'`: Remove `node:` prefix from imports
+   * - `false`: Keep imports unchanged
+   *
+   * @default false
+   */
+  nodeProtocol?: 'strip' | boolean
 
   /**
    * Clean output directory before build.
