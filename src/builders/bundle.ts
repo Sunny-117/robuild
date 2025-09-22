@@ -100,6 +100,7 @@ export async function rolldownBuild(
   // Get configuration with defaults
   const formats = Array.isArray(entry.format) ? entry.format : [entry.format || 'esm']
   const platform = entry.platform || 'node'
+  const target = entry.target || 'es2022'
   const outDir = entry.outDir || 'dist'
   const fullOutDir = resolve(ctx.pkgDir, outDir)
   const isMultiFormat = formats.length > 1
@@ -187,6 +188,12 @@ export async function rolldownBuild(
       ? entry.external
       : externalDeps,
     define: defineOptions,
+    resolve: {
+      alias: entry.alias || {},
+    },
+    transform: {
+      target,
+    },
   } satisfies InputOptions)
 
   await hooks.rolldownConfig?.(baseRolldownConfig, ctx)

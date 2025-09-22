@@ -32,6 +32,9 @@ const args = parseArgs({
     'platform': {
       type: 'string',
     },
+    'target': {
+      type: 'string',
+    },
     'global-name': {
       type: 'string',
     },
@@ -70,6 +73,7 @@ Options:
   -w, --watch              Enable watch mode
   --format <format>        Output format(s): esm, cjs, iife, umd (can be used multiple times)
   --platform <platform>    Target platform: browser, node, neutral
+  --target <target>        Target ES version: es5, es2015, es2016, es2017, es2018, es2019, es2020, es2021, es2022, esnext
   --global-name <name>     Global variable name for IIFE/UMD formats
   --clean                  Clean output directory before build (default: true)
   --no-clean               Disable cleaning output directory
@@ -129,6 +133,11 @@ const entries: BuildEntry[] = rawEntries.map((entry) => {
       // Platform option
       if (args.values.platform) {
         baseEntry.platform = args.values.platform
+      }
+
+      // Target option
+      if (args.values.target) {
+        baseEntry.target = args.values.target
       }
 
       // Global name for IIFE/UMD

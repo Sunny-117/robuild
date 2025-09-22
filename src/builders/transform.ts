@@ -159,21 +159,37 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
 
   const magicString = new MagicString(sourceText)
 
-  // Rewrite relative imports
+  // Rewrite relative imports and aliases
   const updatedStarts = new Set<number>()
   const rewriteSpecifier = (req: {
     value: string
     start: number
     end: number
   }) => {
-    const moduleId = req.value
-    if (!moduleId.startsWith('.')) {
+    let moduleId = req.value
+    let wasAliasResolved = false
+
+    // Handle aliases first
+    if (entry.alias) {
+      for (const [alias, target] of Object.entries(entry.alias)) {
+        if (moduleId === alias || moduleId.startsWith(alias + '/')) {
+          moduleId = moduleId.replace(alias, target)
+          wasAliasResolved = true
+          break
+        }
+      }
+    }
+
+    // Skip external modules unless they were resolved from aliases
+    if (!moduleId.startsWith('.') && !wasAliasResolved) {
       return
     }
+
     if (updatedStarts.has(req.start)) {
       return // prevent double rewritings
     }
     updatedStarts.add(req.start)
+
     const resolvedAbsolute = resolveModulePath(moduleId, resolveOptions)
     const newId = relative(
       dirname(entryPath),
@@ -204,6 +220,7 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
     ...entry.oxc,
     ...sourceOptions,
     cwd: dirname(entryPath),
+    target: entry.target || 'es2022',
     typescript: {
       declaration: { stripInternal: true },
       ...entry.oxc?.typescript,

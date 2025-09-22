@@ -13,6 +13,7 @@ import type { Options as DtsOptions } from 'rolldown-plugin-dts'
 
 export type OutputFormat = 'esm' | 'cjs' | 'iife' | 'umd'
 export type Platform = 'browser' | 'node' | 'neutral'
+export type Target = 'es5' | 'es2015' | 'es2016' | 'es2017' | 'es2018' | 'es2019' | 'es2020' | 'es2021' | 'es2022' | 'esnext'
 
 export interface BuildContext {
   pkgDir: string
@@ -47,9 +48,23 @@ export interface _BuildEntry {
   platform?: Platform
 
   /**
+   * Target ES version for the build.
+   *
+   * Defaults to `'es2022'` if not provided.
+   */
+  target?: Target
+
+  /**
    * Global variable name for IIFE/UMD formats.
    */
   globalName?: string
+
+  /**
+   * Module path aliases.
+   *
+   * Allows defining path mappings for imports.
+   */
+  alias?: Record<string, string>
 
   /**
    * Clean output directory before build.

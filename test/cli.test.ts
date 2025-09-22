@@ -298,6 +298,21 @@ describe('cLI', () => {
     expect(code).toBe(0)
   })
 
+  it('should support --target option', async () => {
+    const { code } = await runCLI([
+      'src/index.ts',
+      '--target',
+      'es2015',
+    ], fixtureDir.pathname)
+
+    expect(code).toBe(0)
+
+    const file = new URL('index.mjs', distDir)
+    expect(existsSync(file)).toBe(true)
+    const content = await readFile(file, 'utf8')
+    expect(content).toContain('CLI test')
+  })
+
   it('should combine multiple CLI options', async () => {
     const { code } = await runCLI([
       'src/index.ts',
@@ -307,6 +322,8 @@ describe('cLI', () => {
       'cjs',
       '--platform',
       'node',
+      '--target',
+      'es2020',
       '--no-clean',
     ], fixtureDir.pathname)
 
