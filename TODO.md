@@ -109,12 +109,24 @@
 - CLI 支持 `--external` 和 `--no-external` 参数
 - 支持正则表达式语法（如 `/^@types\//`）
 
+**目标环境配置**
+- 支持 ES5 到 ESNext 的所有版本目标
+- CLI 支持 `--target` 参数
+- 在 bundle 和 transform 模式下都可用
+- 自动转换现代 JavaScript 语法到目标版本
+
+**别名配置**
+- 支持模块路径别名映射 (`alias: { '@': './src' }`)
+- Bundle 模式：通过 rolldown 的 resolve.alias 实现
+- Transform 模式：自定义实现，支持相对路径解析
+- 支持多个别名同时配置
+
 ### 中优先级 (P1)
 1. 文件复制功能
 2. 构建报告
 3. 成功回调
-4. 别名配置
-5. Publint 集成
+4. Publint 集成
+5. Banner/Footer 支持
 
 ### 低优先级 (P2)
 1. 工作区支持
