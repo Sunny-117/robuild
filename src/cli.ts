@@ -53,6 +53,22 @@ const args = parseArgs({
       type: 'string',
       multiple: true,
     },
+    'log-level': {
+      type: 'string',
+    },
+    'on-success': {
+      type: 'string',
+    },
+    'fail-on-warn': {
+      type: 'boolean',
+    },
+    'ignore-watch': {
+      type: 'string',
+      multiple: true,
+    },
+    'from-vite': {
+      type: 'boolean',
+    },
     'help': {
       type: 'boolean',
     },
@@ -79,6 +95,11 @@ Options:
   --no-clean               Disable cleaning output directory
   --external <module>      Mark dependencies as external (can be used multiple times)
   --no-external <module>   Force bundle dependencies (can be used multiple times)
+  --log-level <level>      Log level: silent, error, warn, info, verbose (default: info)
+  --on-success <command>   Command to run after successful build
+  --fail-on-warn           Fail build on warnings
+  --ignore-watch <pattern> Ignore patterns in watch mode (can be used multiple times)
+  --from-vite              Load configuration from Vite config file
   --help                   Show this help message
   --version                Show version number
 
@@ -188,9 +209,37 @@ if (rawEntries.length === 0) {
   process.exit(1)
 }
 
-await build({
+// Build final config with CLI overrides
+const buildConfig: BuildConfig = {
   cwd: args.values.dir,
   ...config,
   entries,
-  watch: args.values.watch ? { enabled: true, ...config.watch } : config.watch,
-})
+  watch: args.values.watch ? {
+    enabled: true,
+    ...config.watch,
+    ...(args.values['ignore-watch'] ? { exclude: [...(config.watch?.exclude || []), ...args.values['ignore-watch']] } : {})
+  } : config.watch,
+}
+
+// Apply CLI-level options
+if (args.values['log-level']) {
+  buildConfig.logLevel = args.values['log-level'] as any
+}
+
+if (args.values['on-success']) {
+  buildConfig.onSuccess = args.values['on-success']
+}
+
+if (args.values['fail-on-warn']) {
+  buildConfig.failOnWarn = true
+}
+
+if (args.values['ignore-watch']) {
+  buildConfig.ignoreWatch = args.values['ignore-watch']
+}
+
+if (args.values['from-vite']) {
+  buildConfig.fromVite = true
+}
+
+await build(buildConfig)

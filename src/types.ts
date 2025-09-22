@@ -288,9 +288,57 @@ export interface WatchOptions {
   watchNewFiles?: boolean
 }
 
+export type LogLevel = 'silent' | 'error' | 'warn' | 'info' | 'verbose'
+
+export type OnSuccessCallback = string | ((result: BuildResult) => void | Promise<void>)
+
+export interface BuildResult {
+  entries: Array<{
+    format: OutputFormat
+    name: string
+    exports: string[]
+    deps: string[]
+    size: number
+    gzipSize: number
+    sideEffectSize: number
+  }>
+  duration: number
+}
+
 export interface BuildConfig {
   cwd?: string | URL
   entries?: (BuildEntry | string)[]
   hooks?: BuildHooks
   watch?: WatchOptions
+
+  /**
+   * Log level for build output.
+   *
+   * @default 'info'
+   */
+  logLevel?: LogLevel
+
+  /**
+   * Callback to execute after successful build.
+   */
+  onSuccess?: OnSuccessCallback
+
+  /**
+   * Fail build on warnings.
+   *
+   * @default false
+   */
+  failOnWarn?: boolean
+
+  /**
+   * Additional paths to ignore in watch mode.
+   */
+  ignoreWatch?: string[]
+
+  /**
+   * Load configuration from Vite config file.
+   *
+   * @default false
+   */
+  fromVite?: boolean
 }

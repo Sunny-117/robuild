@@ -5,6 +5,8 @@ import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
 import { glob } from 'tinyglobby'
 import { fmtPath } from './utils'
+import { createWatchFilter, normalizeIgnorePatterns } from './features/ignore-watch'
+import { logger } from './features/logger'
 
 export interface WatchContext {
   config: BuildConfig
@@ -39,7 +41,7 @@ export async function startWatch(
 
   // Determine what files to watch
   const watchPatterns = await getWatchPatterns(config, ctx, watchOptions)
-  const ignorePatterns = getIgnorePatterns(watchOptions)
+  const ignorePatterns = getIgnorePatterns(config, watchOptions)
 
   consola.info(`👀 Starting watch mode...`)
   consola.info(`📁 Watching: ${c.dim(watchPatterns.join(', '))}`)
@@ -256,7 +258,7 @@ async function getWatchPatterns(
 /**
  * Get patterns for files to ignore
  */
-function getIgnorePatterns(watchOptions: WatchOptions): string[] {
+function getIgnorePatterns(config: BuildConfig, watchOptions: WatchOptions): string[] {
   const defaultIgnores = [
     '**/node_modules/**',
     '**/dist/**',
@@ -270,9 +272,17 @@ function getIgnorePatterns(watchOptions: WatchOptions): string[] {
     '**/temp/**',
   ]
 
+  const allIgnores = [...defaultIgnores]
+
+  // Add patterns from watch options
   if (watchOptions.exclude && watchOptions.exclude.length > 0) {
-    return [...defaultIgnores, ...watchOptions.exclude]
+    allIgnores.push(...watchOptions.exclude)
   }
 
-  return defaultIgnores
+  // Add patterns from build config
+  if (config.ignoreWatch && config.ignoreWatch.length > 0) {
+    allIgnores.push(...normalizeIgnorePatterns(config.ignoreWatch))
+  }
+
+  return allIgnores
 }

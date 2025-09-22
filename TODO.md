@@ -59,22 +59,37 @@
 - Transform 模式：通过代码转换实现
 - 自动识别 Node.js 内置模块
 
-### 🔍 代码质量和分析
-
-- [ ] **Publint 集成** - 包发布质量检查
-- [ ] **Are The Types Wrong 集成** - TypeScript 类型检查
-- [ ] **未使用依赖检查** - 依赖使用情况分析 (`unused`)
-- [ ] **构建报告** - 详细的构建大小和依赖报告 (`report`)
-- [ ] **Tree-shaking 配置** - 可配置的 tree-shaking 选项
-
 ### 🔄 开发体验
 
-- [ ] **成功回调** - 构建成功后执行命令 (`onSuccess`)
-- [ ] **忽略监听路径** - 监听模式下忽略特定路径 (`ignoreWatch`)
-- [ ] **Vite 配置复用** - 从 Vite/Vitest 复用配置 (`fromVite`)
-- [ ] **调试模式** - 详细的调试日志输出
-- [ ] **日志级别控制** - 可配置的日志级别 (`logLevel`)
-- [ ] **构建失败处理** - 警告时失败选项 (`failOnWarn`)
+- [x] **成功回调** - 构建成功后执行命令 (`onSuccess`)
+  - 支持字符串命令和函数回调
+  - CLI 支持 `--on-success` 参数
+  - 完整的错误处理和测试覆盖
+
+- [x] **忽略监听路径** - 监听模式下忽略特定路径 (`ignoreWatch`)
+  - 支持 glob 模式匹配
+  - 默认忽略常见目录（node_modules, dist, .git 等）
+  - CLI 支持 `--ignore-watch` 参数
+
+- [x] **Vite 配置复用** - 从 Vite/Vitest 复用配置 (`fromVite`)
+  - 自动检测 Vite 配置文件
+  - 转换 Vite 配置到 robuild 格式
+  - CLI 支持 `--from-vite` 参数
+
+- [x] **调试模式** - 详细的调试日志输出
+  - 通过 `logLevel: 'verbose'` 启用
+  - 详细的构建过程日志
+  - 功能执行状态跟踪
+
+- [x] **日志级别控制** - 可配置的日志级别 (`logLevel`)
+  - 支持 silent, error, warn, info, verbose 级别
+  - CLI 支持 `--log-level` 参数
+  - 全局日志配置和计数功能
+
+- [x] **构建失败处理** - 警告时失败选项 (`failOnWarn`)
+  - 可配置警告时构建失败
+  - CLI 支持 `--fail-on-warn` 参数
+  - 警告和错误计数跟踪
 
 ### 🏢 企业级功能
 

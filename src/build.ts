@@ -13,6 +13,9 @@ import { colors as c } from 'consola/utils'
 import prettyBytes from 'pretty-bytes'
 import { rolldownBuild } from './builders/bundle'
 import { transformDir } from './builders/transform'
+import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from './features/logger'
+import { createBuildResult, executeOnSuccess } from './features/on-success'
+import { loadViteConfig } from './features/vite-config'
 import { analyzeDir, fmtPath } from './utils'
 import { startWatch } from './watch'
 
@@ -20,23 +23,39 @@ import { startWatch } from './watch'
  * Build dist/ from src/
  */
 export async function build(config: BuildConfig): Promise<void> {
-  // const start = Date.now()
+  const startTime = Date.now()
+
+  // Configure logger
+  if (config.logLevel) {
+    configureLogger(config.logLevel)
+  }
+
+  // Reset log counts for this build
+  resetLogCounts()
 
   const pkgDir = normalizePath(config.cwd)
   const pkg = await readJSON(join(pkgDir, 'package.json')).catch(() => ({}))
   const ctx: BuildContext = { pkg, pkgDir }
 
+  // Load Vite config if requested
+  let finalConfig = config
+  if (config.fromVite) {
+    logger.verbose('Loading configuration from Vite config file')
+    const viteConfig = await loadViteConfig(pkgDir)
+    finalConfig = { ...viteConfig, ...config } // config overrides vite config
+  }
+
   // Check if watch mode is enabled
-  if (config.watch?.enabled) {
-    consola.log(
+  if (finalConfig.watch?.enabled) {
+    logger.info(
       `👀 Starting watch mode for \`${ctx.pkg.name || '<no name>'}\` (\`${ctx.pkgDir}\`)`,
     )
 
     // Perform initial build
-    await performBuild(config, ctx)
+    await performBuild(finalConfig, ctx, startTime)
 
     // Start watching
-    const stopWatch = await startWatch(config, ctx, build)
+    const stopWatch = await startWatch(finalConfig, ctx, build)
 
     // Handle graceful shutdown
     const cleanup = () => {
@@ -52,17 +71,17 @@ export async function build(config: BuildConfig): Promise<void> {
     return new Promise(() => {}) // Never resolves, keeps watching
   }
 
-  consola.log(
+  logger.info(
     `📦 Building \`${ctx.pkg.name || '<no name>'}\` (\`${ctx.pkgDir}\`)`,
   )
 
-  await performBuild(config, ctx)
+  await performBuild(finalConfig, ctx, startTime)
 }
 
 /**
  * Perform the actual build process
  */
-async function performBuild(config: BuildConfig, ctx: BuildContext): Promise<void> {
+async function performBuild(config: BuildConfig, ctx: BuildContext, startTime: number): Promise<void> {
   const start = Date.now()
   const hooks = config.hooks || {}
 
@@ -115,14 +134,26 @@ async function performBuild(config: BuildConfig, ctx: BuildContext): Promise<voi
 
   await hooks.end?.(ctx)
 
+  // Check for warnings and fail if requested
+  if (shouldFailOnWarnings(config.failOnWarn || false)) {
+    throw new Error('Build failed due to warnings')
+  }
+
   const dirSize = analyzeDir(outDirs)
-  consola.log(
+  logger.info(
     c.dim(
       `\nΣ Total dist byte size: ${c.underline(prettyBytes(dirSize.size))} (${c.underline(dirSize.files)} files)`,
     ),
   )
 
-  consola.log(`\n✅ robuild finished in ${Date.now() - start}ms`)
+  const duration = Date.now() - start
+  logger.success(`\n✅ robuild finished in ${duration}ms`)
+
+  // Execute onSuccess callback
+  if (config.onSuccess) {
+    const buildResult = createBuildResult([], startTime)
+    await executeOnSuccess(config.onSuccess, buildResult, ctx.pkgDir)
+  }
 }
 
 // --- utils ---
