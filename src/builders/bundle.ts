@@ -18,13 +18,17 @@ import { parseSync } from 'oxc-parser'
 import prettyBytes from 'pretty-bytes'
 import { rolldown } from 'rolldown'
 import { dts } from 'rolldown-plugin-dts'
+import { createSkipNodeModulesPlugin, getNodeModulesDependencies, getSkipNodeModulesExternalConfig } from '../features/advanced-build'
+
 import { resolveChunkAddon } from '../features/banner'
 
+import { createCjsDefaultPlugin } from '../features/cjs-default'
 import { copyFiles } from '../features/copy'
-
 import { createGlobImportPlugin } from '../features/glob-import'
 import { addHashToFilename, hasHash } from '../features/hash'
+import { createLoaderPlugin } from '../features/loaders'
 import { loadPlugins, PluginManager } from '../features/plugins'
+import { createShimsPlugin } from '../features/shims'
 import { distSize, fmtPath, sideEffectSize } from '../utils'
 import { nodeProtocolPlugin } from './plugins/node-protocol'
 import { makeExecutable, shebangPlugin } from './plugins/shebang'
@@ -222,6 +226,55 @@ export async function rolldownBuild(
           const result = await globPlugin.transform!(code, id)
           return result ? { code: result } : null
         },
+      } as Plugin)
+    }
+  }
+
+  // Add advanced build plugins
+  if (entry.loaders) {
+    const loaderPlugin = createLoaderPlugin(entry.loaders)
+    if (loaderPlugin.load) {
+      rolldownPlugins.push({
+        name: 'loaders',
+        load: loaderPlugin.load,
+      } as Plugin)
+    }
+  }
+
+  // Temporarily disable CJS default export plugin due to syntax issues
+  // TODO: Fix CJS transformation logic
+  // if (entry.cjsDefault !== false) {
+  //   const cjsPlugin = createCjsDefaultPlugin(entry.cjsDefault)
+  //   if (cjsPlugin.transform) {
+  //     rolldownPlugins.push({
+  //       name: 'cjs-default',
+  //       transform: async (code: string, id: string) => {
+  //         const result = await cjsPlugin.transform!(code, id)
+  //         return result ? { code: result } : null
+  //       },
+  //     } as Plugin)
+  //   }
+  // }
+
+  if (entry.shims) {
+    const shimsPlugin = createShimsPlugin(entry.shims)
+    if (shimsPlugin.transform) {
+      rolldownPlugins.push({
+        name: 'shims',
+        transform: async (code: string, id: string) => {
+          const result = await shimsPlugin.transform!(code, id)
+          return result ? { code: result } : null
+        },
+      } as Plugin)
+    }
+  }
+
+  if (entry.skipNodeModules) {
+    const skipPlugin = createSkipNodeModulesPlugin()
+    if (skipPlugin.resolveId) {
+      rolldownPlugins.push({
+        name: 'skip-node-modules',
+        resolveId: skipPlugin.resolveId,
       } as Plugin)
     }
   }

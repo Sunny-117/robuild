@@ -1,16 +1,16 @@
-import { describe, expect, it, vi } from 'vitest'
 import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { describe, expect, it, vi } from 'vitest'
 import { build } from '../src/build'
+import { normalizeIgnorePatterns, shouldIgnoreFile } from '../src/features/ignore-watch'
 import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from '../src/features/logger'
 import { executeOnSuccess } from '../src/features/on-success'
 import { loadViteConfig } from '../src/features/vite-config'
-import { shouldIgnoreFile, normalizeIgnorePatterns } from '../src/features/ignore-watch'
 
 const testDir = join(__dirname, 'fixtures', 'dev-experience')
 
-describe('Development Experience Features', () => {
+describe('development Experience Features', () => {
   beforeEach(() => {
     // Clean up test directory
     if (existsSync(testDir)) {
@@ -27,7 +27,7 @@ describe('Development Experience Features', () => {
     }
   })
 
-  describe('Logger and Log Levels', () => {
+  describe('logger and Log Levels', () => {
     it('should configure log level correctly', () => {
       configureLogger('verbose')
       expect(logger.getWarningCount()).toBe(0)
@@ -37,7 +37,7 @@ describe('Development Experience Features', () => {
     it('should track warnings and errors', () => {
       logger.warn('Test warning')
       logger.error('Test error')
-      
+
       expect(logger.getWarningCount()).toBe(1)
       expect(logger.getErrorCount()).toBe(1)
     })
@@ -52,7 +52,7 @@ describe('Development Experience Features', () => {
       logger.warn('Test warning')
       logger.error('Test error')
       resetLogCounts()
-      
+
       expect(logger.getWarningCount()).toBe(0)
       expect(logger.getErrorCount()).toBe(0)
     })
@@ -62,14 +62,14 @@ describe('Development Experience Features', () => {
     it('should execute string command on success', async () => {
       const testFile = join(testDir, 'success.txt')
       const command = `echo "success" > "${testFile}"`
-      
+
       const buildResult = {
         entries: [],
         duration: 100,
       }
 
       await executeOnSuccess(command, buildResult, testDir)
-      
+
       expect(existsSync(testFile)).toBe(true)
     })
 
@@ -78,14 +78,14 @@ describe('Development Experience Features', () => {
       const callback = vi.fn(() => {
         callbackExecuted = true
       })
-      
+
       const buildResult = {
         entries: [],
         duration: 100,
       }
 
       await executeOnSuccess(callback, buildResult, testDir)
-      
+
       expect(callbackExecuted).toBe(true)
       expect(callback).toHaveBeenCalledWith(buildResult)
     })
@@ -94,7 +94,7 @@ describe('Development Experience Features', () => {
       const callback = () => {
         throw new Error('Callback error')
       }
-      
+
       const buildResult = {
         entries: [],
         duration: 100,
@@ -104,7 +104,7 @@ describe('Development Experience Features', () => {
     })
   })
 
-  describe('Ignore Watch Patterns', () => {
+  describe('ignore Watch Patterns', () => {
     it('should ignore default patterns', () => {
       expect(shouldIgnoreFile(join(testDir, 'node_modules/test.js'), testDir)).toBe(true)
       expect(shouldIgnoreFile(join(testDir, 'dist/test.js'), testDir)).toBe(true)
@@ -114,7 +114,7 @@ describe('Development Experience Features', () => {
 
     it('should ignore custom patterns', () => {
       const customPatterns = ['**/custom/**', '*.temp']
-      
+
       expect(shouldIgnoreFile(join(testDir, 'custom/test.js'), testDir, customPatterns)).toBe(true)
       expect(shouldIgnoreFile(join(testDir, 'test.temp'), testDir, customPatterns)).toBe(true)
       expect(shouldIgnoreFile(join(testDir, 'src/test.js'), testDir, customPatterns)).toBe(false)
@@ -123,12 +123,12 @@ describe('Development Experience Features', () => {
     it('should normalize ignore patterns', () => {
       const patterns = ['./src/**', '/dist/**', 'node_modules/**']
       const normalized = normalizeIgnorePatterns(patterns)
-      
+
       expect(normalized).toEqual(['src/**', 'dist/**', 'node_modules/**'])
     })
   })
 
-  describe('Vite Config Loading', () => {
+  describe('vite Config Loading', () => {
     it('should handle missing vite config', async () => {
       const config = await loadViteConfig(testDir)
       expect(config).toEqual({})
@@ -156,11 +156,11 @@ describe('Development Experience Features', () => {
     })
   })
 
-  describe('Build Integration', () => {
+  describe('build Integration', () => {
     it('should build with log level configuration', async () => {
       const srcDir = join(testDir, 'src')
       mkdirSync(srcDir, { recursive: true })
-      
+
       writeFileSync(join(srcDir, 'index.ts'), 'export const hello = "world"')
 
       await build({
@@ -181,7 +181,7 @@ describe('Development Experience Features', () => {
     it('should execute onSuccess callback after build', async () => {
       const srcDir = join(testDir, 'src')
       mkdirSync(srcDir, { recursive: true })
-      
+
       writeFileSync(join(srcDir, 'index.ts'), 'export const hello = "world"')
 
       let callbackExecuted = false
@@ -208,7 +208,7 @@ describe('Development Experience Features', () => {
     it('should handle failOnWarn option', async () => {
       const srcDir = join(testDir, 'src')
       mkdirSync(srcDir, { recursive: true })
-      
+
       writeFileSync(join(srcDir, 'index.ts'), 'export const hello = "world"')
 
       // This test would need to trigger a warning to properly test failOnWarn

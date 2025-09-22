@@ -79,6 +79,18 @@ const args = parseArgs({
     'generate-exports': {
       type: 'boolean',
     },
+    'cjs-default': {
+      type: 'string',
+    },
+    'shims': {
+      type: 'boolean',
+    },
+    'skip-node-modules': {
+      type: 'boolean',
+    },
+    'unbundle': {
+      type: 'boolean',
+    },
     'help': {
       type: 'boolean',
     },
@@ -113,6 +125,10 @@ Options:
   --workspace              Enable workspace mode for monorepo builds
   --filter <pattern>       Filter workspace packages by name or path pattern (can be used multiple times)
   --generate-exports       Generate package.json exports field
+  --cjs-default <mode>     CommonJS default export handling: true, false, auto (default: auto)
+  --shims                  Enable CJS/ESM compatibility shims
+  --skip-node-modules      Skip bundling node_modules dependencies
+  --unbundle               Preserve file structure without bundling
   --help                   Show this help message
   --version                Show version number
 
@@ -203,6 +219,24 @@ const entries: BuildEntry[] = rawEntries.map((entry) => {
             ? new RegExp(ext.slice(1, -1))
             : ext,
         )
+      }
+
+      // Advanced build options
+      if (args.values['cjs-default']) {
+        const mode = args.values['cjs-default']
+        baseEntry.cjsDefault = mode === 'true' ? true : mode === 'false' ? false : mode
+      }
+
+      if (args.values.shims) {
+        baseEntry.shims = true
+      }
+
+      if (args.values['skip-node-modules']) {
+        baseEntry.skipNodeModules = true
+      }
+
+      if (args.values.unbundle) {
+        baseEntry.unbundle = true
       }
 
       return baseEntry as BuildEntry

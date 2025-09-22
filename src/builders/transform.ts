@@ -12,6 +12,7 @@ import { minify } from 'oxc-minify'
 import { parseSync } from 'oxc-parser'
 import { transform } from 'oxc-transform'
 import { glob } from 'tinyglobby'
+import { unbundleTransform } from '../features/advanced-build'
 import { addBannerFooter, resolveChunkAddon } from '../features/banner'
 import { copyFiles } from '../features/copy'
 import { createFilename } from '../features/extensions'
@@ -61,6 +62,15 @@ export async function transformDir(
       `${c.magenta('[stub transform]   ')} ${c.underline(`${fmtPath(entry.outDir!)}/`)}`,
     )
     await symlink(entry.input, entry.outDir!, 'junction')
+    return
+  }
+
+  // Handle unbundle mode
+  if (entry.unbundle) {
+    consola.log(
+      `${c.magenta('[unbundle]         ')} ${c.underline(`${fmtPath(entry.outDir!)}/`)}`,
+    )
+    await unbundleTransform(ctx, entry)
     return
   }
 

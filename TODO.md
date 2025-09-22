@@ -108,11 +108,11 @@
 
 ### 📦 高级构建选项
 
-- [ ] **Loader 配置** - 文件类型处理器配置
-- [ ] **CJS 默认导出** - CommonJS 默认导出处理 (`cjsDefault`)
-- [ ] **Shims 支持** - CJS/ESM 兼容性垫片
-- [ ] **跳过 node_modules** - 可选的 node_modules 打包跳过
-- [ ] **Unbundle 模式** - 保持文件结构的非打包模式
+- [x] **Loader 配置** - 文件类型处理器配置
+- [x] **CJS 默认导出** - CommonJS 默认导出处理 (`cjsDefault`)
+- [x] **Shims 支持** - CJS/ESM 兼容性垫片
+- [x] **跳过 node_modules** - 可选的 node_modules 打包跳过
+- [x] **Unbundle 模式** - 保持文件结构的非打包模式
 
 ## 🚀 实现优先级
 

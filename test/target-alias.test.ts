@@ -60,7 +60,7 @@ export const test = helper
             input: 'src/index.ts',
             outDir: 'dist',
             alias: {
-              '@': cwd + '/src',
+              '@': `${cwd}/src`,
             },
             dts: false,
           },
@@ -90,7 +90,7 @@ export const test = helper
             input: 'src/',
             outDir: 'dist',
             alias: {
-              '@': cwd + '/src',
+              '@': `${cwd}/src`,
             },
           },
         ],

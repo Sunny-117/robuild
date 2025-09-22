@@ -32,6 +32,45 @@ export type OutExtensionFactory = (format: OutputFormat) => {
   dts?: string
 }
 
+// Loader types
+export type LoaderType = 'js' | 'jsx' | 'ts' | 'tsx' | 'json' | 'css' | 'text' | 'binary' | 'file' | 'dataurl' | 'empty'
+
+export interface LoaderConfig {
+  loader: LoaderType
+  options?: Record<string, any>
+}
+
+// Shims types
+export interface ShimsConfig {
+  /**
+   * Enable __dirname and __filename shims for ESM.
+   *
+   * @default true
+   */
+  dirname?: boolean
+
+  /**
+   * Enable require() shim for ESM.
+   *
+   * @default true
+   */
+  require?: boolean
+
+  /**
+   * Enable module.exports shim for ESM.
+   *
+   * @default true
+   */
+  exports?: boolean
+
+  /**
+   * Enable process.env shim for browser.
+   *
+   * @default false
+   */
+  env?: boolean
+}
+
 export interface BuildContext {
   pkgDir: string
   pkg: { name: string } & Record<string, unknown>
@@ -161,6 +200,43 @@ export interface _BuildEntry {
    * Dependencies that should be bundled even if they're in node_modules.
    */
   noExternal?: (string | RegExp)[] | ((id: string, importer?: string) => boolean)
+
+  /**
+   * File type loaders configuration.
+   */
+  loaders?: Record<string, LoaderConfig>
+
+  /**
+   * CommonJS default export handling.
+   *
+   * - `true`: Preserve CommonJS default exports
+   * - `false`: Transform to ES module default exports
+   * - `'auto'`: Auto-detect based on file content
+   *
+   * @default 'auto'
+   */
+  cjsDefault?: boolean | 'auto'
+
+  /**
+   * Enable CJS/ESM compatibility shims.
+   *
+   * @default false
+   */
+  shims?: boolean | ShimsConfig
+
+  /**
+   * Skip bundling node_modules dependencies.
+   *
+   * @default false
+   */
+  skipNodeModules?: boolean
+
+  /**
+   * Unbundle mode - preserve file structure without bundling.
+   *
+   * @default false
+   */
+  unbundle?: boolean
 }
 
 export type BundleEntry = _BuildEntry & {

@@ -1,7 +1,7 @@
 import type { BuildConfig } from '../src/types'
-import { describe, expect, it } from 'vitest'
-import { mkdir, writeFile, rm } from 'node:fs/promises'
+import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { describe, expect, it } from 'vitest'
 import { generatePackageExports } from '../src/features/exports'
 import {
   detectMigrationSources,
@@ -78,7 +78,7 @@ describe('enterprise Features', () => {
         JSON.stringify({
           name: 'workspace-root',
           workspaces: ['packages/*'],
-        })
+        }),
       )
 
       await writeFile(
@@ -86,12 +86,12 @@ describe('enterprise Features', () => {
         JSON.stringify({
           name: '@workspace/lib-a',
           main: 'dist/index.js',
-        })
+        }),
       )
 
       await writeFile(
         join(workingDir, 'packages/lib-a/src/index.ts'),
-        'export const libA = "lib-a"'
+        'export const libA = "lib-a"',
       )
 
       await writeFile(
@@ -99,12 +99,12 @@ describe('enterprise Features', () => {
         JSON.stringify({
           name: '@workspace/lib-b',
           main: 'dist/index.js',
-        })
+        }),
       )
 
       await writeFile(
         join(workingDir, 'packages/lib-b/src/index.ts'),
-        'export const libB = "lib-b"'
+        'export const libB = "lib-b"',
       )
 
       // Build workspace
@@ -238,20 +238,20 @@ describe('enterprise Features', () => {
 
       const result = await migrateFromTsup('tsup.config.json', configContent)
 
-        expect(result.config).toHaveProperty('entries')
-        expect(result.config.entries).toHaveLength(1)
-        expect(result.config.entries![0]).toMatchObject({
-          type: 'bundle',
-          input: 'src/index.ts',
-          format: ['esm', 'cjs'],
-          dts: true,
-          minify: true,
-          target: 'es2020',
-          platform: 'node',
-          external: ['react'],
-          globalName: 'MyLib',
-        })
-        expect(result.config).toHaveProperty('clean', true)
+      expect(result.config).toHaveProperty('entries')
+      expect(result.config.entries).toHaveLength(1)
+      expect(result.config.entries![0]).toMatchObject({
+        type: 'bundle',
+        input: 'src/index.ts',
+        format: ['esm', 'cjs'],
+        dts: true,
+        minify: true,
+        target: 'es2020',
+        platform: 'node',
+        external: ['react'],
+        globalName: 'MyLib',
+      })
+      expect(result.config).toHaveProperty('clean', true)
     })
 
     it('should migrate from unbuild configuration', async () => {
@@ -268,21 +268,21 @@ describe('enterprise Features', () => {
 
       const result = await migrateFromUnbuild('build.config.json', configContent)
 
-        expect(result.config).toHaveProperty('entries')
-        expect(result.config.entries).toHaveLength(2)
-        expect(result.config.entries![0]).toMatchObject({
-          type: 'bundle',
-          input: 'src/index.ts',
-          format: 'esm',
-        })
-        expect(result.config.entries![1]).toMatchObject({
-          type: 'bundle',
-          input: 'src/cli.ts',
-          format: 'cjs',
-          globalName: 'cli',
-        })
-        expect(result.config).toHaveProperty('outDir', 'dist')
-        expect(result.config).toHaveProperty('clean', true)
+      expect(result.config).toHaveProperty('entries')
+      expect(result.config.entries).toHaveLength(2)
+      expect(result.config.entries![0]).toMatchObject({
+        type: 'bundle',
+        input: 'src/index.ts',
+        format: 'esm',
+      })
+      expect(result.config.entries![1]).toMatchObject({
+        type: 'bundle',
+        input: 'src/cli.ts',
+        format: 'cjs',
+        globalName: 'cli',
+      })
+      expect(result.config).toHaveProperty('outDir', 'dist')
+      expect(result.config).toHaveProperty('clean', true)
     })
 
     it('should detect migration sources', async () => {
@@ -304,9 +304,9 @@ describe('enterprise Features', () => {
 
       const result = await migrateFromTsup('tsup.config.json', configContent)
 
-        expect(result.warnings).toContain('Code splitting is not directly supported, consider using multiple entries')
-        expect(result.warnings).toContain('Source maps are not yet supported in robuild')
-        expect(result.suggestions).toContain('Tree shaking is enabled by default in robuild')
+      expect(result.warnings).toContain('Code splitting is not directly supported, consider using multiple entries')
+      expect(result.warnings).toContain('Source maps are not yet supported in robuild')
+      expect(result.suggestions).toContain('Tree shaking is enabled by default in robuild')
     })
   })
 })
