@@ -8,38 +8,99 @@ English | <a href="./README-zh.md">简体中文</a>
 
 ⚡️ Zero-config ESM/TS package builder. Powered by [**oxc**](https://oxc.rs/), [**rolldown**](https://rolldown.rs/) and [**rolldown-plugin-dts**](https://github.com/sxzz/rolldown-plugin-dts).
 
-- 👌 Focus on ESM compatibility.
-- 🌱 Fresh rewrite with cleanups and removal of legacy features.
-- 🚀 Using [**oxc**](https://oxc.rs/) (for transform) and [**rolldown**](https://rolldown.rs/) (for bundle) for much faster builds!
+## Features
 
-## Proof of concept
+- 🚀 **Fast**: Built on top of [rolldown](https://rolldown.rs/) and [oxc](https://oxc.rs/)
+- 📦 **Bundle**: Bundle your library with dependencies
+- 🔄 **Transform**: Transform your source code to different formats
+- 🎯 **TypeScript**: First-class TypeScript support with `.d.ts` generation
+- 📁 **Multiple entries**: Support multiple entry points
+- 🔧 **Zero config**: Works out of the box, configurable when needed
+- 👀 **Watch Mode**: Real-time file watching and automatic rebuilds
+- 🎨 **Multi-format**: Support ESM, CJS, IIFE, UMD output formats
+- 🧹 **Clean**: Automatic output directory cleaning
+- 🌍 **Environment**: Compile-time environment variable injection
+- 🎯 **Platform**: Browser, Node.js, and neutral platform targets
+- 📦 **External**: Enhanced external dependency configuration
 
-> [!IMPORTANT]
->
-> Features are incomplete, and API and output behavior may change between 0.x versions.
->
-> Feedback and contributions are very welcome! If you'd like to make changes with more than a few lines of code, please open an issue first to discuss.
-
-## Usage
-
-### CLI
+## Installation
 
 ```sh
-# bundle
+npm install robuild
+# or
+pnpm add robuild
+# or
+yarn add robuild
+```
+
+## Quick Start
+
+```sh
+# Bundle your library
 npx robuild ./src/index.ts
 
-# transform
+# Transform source files
 npx robuild ./src/runtime/:./dist/runtime
 
-# watch mode - rebuild on file changes
+# Watch mode for development
 npx robuild ./src/index.ts --watch
 ```
 
-You can use `--dir` to set the working directory and `--watch` to enable watch mode.
+## CLI Usage
 
-If paths end with `/`, robuild uses transpile mode using [oxc-transform](https://www.npmjs.com/package/oxc-transform) instead of bundle mode with [rolldown](https://rolldown.rs/).
+### Basic Commands
 
-### Programmatic
+```sh
+# Bundle your library
+npx robuild ./src/index.ts
+
+# Transform source files (when path ends with /)
+npx robuild ./src/runtime/:./dist/runtime
+
+# Watch mode for development
+npx robuild ./src/index.ts --watch
+```
+
+### Multi-format Output
+
+```sh
+# Build in multiple formats
+npx robuild ./src/index.ts --format esm --format cjs --format iife
+
+# Browser build with global name
+npx robuild ./src/index.ts --format iife --platform browser --global-name MyLib
+```
+
+### Advanced Options
+
+```sh
+# External dependencies
+npx robuild ./src/index.ts --external lodash --external /^@types\//
+
+# Disable cleaning
+npx robuild ./src/index.ts --no-clean
+
+# Custom working directory
+npx robuild ./src/index.ts --dir ./my-project
+```
+
+### CLI Options
+
+| Option | Description | Example |
+|--------|-------------|---------|
+| `--format` | Output format(s) | `--format esm --format cjs` |
+| `--platform` | Target platform | `--platform browser` |
+| `--global-name` | Global name for IIFE/UMD | `--global-name MyLib` |
+| `--external` | External dependencies | `--external lodash` |
+| `--no-external` | Force bundle dependencies | `--no-external some-pkg` |
+| `--clean` / `--no-clean` | Clean output directory | `--no-clean` |
+| `--watch` / `-w` | Watch mode | `--watch` |
+| `--dir` | Working directory | `--dir ./my-project` |
+| `--stub` | Generate stub files | `--stub` |
+
+## Configuration
+
+### Programmatic Usage
 
 ```js
 import { build } from 'robuild'
@@ -50,9 +111,9 @@ await build({
 })
 ```
 
-## Config
+### Config File
 
-You can use `build.config.mjs` (or `.ts`) or pass config to `build()` function.
+Create `build.config.ts` (or `.mjs`) in your project root:
 
 ```js
 import { defineConfig } from 'robuild'
@@ -61,30 +122,114 @@ export default defineConfig({
   entries: [
     {
       type: 'bundle',
-      input: ['./src/index.ts', './src/cli.ts'],
-      // outDir: "./dist",
-      // minify: false,
-      // stub: false,
-      // rolldown: {}, // https://rolldown.rs/reference/config-options
-      // dts: {}, // https://github.com/sxzz/rolldown-plugin-dts#options
+      input: './src/index.ts',
+      format: ['esm', 'cjs'], // Multiple formats
+      platform: 'node', // 'browser' | 'node' | 'neutral'
+      globalName: 'MyLib', // For IIFE/UMD formats
+      clean: true, // Clean output directory
+      env: {
+        VERSION: '1.0.0',
+        NODE_ENV: 'production'
+      },
+      define: {
+        __DEV__: 'false',
+        BUILD_MODE: '"production"'
+      },
+      external: ['lodash', /^@types\//],
+      noExternal: ['some-internal-package'],
     },
     {
       type: 'transform',
       input: './src/runtime',
       outDir: './dist/runtime',
-      // minify: false,
-      // stub: false,
-      // oxc: {},
-      // resolve: {}
     },
   ],
-  hooks: {
-    // start: (ctx) => {},
-    // end: (ctx) => {},
-    // entries: (entries, ctx) => {},
-    // rolldownConfig: (config, ctx) => {},
-    // rolldownOutput: (output, res, ctx) => {},
-  },
+})
+```
+
+### Bundle Entry Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `input` | `string \| string[]` | Entry point(s) |
+| `format` | `OutputFormat \| OutputFormat[]` | Output format(s): `esm`, `cjs`, `iife`, `umd` |
+| `platform` | `Platform` | Target platform: `browser`, `node`, `neutral` |
+| `globalName` | `string` | Global name for IIFE/UMD formats |
+| `clean` | `boolean \| string[]` | Clean output directory |
+| `env` | `Record<string, any>` | Environment variables to inject |
+| `define` | `Record<string, string>` | Constants to define |
+| `external` | `(string \| RegExp)[] \| function` | External dependencies |
+| `noExternal` | `(string \| RegExp)[] \| function` | Force bundle dependencies |
+| `outDir` | `string` | Output directory (default: `dist`) |
+| `minify` | `boolean` | Minify output |
+| `dts` | `boolean \| DtsOptions` | Generate TypeScript declarations |
+
+## Advanced Features
+
+### Multi-format Output
+
+Build your library in multiple formats simultaneously:
+
+**Supported Formats:**
+- **ESM** (`.mjs`) - ES Modules for modern environments
+- **CJS** (`.cjs`) - CommonJS for Node.js compatibility
+- **IIFE** (`.js`) - Immediately Invoked Function Expression for browsers
+- **UMD** (`.js`) - Universal Module Definition for maximum compatibility
+
+**Output Structure:**
+```
+dist/
+├── index.mjs          # ESM format
+├── index.d.mts        # TypeScript declarations (ESM only)
+├── index.cjs          # CJS format
+└── index.js           # IIFE format
+```
+
+### Environment Variables & Constants
+
+Inject environment variables and define constants at build time:
+
+```js
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      env: {
+        VERSION: '1.0.0',
+        NODE_ENV: 'production'
+      },
+      define: {
+        __DEV__: 'false',
+        BUILD_MODE: '"production"'
+      }
+    }
+  ]
+})
+```
+
+This replaces `process.env.VERSION` with `"1.0.0"` and `__DEV__` with `false` at compile time.
+
+### External Dependencies
+
+Control which dependencies are bundled or kept external:
+
+```js
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      external: [
+        'lodash', // Keep lodash external
+        /^@types\//, // Keep all @types/* external
+        id => id.includes('node_modules') // Custom function
+      ],
+      noExternal: [
+        'some-package' // Force bundle this package
+      ]
+    }
+  ]
 })
 ```
 
@@ -155,6 +300,14 @@ You can use `stub: true` (per entry config) or the `--stub` CLI flag. In this mo
 - Using [jiti](https://github.com/unjs/jiti) (`node --import jiti/register`)
 - Using [oxc-node](https://github.com/oxc-project/oxc-node) (`node --import @oxc-node/core/register`)
 - Using [unloader](https://github.com/sxzz/unloader) (`node --import unloader/register`)
+
+## Status
+
+> [!IMPORTANT]
+>
+> This is a proof of concept. Features are incomplete, and API and output behavior may change between 0.x versions.
+>
+> Feedback and contributions are very welcome! If you'd like to make changes with more than a few lines of code, please open an issue first to discuss.
 
 ## Prior Arts
 

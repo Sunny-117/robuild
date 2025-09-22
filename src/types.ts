@@ -11,6 +11,9 @@ import type {
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
 
+export type OutputFormat = 'esm' | 'cjs' | 'iife' | 'umd'
+export type Platform = 'browser' | 'node' | 'neutral'
+
 export interface BuildContext {
   pkgDir: string
   pkg: { name: string } & Record<string, unknown>
@@ -28,6 +31,52 @@ export interface _BuildEntry {
    * Avoid actual build but instead link to the source files.
    */
   stub?: boolean
+
+  /**
+   * Output format(s) for the build.
+   *
+   * Defaults to `['esm']` if not provided.
+   */
+  format?: OutputFormat | OutputFormat[]
+
+  /**
+   * Target platform for the build.
+   *
+   * Defaults to `'node'` if not provided.
+   */
+  platform?: Platform
+
+  /**
+   * Global variable name for IIFE/UMD formats.
+   */
+  globalName?: string
+
+  /**
+   * Clean output directory before build.
+   *
+   * Defaults to `true` if not provided.
+   */
+  clean?: boolean | string[]
+
+  /**
+   * Environment variables to inject at compile time.
+   */
+  env?: Record<string, any>
+
+  /**
+   * Define constants to replace at compile time.
+   */
+  define?: Record<string, string>
+
+  /**
+   * External dependencies that should not be bundled.
+   */
+  external?: (string | RegExp)[] | ((id: string, importer?: string) => boolean)
+
+  /**
+   * Dependencies that should be bundled even if they're in node_modules.
+   */
+  noExternal?: (string | RegExp)[] | ((id: string, importer?: string) => boolean)
 }
 
 export type BundleEntry = _BuildEntry & {

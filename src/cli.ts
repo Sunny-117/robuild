@@ -12,18 +12,43 @@ const args = parseArgs({
   args: process.argv.slice(2),
   allowPositionals: true,
   options: {
-    dir: {
+    'dir': {
       type: 'string',
       default: '.',
     },
-    stub: {
+    'stub': {
       type: 'boolean',
       default: false,
     },
-    watch: {
+    'watch': {
       type: 'boolean',
       default: false,
       short: 'w',
+    },
+    'format': {
+      type: 'string',
+      multiple: true,
+    },
+    'platform': {
+      type: 'string',
+    },
+    'global-name': {
+      type: 'string',
+    },
+    'clean': {
+      type: 'boolean',
+      default: true,
+    },
+    'no-clean': {
+      type: 'boolean',
+    },
+    'external': {
+      type: 'string',
+      multiple: true,
+    },
+    'no-external': {
+      type: 'string',
+      multiple: true,
     },
   },
 })
@@ -42,9 +67,63 @@ const rawEntries
 const entries: BuildEntry[] = rawEntries.map((entry) => {
   if (typeof entry === 'string') {
     const [input, outDir] = entry.split(':') as [string, string | undefined]
-    return input.endsWith('/')
-      ? { type: 'transform', input, outDir }
-      : { type: 'bundle', input: input.split(','), outDir }
+
+    if (input.endsWith('/')) {
+      // Transform entry
+      return { type: 'transform' as const, input, outDir }
+    }
+    else {
+      // Bundle entry
+      const baseEntry: any = {
+        type: 'bundle' as const,
+        input: input.split(','),
+        outDir,
+      }
+
+      // Apply CLI options to bundle entries
+      // Format options
+      if (args.values.format) {
+        baseEntry.format = args.values.format
+      }
+
+      // Platform option
+      if (args.values.platform) {
+        baseEntry.platform = args.values.platform
+      }
+
+      // Global name for IIFE/UMD
+      if (args.values['global-name']) {
+        baseEntry.globalName = args.values['global-name']
+      }
+
+      // Clean option
+      if (args.values['no-clean']) {
+        baseEntry.clean = false
+      }
+      else if (args.values.clean !== undefined) {
+        baseEntry.clean = args.values.clean
+      }
+
+      // External dependencies
+      if (args.values.external) {
+        baseEntry.external = args.values.external.map(ext =>
+          ext.startsWith('/') && ext.endsWith('/')
+            ? new RegExp(ext.slice(1, -1))
+            : ext,
+        )
+      }
+
+      // No external dependencies
+      if (args.values['no-external']) {
+        baseEntry.noExternal = args.values['no-external'].map(ext =>
+          ext.startsWith('/') && ext.endsWith('/')
+            ? new RegExp(ext.slice(1, -1))
+            : ext,
+        )
+      }
+
+      return baseEntry as BuildEntry
+    }
   }
   return entry
 })

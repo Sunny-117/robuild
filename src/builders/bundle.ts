@@ -1,11 +1,12 @@
 import type {
   InputOptions,
+  ModuleFormat,
   OutputChunk,
   OutputOptions,
   Plugin,
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
-import type { BuildContext, BuildHooks, BundleEntry } from '../types'
+import type { BuildContext, BuildHooks, BundleEntry, OutputFormat, Platform } from '../types'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { builtinModules } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
@@ -22,6 +23,70 @@ import { dts } from 'rolldown-plugin-dts'
 import { distSize, fmtPath, sideEffectSize } from '../utils'
 import { makeExecutable, shebangPlugin } from './plugins/shebang'
 
+/**
+ * Convert OutputFormat to Rolldown ModuleFormat
+ */
+function formatToRolldownFormat(format: OutputFormat): ModuleFormat {
+  switch (format) {
+    case 'esm':
+      return 'es'
+    case 'cjs':
+      return 'cjs'
+    case 'iife':
+      return 'iife'
+    case 'umd':
+      return 'umd'
+    default:
+      return 'es'
+  }
+}
+
+/**
+ * Get file extension for format
+ */
+function getFormatExtension(format: OutputFormat, platform: Platform): string {
+  switch (format) {
+    case 'esm':
+      return platform === 'node' ? '.mjs' : '.js'
+    case 'cjs':
+      return platform === 'node' ? '.cjs' : '.js'
+    case 'iife':
+    case 'umd':
+      return '.js'
+    default:
+      return '.js'
+  }
+}
+
+/**
+ * Clean output directory
+ */
+async function cleanOutputDir(outDir: string, cleanPaths?: boolean | string[]): Promise<void> {
+  if (!cleanPaths)
+    return
+
+  const { rm } = await import('node:fs/promises')
+  const { existsSync } = await import('node:fs')
+
+  if (cleanPaths === true) {
+    // Clean the entire output directory
+    if (existsSync(outDir)) {
+      consola.log(`🧻 Cleaning up ${fmtPath(outDir)}`)
+      await rm(outDir, { recursive: true, force: true })
+    }
+  }
+  else if (Array.isArray(cleanPaths)) {
+    // Clean specific paths
+    for (const path of cleanPaths) {
+      const fullPath = resolve(outDir, path)
+      if (existsSync(fullPath)) {
+        consola.log(`🧻 Cleaning up ${fmtPath(fullPath)}`)
+        await rm(fullPath, { recursive: true, force: true })
+      }
+    }
+  }
+}
+
 export async function rolldownBuild(
   ctx: BuildContext,
   entry: BundleEntry,
@@ -31,6 +96,15 @@ export async function rolldownBuild(
     entry.input,
     ctx,
   )
+
+  // Get configuration with defaults
+  const formats = Array.isArray(entry.format) ? entry.format : [entry.format || 'esm']
+  const platform = entry.platform || 'node'
+  const outDir = entry.outDir || 'dist'
+  const fullOutDir = resolve(ctx.pkgDir, outDir)
+
+  // Clean output directory if requested
+  await cleanOutputDir(fullOutDir, entry.clean ?? true)
 
   if (entry.stub) {
     for (const [distName, srcPath] of Object.entries(inputs)) {
@@ -66,45 +140,59 @@ export async function rolldownBuild(
     return
   }
 
-  const rolldownConfig = defu(entry.rolldown, {
+  // Build external dependencies list
+  const externalDeps = [
+    ...builtinModules,
+    ...builtinModules.map(m => `node:${m}`),
+    ...[
+      ...Object.keys(ctx.pkg.dependencies || {}),
+      ...Object.keys(ctx.pkg.peerDependencies || {}),
+    ].flatMap(p => [p, new RegExp(`^${p}/`)]),
+  ]
+
+  // Add custom external dependencies
+  if (entry.external) {
+    if (typeof entry.external === 'function') {
+      // Function-based external will be handled in rolldown config
+    }
+    else {
+      externalDeps.push(...entry.external)
+    }
+  }
+
+  // Prepare define options for rolldown
+  const defineOptions: Record<string, string> = {}
+
+  // Add environment variables
+  if (entry.env) {
+    for (const [key, value] of Object.entries(entry.env)) {
+      defineOptions[`process.env.${key}`] = JSON.stringify(value)
+    }
+  }
+
+  // Add defined constants
+  if (entry.define) {
+    for (const [key, value] of Object.entries(entry.define)) {
+      defineOptions[key] = value
+    }
+  }
+
+  const baseRolldownConfig = defu(entry.rolldown, {
     cwd: ctx.pkgDir,
     input: inputs,
     plugins: [shebangPlugin()] as Plugin[],
-    platform: 'neutral',
-    external: [
-      ...builtinModules,
-      ...builtinModules.map(m => `node:${m}`),
-      ...[
-        ...Object.keys(ctx.pkg.dependencies || {}),
-        ...Object.keys(ctx.pkg.peerDependencies || {}),
-      ].flatMap(p => [p, new RegExp(`^${p}/`)]),
-    ],
+    platform: platform === 'node' ? 'node' : 'neutral',
+    external: typeof entry.external === 'function'
+      ? entry.external
+      : externalDeps,
+    define: defineOptions,
   } satisfies InputOptions)
 
-  if (entry.dts !== false) {
-    rolldownConfig.plugins.push(...dts({ ...(entry.dts as DtsOptions) }))
-  }
+  await hooks.rolldownConfig?.(baseRolldownConfig, ctx)
 
-  await hooks.rolldownConfig?.(rolldownConfig, ctx)
-
-  const res = await rolldown(rolldownConfig)
-
-  const outDir = resolve(ctx.pkgDir, entry.outDir || 'dist')
-
-  const outConfig: OutputOptions = {
-    dir: outDir,
-    entryFileNames: '[name].mjs',
-    chunkFileNames: '_chunks/[name]-[hash].mjs',
-    minify: entry.minify,
-  }
-
-  await hooks.rolldownOutput?.(outConfig, res, ctx)
-
-  const { output } = await res.write(outConfig)
-
-  await res.close()
-
-  const outputEntries: {
+  // Build for each format
+  const allOutputEntries: Array<{
+    format: OutputFormat
     name: string
     exports: string[]
     deps: string[]
@@ -112,54 +200,85 @@ export async function rolldownBuild(
     minSize: number
     minGzipSize: number
     sideEffectSize: number
-  }[] = []
+  }> = []
 
-  const depsCache = new Map<OutputChunk, Set<string>>()
-  const resolveDeps = (chunk: OutputChunk) => {
-    if (!depsCache.has(chunk)) {
-      depsCache.set(chunk, new Set<string>())
+  for (const format of formats) {
+    const rolldownFormat = formatToRolldownFormat(format)
+    const extension = getFormatExtension(format, platform)
+
+    // Create config for this format
+    const formatConfig = { ...baseRolldownConfig }
+
+    // Only add DTS plugin for ESM format (DTS plugin doesn't support CJS)
+    if (entry.dts !== false && format === 'esm') {
+      formatConfig.plugins = [...formatConfig.plugins, ...dts({ ...(entry.dts as DtsOptions) })]
     }
-    const deps = depsCache.get(chunk)!
-    for (const id of chunk.imports) {
-      if (builtinModules.includes(id) || id.startsWith('node:')) {
-        deps.add(`[Node.js]`)
-        continue
+
+    const res = await rolldown(formatConfig)
+
+    const outConfig: OutputOptions = {
+      dir: fullOutDir,
+      format: rolldownFormat,
+      entryFileNames: `[name]${extension}`,
+      chunkFileNames: `_chunks/[name]-[hash]${extension}`,
+      minify: entry.minify,
+      name: entry.globalName, // For IIFE/UMD formats
+    }
+
+    await hooks.rolldownOutput?.(outConfig, res, ctx)
+
+    const { output } = await res.write(outConfig)
+    await res.close()
+
+    // Process output for this format
+    const depsCache = new Map<OutputChunk, Set<string>>()
+    const resolveDeps = (chunk: OutputChunk): string[] => {
+      if (!depsCache.has(chunk)) {
+        depsCache.set(chunk, new Set<string>())
       }
-      const depChunk = output.find(
-        o => o.type === 'chunk' && o.fileName === id,
-      ) as OutputChunk | undefined
-      if (depChunk) {
-        for (const dep of resolveDeps(depChunk)) {
-          deps.add(dep)
+      const deps = depsCache.get(chunk)!
+      for (const id of chunk.imports) {
+        if (builtinModules.includes(id) || id.startsWith('node:')) {
+          deps.add(`[Node.js]`)
+          continue
         }
-        continue
+        const depChunk = output.find(
+          (o): o is OutputChunk => o.type === 'chunk' && o.fileName === id,
+        )
+        if (depChunk) {
+          for (const dep of resolveDeps(depChunk)) {
+            deps.add(dep)
+          }
+          continue
+        }
+        deps.add(id)
       }
-      deps.add(id)
+      return [...deps].sort()
     }
-    return [...deps].sort()
+
+    for (const chunk of output) {
+      if (chunk.type !== 'chunk' || !chunk.isEntry)
+        continue
+      if (chunk.fileName.endsWith('ts'))
+        continue
+
+      allOutputEntries.push({
+        format,
+        name: chunk.fileName,
+        exports: chunk.exports,
+        deps: resolveDeps(chunk),
+        ...(await distSize(fullOutDir, chunk.fileName)),
+        sideEffectSize: await sideEffectSize(fullOutDir, chunk.fileName),
+      })
+    }
   }
 
-  for (const chunk of output) {
-    if (chunk.type !== 'chunk' || !chunk.isEntry)
-      continue
-    if (chunk.fileName.endsWith('ts'))
-      continue
-
-    outputEntries.push({
-      name: chunk.fileName,
-      exports: chunk.exports,
-      deps: resolveDeps(chunk),
-      ...(await distSize(outDir, chunk.fileName)),
-      sideEffectSize: await sideEffectSize(outDir, chunk.fileName),
-    })
-  }
-
+  // Display build results
   consola.log(
-    `\n${outputEntries
+    `\n${allOutputEntries
       .map(o =>
         [
-          `${c.magenta(`[bundle] `)
-          }${c.underline(fmtPath(join(outDir, o.name)))}`,
+          `${c.magenta(`[bundle] `)}${c.underline(fmtPath(join(fullOutDir, o.name)))}`,
           c.dim(
             `${c.bold('Size:')} ${prettyBytes(o.size)}, ${c.bold(prettyBytes(o.minSize))} minified, ${prettyBytes(o.minGzipSize)} min+gzipped (Side effects: ${prettyBytes(o.sideEffectSize)})`,
           ),
