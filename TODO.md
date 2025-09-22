@@ -26,6 +26,39 @@
 - [x] **Banner/Footer** - 文件头尾注释添加
 - [x] **Node.js 协议处理** - `node:` 前缀的添加/移除 (`nodeProtocol`)
 
+#### 🎯 构建功能增强实现详情
+
+**文件复制 (copy)**
+- 支持字符串路径和对象配置 `{ from: string, to: string }`
+- Bundle 和 Transform 模式都支持
+- 在构建完成后执行复制操作
+
+**Banner/Footer**
+- 支持字符串和格式特定配置
+- Bundle 模式：通过 rolldown 的 `banner`/`footer` 选项
+- Transform 模式：通过自定义 `addBannerFooter` 函数
+
+**文件哈希 (hash)**
+- 使用 SHA256 算法生成 8 位哈希
+- 支持 Bundle 和 Transform 模式
+- 在文件写入后重命名添加哈希
+
+**固定扩展名 (fixedExtension)**
+- 强制 ESM 使用 `.mjs`，CJS 使用 `.cjs`
+- Bundle 模式：修改 `getFormatExtension` 函数
+- Transform 模式：通过 `createFilename` 函数
+
+**自定义扩展名 (outExtensions)**
+- 通过 `OutExtensionFactory` 函数自定义扩展名
+- 集成到 `createFilename` 函数中
+- 支持复杂的扩展名映射逻辑
+
+**Node.js 协议处理 (nodeProtocol)**
+- 支持 `true`（添加前缀）、`'strip'`（移除前缀）、`false`（不处理）
+- Bundle 模式：通过 rolldown 插件实现
+- Transform 模式：通过代码转换实现
+- 自动识别 Node.js 内置模块
+
 ### 🔍 代码质量和分析
 
 - [ ] **Publint 集成** - 包发布质量检查
