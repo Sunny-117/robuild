@@ -1,0 +1,1 @@
+import{_ as a,c as i,o as n,ag as l}from"./chunks/framework.CYsQgUI_.js";const b=JSON.parse('{"title":"CLI 参数","description":"","frontmatter":{},"headers":[],"relativePath":"api/cli.md","filePath":"api/cli.md"}'),e={name:"api/cli.md"};function p(h,s,t,r,k,d){return n(),i("div",null,[...s[0]||(s[0]=[l("",134)])])}const o=a(e,[["render",p]]);export{b as __pageData,o as default};
