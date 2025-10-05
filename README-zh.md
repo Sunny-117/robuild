@@ -6,7 +6,7 @@
 
 简体中文 | <a href="./README-zh.md">English</a>
 
-⚡️ 零配置的 ESM/TS 包构建工具。基于 [**oxc**](https://oxc.rs/)、[**rolldown**](https://rolldown.rs/) 和 [**rolldown-plugin-dts**](https://github.com/sxzz/rolldown-plugin-dts) 驱动。
+⚡️ 零配置的 ESM/TS 包构建工具。基于 [**Oxc**](https://oxc.rs/)、[**Rolldown**](https://rolldown.rs/) 和 [**rolldown-plugin-dts**](https://github.com/sxzz/rolldown-plugin-dts) 驱动。
 
 ## 功能特性
 
