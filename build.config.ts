@@ -16,4 +16,18 @@ export default defineConfig({
     ignoreInitial: false,
     watchNewFiles: true,
   },
+  plugins: [
+    {
+      name: 'robuild-plugin-build',
+      transform(code, id) {
+        console.log({ id })
+        return {
+          code,
+        }
+      },
+      async buildEnd() {
+        console.log('✅ buildEnd...')
+      },
+    },
+  ],
 })
