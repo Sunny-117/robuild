@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.0.8
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.7...v0.0.8)
+
+### 🩹 Fixes
+
+- Watch mode not work ([7b08f38](https://github.com/Sunny-117/robuild/commit/7b08f38))
+
+### 📖 Documentation
+
+- Simplify readme ([d08b010](https://github.com/Sunny-117/robuild/commit/d08b010))
+
+### 🏡 Chore
+
+- Fix linter error ([eb164e1](https://github.com/Sunny-117/robuild/commit/eb164e1))
+- Update readme ([6ffe460](https://github.com/Sunny-117/robuild/commit/6ffe460))
+- Cac deps ([c8a013c](https://github.com/Sunny-117/robuild/commit/c8a013c))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.7
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.6...v0.0.7)
