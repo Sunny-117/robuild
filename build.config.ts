@@ -1,5 +1,36 @@
 import { defineConfig } from './src/config.ts'
 
+function timePlugin() {
+  let startTime: bigint | undefined
+
+  const formatDuration = (ns: bigint) => {
+    const ms = Number(ns) / 1e6
+    if (ms < 1000) {
+      return `${ms.toFixed(2)} ms`
+    }
+
+    return `${(ms / 1000).toFixed(2)} s`
+  }
+
+  return {
+    name: 'robuild-plugin-build',
+    buildStart() {
+      startTime = process.hrtime.bigint()
+      console.log('buildStart...')
+    },
+    async buildEnd() {
+      const end = process.hrtime.bigint()
+      if (startTime) {
+        const diff = end - startTime
+        console.log(`buildEnd... elapsed: ${formatDuration(diff)}`)
+      }
+      else {
+        console.log('buildEnd...')
+      }
+    },
+  }
+}
+
 export default defineConfig({
   entries: [
     {
@@ -17,17 +48,6 @@ export default defineConfig({
     watchNewFiles: true,
   },
   plugins: [
-    {
-      name: 'robuild-plugin-build',
-      transform(code, id) {
-        console.log({ id })
-        return {
-          code,
-        }
-      },
-      async buildEnd() {
-        console.log('✅ buildEnd...')
-      },
-    },
+    timePlugin(),
   ],
 })
