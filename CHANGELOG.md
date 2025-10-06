@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.9
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.8...v0.0.9)
+
+### 🩹 Fixes
+
+- Update chokidar v3 to fix watch mode not work ([38727aa](https://github.com/Sunny-117/robuild/commit/38727aa))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.8
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.7...v0.0.8)
