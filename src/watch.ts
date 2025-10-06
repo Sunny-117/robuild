@@ -1,5 +1,5 @@
 import type { BuildConfig, BuildContext, WatchOptions } from './types'
-import { join, relative } from 'node:path'
+import { dirname, isAbsolute, join, relative } from 'node:path'
 import { watch as chokidarWatch } from 'chokidar'
 import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
@@ -201,56 +201,67 @@ async function getWatchPatterns(
 ): Promise<string[]> {
   // If explicit patterns are provided, use them
   if (watchOptions.include && watchOptions.include.length > 0) {
-    return watchOptions.include
+    return watchOptions.include.map(normalizeGlobPattern)
   }
 
   // Otherwise, derive patterns from build entries
-  const patterns: string[] = []
+  const patterns = new Set<string>()
+
+  const addPattern = (pattern: string | null | undefined) => {
+    if (!pattern) {
+      return
+    }
+    patterns.add(normalizeGlobPattern(pattern))
+  }
+
+  const addFilePatterns = (inputFile: string) => {
+    const absoluteInput = resolveToAbsolute(inputFile, ctx)
+    const filePattern = normalizeRelativeToPkg(absoluteInput, ctx)
+    if (filePattern && filePattern !== '.') {
+      addPattern(filePattern)
+    }
+    addPattern(getDirGlobPattern(dirname(absoluteInput), ctx))
+  }
+
+  const addDirectoryPatterns = (inputDir: string) => {
+    const absoluteDir = resolveToAbsolute(inputDir, ctx)
+    addPattern(getDirGlobPattern(absoluteDir, ctx))
+  }
 
   for (const entry of config.entries || []) {
     if (typeof entry === 'string') {
       const [input] = entry.split(':')
       if (input.endsWith('/')) {
         // Transform entry - watch the entire directory
-        patterns.push(`${input}**/*`)
+        addDirectoryPatterns(input)
       }
       else {
         // Bundle entry - watch the specific files and their dependencies
         const inputs = input.split(',')
         for (const inputFile of inputs) {
-          patterns.push(inputFile)
-          // Also watch the directory containing the input file
-          const dir = inputFile.substring(0, inputFile.lastIndexOf('/'))
-          if (dir) {
-            patterns.push(`${dir}/**/*`)
-          }
+          addFilePatterns(inputFile)
         }
       }
     }
     else {
       if (entry.type === 'transform') {
-        patterns.push(`${entry.input}/**/*`)
+        addDirectoryPatterns(entry.input)
       }
       else {
         const inputs = Array.isArray(entry.input) ? entry.input : [entry.input]
         for (const inputFile of inputs) {
-          patterns.push(inputFile)
-          // Also watch the directory containing the input file
-          const dir = inputFile.substring(0, inputFile.lastIndexOf('/'))
-          if (dir) {
-            patterns.push(`${dir}/**/*`)
-          }
+          addFilePatterns(inputFile)
         }
       }
     }
   }
 
   // Add common source patterns if no specific patterns found
-  if (patterns.length === 0) {
-    patterns.push('src/**/*', '*.ts', '*.js', '*.mjs', '*.json')
+  if (patterns.size === 0) {
+    ;['src/**/*', '*.ts', '*.js', '*.mjs', '*.json'].forEach(pattern => addPattern(pattern))
   }
 
-  return [...new Set(patterns)] // Remove duplicates
+  return Array.from(patterns)
 }
 
 /**
@@ -283,4 +294,35 @@ function getIgnorePatterns(config: BuildConfig, watchOptions: WatchOptions): str
   }
 
   return allIgnores
+}
+
+function resolveToAbsolute(path: string, ctx: BuildContext): string {
+  return isAbsolute(path) ? path : join(ctx.pkgDir, path)
+}
+
+function normalizeGlobPattern(pattern: string): string {
+  return pattern.replace(/\\/g, '/')
+}
+
+function normalizeRelativeToPkg(target: string, ctx: BuildContext): string {
+  const relativePath = relative(ctx.pkgDir, target)
+  if (!relativePath || relativePath === '') {
+    return '.'
+  }
+  if (relativePath.includes(':')) {
+    return normalizeGlobPattern(target)
+  }
+  return normalizeGlobPattern(relativePath)
+}
+
+function getDirGlobPattern(directory: string, ctx: BuildContext): string {
+  const normalizedDir = normalizeRelativeToPkg(directory, ctx)
+  if (!normalizedDir || normalizedDir === '.' || normalizedDir === './') {
+    return '**/*'
+  }
+  return `${stripTrailingSlash(normalizedDir)}/**/*`
+}
+
+function stripTrailingSlash(path: string): string {
+  return path.replace(/\/+$/, '')
 }
