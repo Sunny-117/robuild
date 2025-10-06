@@ -34,7 +34,7 @@
   "dependencies": {
     "c12": "^3.0.4",
     "cac": "^6.7.14",
-    "chokidar": "^4.0.3",
+    "chokidar": "^3.0.3",
     "consola": "^3.4.2",
     "defu": "^6.1.4",
     "exsolve": "^1.0.5",

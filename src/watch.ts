@@ -1,5 +1,7 @@
 import type { BuildConfig, BuildContext, WatchOptions } from './types'
 import { join, relative } from 'node:path'
+// chokidar: If you've used globs before and want do replicate the functionality with v4:
+// https://github.com/paulmillr/chokidar#upgrading
 import { watch as chokidarWatch } from 'chokidar'
 import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
