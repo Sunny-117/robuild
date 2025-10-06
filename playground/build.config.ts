@@ -1,5 +1,9 @@
 import { defineConfig } from 'robuild'
 
 export default defineConfig({
-  entries: ['src/index.ts'],
+  entries: [{
+    type: 'bundle',
+    input: 'src/index.ts',
+    noExternal: ['react'],
+  }],
 })
