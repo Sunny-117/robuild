@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.10
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.9...v0.0.10)
+
+### 🚀 Enhancements
+
+- NoExternal ([a326608](https://github.com/Sunny-117/robuild/commit/a326608))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.9
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.8...v0.0.9)
