@@ -87,6 +87,9 @@ importers:
       esno:
         specifier: ^4.8.0
         version: 4.8.0
+      git-cz:
+        specifier: ^4.9.0
+        version: 4.9.0
       prettier:
         specifier: ^3.5.3
         version: 3.6.2
@@ -2206,6 +2209,10 @@ packages:
 
   giget@2.0.0:
     resolution: {integrity: sha512-L5bGsVkxJbJgdnwyuheIunkGatUF/zssUoxxjACCseZYAVbaqdh9Tsmmlkl8vYan09H7sbvKt4pS8GqKLBrEzA==}
+    hasBin: true
+
+  git-cz@4.9.0:
+    resolution: {integrity: sha512-cSRL8IIOXU7UFLdbziCYqg8f8InwLwqHezkiRHNSph7oZqGv0togId1kMTfKil6gzK0VaSXeVBb4oDl0fQCHiw==}
     hasBin: true
 
   github-slugger@2.0.0:
@@ -5277,6 +5284,8 @@ snapshots:
       node-fetch-native: 1.6.7
       nypm: 0.6.1
       pathe: 2.0.3
+
+  git-cz@4.9.0: {}
 
   github-slugger@2.0.0: {}
 

@@ -4,6 +4,12 @@
 
 # 📦 robuild 😯 [![npm](https://img.shields.io/npm/v/robuild.svg)](https://npmjs.com/package/robuild)
 
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![bundle][bundle-src]][bundle-href]
+[![JSDocs][jsdocs-src]][jsdocs-href]
+[![License][license-src]][license-href]
+
 English | <a href="./README-zh.md">简体中文</a>
 
 ⚡️ Zero-config ESM/TS package builder. Powered by [**Oxc**](https://oxc.rs/), [**Rolldown**](https://rolldown.rs/) and [**rolldown-plugin-dts**](https://github.com/sxzz/rolldown-plugin-dts).
@@ -89,4 +95,16 @@ Visit our documentation site for detailed guides, API reference, and examples.
 
 ## License
 
-💛 Released under the [MIT](./LICENSE) license.
+💛 [MIT](./LICENSE) License © [Sunny-117](https://github.com/Sunny-117)
+<!-- Badges -->
+
+[npm-version-src]: https://img.shields.io/npm/v/robuild?style=flat&colorA=080f12&colorB=1fa669
+[npm-version-href]: https://npmjs.com/package/robuild
+[npm-downloads-src]: https://img.shields.io/npm/dm/robuild?style=flat&colorA=080f12&colorB=1fa669
+[npm-downloads-href]: https://npmjs.com/package/robuild
+[bundle-src]: https://img.shields.io/bundlephobia/minzip/robuild?style=flat&colorA=080f12&colorB=1fa669&label=minzip
+[bundle-href]: https://bundlephobia.com/result?p=robuild
+[license-src]: https://img.shields.io/github/license/Sunny-117/robuild.svg?style=flat&colorA=080f12&colorB=1fa669
+[license-href]: https://github.com/Sunny-117/robuild/blob/main/LICENSE
+[jsdocs-src]: https://img.shields.io/badge/jsdocs-reference-080f12?style=flat&colorA=080f12&colorB=1fa669
+[jsdocs-href]: https://www.jsdocs.io/package/robuild

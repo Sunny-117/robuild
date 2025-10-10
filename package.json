@@ -29,7 +29,8 @@
     "test:types": "tsc --noEmit --skipLibCheck",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "commit": "git-cz"
   },
   "dependencies": {
     "c12": "^3.0.4",
@@ -60,6 +61,7 @@
     "changelogen": "^0.6.1",
     "eslint": "^9.28.0",
     "esno": "^4.8.0",
+    "git-cz": "^4.9.0",
     "prettier": "^3.5.3",
     "vitepress": "^1.6.3",
     "vitest": "^3.2.2"
