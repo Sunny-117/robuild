@@ -1,7 +1,7 @@
 {
   "name": "robuild",
   "type": "module",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "packageManager": "pnpm@10.11.1",
   "description": "Zero-config ESM/TS package builder. Powered by Rolldown and Oxc",
   "license": "MIT",
