@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.0.11
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.10...v0.0.11)
+
+### 🚀 Enhancements
+
+- TimePlugin ([9d25498](https://github.com/Sunny-117/robuild/commit/9d25498))
+- Support sourcemap config ([5d439ad](https://github.com/Sunny-117/robuild/commit/5d439ad))
+
+### 📖 Documentation
+
+- ✏️ badges ([1b0e66a](https://github.com/Sunny-117/robuild/commit/1b0e66a))
+
+### 🏡 Chore
+
+- Plugin system ([4ff82cb](https://github.com/Sunny-117/robuild/commit/4ff82cb))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.10
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.9...v0.0.10)
