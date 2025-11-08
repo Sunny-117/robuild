@@ -303,7 +303,7 @@ describe('enterprise Features', () => {
       const result = await migrateFromTsup('tsup.config.json', configContent)
 
       expect(result.warnings).toContain('Code splitting is not directly supported, consider using multiple entries')
-      expect(result.warnings).toContain('Source maps are not yet supported in robuild')
+      expect(result.warnings).not.toContain('Source maps are not yet supported in robuild')
       expect(result.suggestions).toContain('Tree shaking is enabled by default in robuild')
     })
   })

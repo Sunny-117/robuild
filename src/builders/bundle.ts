@@ -448,6 +448,12 @@ export async function rolldownBuild(
       footer: resolveChunkAddon(entry.footer, format),
     }
 
+    // Enable source maps if requested on the entry
+    if (entry.sourcemap !== undefined) {
+      // Rollup/Rolldown supports boolean | 'inline' | 'hidden'
+      ;(outConfig as any).sourcemap = entry.sourcemap as any
+    }
+
     await hooks.rolldownOutput?.(outConfig, res, ctx)
 
     const { output } = await res.write(outConfig)
@@ -497,6 +503,16 @@ export async function rolldownBuild(
         // Rename the file to include hash
         const { rename } = await import('node:fs/promises')
         await rename(finalFilePath, hashedFilePath)
+
+        // Also rename source map file if it exists (when sourcemap emitted as separate file)
+        try {
+          const mapOld = `${finalFilePath}.map`
+          const mapNew = `${hashedFilePath}.map`
+          await rename(mapOld, mapNew)
+        }
+        catch {
+          // ignore if no map file
+        }
 
         finalFileName = hashedFileName
         finalFilePath = hashedFilePath

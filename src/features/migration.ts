@@ -112,7 +112,8 @@ export async function migrateFromTsup(configPath: string, configContent?: string
     }
 
     if (tsupConfig.sourcemap) {
-      warnings.push('Source maps are not yet supported in robuild')
+      // Source map support is available; preserve the configuration where possible.
+      // We don't warn anymore.
     }
 
     return { config, warnings, suggestions }
@@ -206,38 +207,31 @@ export async function migrateFromUnbuild(configPath: string, configContent?: str
 /**
  * Migrate from Vite library mode configuration
  */
-export async function migrateFromViteLib(configPath: string): Promise<MigrationResult> {
+export async function migrateFromViteLib(_configPath: string): Promise<MigrationResult> {
   const warnings: string[] = []
   const suggestions: string[] = []
 
-  try {
-    const content = await readFile(configPath, 'utf-8')
+  // This is a simplified implementation
+  // In practice, you'd need to parse the Vite config more carefully
+  warnings.push('Vite config migration requires manual review')
+  suggestions.push('Use the fromVite option in robuild for automatic Vite config loading')
 
-    // This is a simplified implementation
-    // In practice, you'd need to parse the Vite config more carefully
-    warnings.push('Vite config migration requires manual review')
-    suggestions.push('Use the fromVite option in robuild for automatic Vite config loading')
-
-    const config: BuildConfig = {
-      entries: [{
-        type: 'bundle',
-        input: 'src/index.ts',
-        format: ['esm', 'cjs'],
-        dts: true,
-      }],
-    }
-
-    return { config, warnings, suggestions }
+  const config: BuildConfig = {
+    entries: [{
+      type: 'bundle',
+      input: 'src/index.ts',
+      format: ['esm', 'cjs'],
+      dts: true,
+    }],
   }
-  catch (error) {
-    throw new Error(`Failed to migrate Vite config: ${error}`)
-  }
+
+  return { config, warnings, suggestions }
 }
 
 /**
  * Migrate from webpack configuration
  */
-export async function migrateFromWebpack(configPath: string): Promise<MigrationResult> {
+export async function migrateFromWebpack(_configPath: string): Promise<MigrationResult> {
   const warnings: string[] = []
   const suggestions: string[] = []
 

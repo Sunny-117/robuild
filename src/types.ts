@@ -192,6 +192,15 @@ export interface _BuildEntry {
   define?: Record<string, string>
 
   /**
+   * Generate source maps for built files.
+   *
+   * - `true` - emit separate `.map` files
+   * - `'inline'` - embed source maps in generated files
+   * - `'hidden'` - emit map files but do not add sourceMappingURL comment
+   */
+  sourcemap?: boolean | 'inline' | 'hidden' | Record<string, any>
+
+  /**
    * External dependencies that should not be bundled.
    */
   external?: (string | RegExp)[] | ((id: string, importer?: string) => boolean)
@@ -463,6 +472,15 @@ export interface BuildConfig {
   entries?: (BuildEntry | string)[]
   hooks?: BuildHooks
   watch?: WatchOptions
+  /**
+   * Output directory for builds.
+   */
+  outDir?: string
+
+  /**
+   * Clean output directory before build.
+   */
+  clean?: boolean | string[]
 
   /**
    * Plugins to use during build
