@@ -339,7 +339,10 @@ export async function rolldownBuild(
   }
 
   if (entry.skipNodeModules) {
-    const skipPlugin = createSkipNodeModulesPlugin()
+    const skipPlugin = createSkipNodeModulesPlugin({
+      // Always inline @oxc-project/runtime helpers
+      noExternal: ['@oxc-project/runtime'],
+    })
     if (skipPlugin.resolveId) {
       rolldownPlugins.push({
         name: 'skip-node-modules',

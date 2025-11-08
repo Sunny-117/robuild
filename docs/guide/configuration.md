@@ -413,6 +413,8 @@ skipNodeModules: true            // 跳过打包
 skipNodeModules: false           // 正常打包
 ```
 
+**注意**: 当启用 `skipNodeModules: true` 时，`@oxc-project/runtime` 的 helper 函数（如 `asyncToGenerator`）会自动内联到产物中，而不是作为外部依赖。这确保了与 tsdown 相同的行为，避免运行时依赖缺失的问题。
+
 #### `unbundle`
 保持文件结构模式。
 

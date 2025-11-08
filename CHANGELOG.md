@@ -1,6 +1,12 @@
 # Changelog
 
 
+## Unreleased
+
+### 🩹 Fixes
+
+- **skipNodeModules:** Auto-inline `@oxc-project/runtime` helpers - When using `skipNodeModules: true`, `@oxc-project/runtime` helpers (like `asyncToGenerator`) are now automatically inlined instead of being treated as external dependencies
+
 ## v0.0.11
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.10...v0.0.11)
