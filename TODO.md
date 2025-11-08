@@ -1,3 +1,7 @@
+# 11.8
+
+- [ ] bundle inline oxc runtime helper utils
+
 # robuild TODO - 基于 tsdown 功能对比
 
 ## 🎯 核心功能差异分析
