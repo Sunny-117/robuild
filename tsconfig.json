@@ -4,6 +4,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "types": ["vitest/globals", "node"],
     "allowImportingTsExtensions": true,
     "strict": true,
     "noEmit": true,

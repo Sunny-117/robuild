@@ -1,5 +1,6 @@
 
             import data from './data.json'
             import styles from './styles.css'
-            export { data, styles }
+            import text from './readme.txt'
+            export { data, styles, text }
           

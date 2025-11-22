@@ -8,7 +8,7 @@ export async function fetchData() {
   return response.json()
 }
 
-export const asyncArrow = async () => {
+export async function asyncArrow() {
   await Promise.resolve()
   return 'done'
 }

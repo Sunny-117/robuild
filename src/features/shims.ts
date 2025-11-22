@@ -148,7 +148,7 @@ export function createShimsPlugin(config: boolean | ShimsConfig = true): Robuild
     name: 'shims',
     transform: async (code: string, id: string) => {
       // Only process JavaScript/TypeScript files
-      if (!/\.(js|mjs|cjs|ts|mts|cts|jsx|tsx)$/.test(id)) {
+      if (!/\.(?:js|mjs|cjs|ts|mts|cts|jsx|tsx)$/.test(id)) {
         return null
       }
 
@@ -174,7 +174,7 @@ export function createBrowserShimsPlugin(): RobuildPlugin {
     name: 'browser-shims',
     transform: async (code: string, id: string) => {
       // Only process JavaScript files for browser
-      if (!/\.(js|mjs|jsx|tsx?)$/.test(id)) {
+      if (!/\.(?:js|mjs|jsx|tsx?)$/.test(id)) {
         return null
       }
 

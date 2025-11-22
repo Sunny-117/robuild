@@ -529,8 +529,6 @@ export interface BuildConfig {
   exports?: ExportsConfig
 }
 
-
-
 // Exports generation types
 export interface ExportsConfig {
   /**

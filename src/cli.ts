@@ -284,8 +284,6 @@ if (args.values['from-vite']) {
   buildConfig.fromVite = true
 }
 
-
-
 if (args.values['generate-exports']) {
   buildConfig.exports = {
     enabled: true,

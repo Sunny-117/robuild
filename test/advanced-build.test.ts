@@ -48,7 +48,7 @@ describe('advanced Build Options', () => {
       const content = '{"name": "test", "version": "1.0.0"}'
       const result = await transformWithLoader('test.json', content, 'json')
 
-      expect(result).toBe('export default {"name": "test", "version": "1.0.0"}')
+      expect(result).toBe('export default {"name":"test","version":"1.0.0"}')
     })
 
     it('should transform CSS content', async () => {
@@ -234,20 +234,22 @@ describe('advanced Build Options', () => {
           'src/index.ts': `
             import data from './data.json'
             import styles from './styles.css'
-            export { data, styles }
+            import text from './readme.txt'
+            export { data, styles, text }
           `,
           'src/data.json': '{"name": "test", "version": "1.0.0"}',
           'src/styles.css': '.test { color: red; }',
+          'src/readme.txt': 'This is a readme file',
         },
         options: {
-          loaders: {
-            '.json': { loader: 'json' },
-            '.css': { loader: 'css' },
-          },
           entries: [{
             type: 'bundle',
             input: 'src/index.ts',
             format: 'esm',
+            loaders: {
+              '.css': { loader: 'css' },
+              '.txt': { loader: 'text' },
+            },
           }],
         },
       })
@@ -262,11 +264,11 @@ describe('advanced Build Options', () => {
           `,
         },
         options: {
-          cjsDefault: true,
           entries: [{
             type: 'bundle',
             input: 'src/index.js',
             format: 'esm',
+            cjsDefault: true,
           }],
         },
       })
@@ -283,11 +285,11 @@ describe('advanced Build Options', () => {
           `,
         },
         options: {
-          shims: true,
           entries: [{
             type: 'bundle',
             input: 'src/index.js',
             format: 'esm',
+            shims: true,
           }],
         },
       })
@@ -303,11 +305,11 @@ describe('advanced Build Options', () => {
           `,
         },
         options: {
-          skipNodeModules: true,
           entries: [{
             type: 'bundle',
             input: 'src/index.ts',
             format: 'esm',
+            skipNodeModules: true,
           }],
         },
       })
@@ -321,11 +323,11 @@ describe('advanced Build Options', () => {
           'src/utils/helper.ts': 'export const helper = "world"',
         },
         options: {
-          unbundle: true,
           entries: [{
             type: 'transform',
             input: 'src/',
             format: 'esm',
+            unbundle: true,
           }],
         },
       })

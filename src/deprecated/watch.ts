@@ -199,7 +199,7 @@ async function triggerRebuild(watchCtx: WatchContext): Promise<void> {
  */
 async function getWatchPatterns(
   config: BuildConfig,
-  ctx: BuildContext,
+  _ctx: BuildContext,
   watchOptions: WatchOptions,
 ): Promise<string[]> {
   // If explicit patterns are provided, use them
@@ -253,7 +253,7 @@ async function getWatchPatterns(
     patterns.push('src/**/*', '*.ts', '*.js', '*.mjs', '*.json')
   }
 
-  return [...new Set(patterns)] // Remove duplicates
+  return Array.from(new Set(patterns)) // Remove duplicates
 }
 
 /**

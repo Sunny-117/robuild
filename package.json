@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm robuild",
+    "build": "pnpm test:types && pnpm robuild",
     "dev": "pnpm test",
     "lint": "eslint .",
     "lint:fix": "automd && eslint . --fix",
@@ -26,7 +26,7 @@
     "release": "pnpm test && changelogen --release && npm publish && git push --follow-tags",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:types": "tsc --noEmit --skipLibCheck",
+    "test:types": "tsc --noEmit --skipLibCheck src/**/*.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",

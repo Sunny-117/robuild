@@ -1,4 +1,4 @@
-import type { BuildConfig, BuildEntry } from '../types'
+import type { BuildConfig, BuildEntry, BundleEntry, TransformEntry } from '../types'
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
@@ -53,7 +53,19 @@ export async function generatePackageExports(
 
   // Generate exports from build entries
   if (buildConfig.entries) {
-    for (const entry of buildConfig.entries) {
+    for (const rawEntry of buildConfig.entries) {
+      // Convert string entries to BuildEntry objects
+      let entry: BuildEntry
+      if (typeof rawEntry === 'string') {
+        const [input, outDir] = rawEntry.split(':') as [string, string | undefined]
+        entry = input.endsWith('/')
+          ? ({ type: 'transform', input, outDir: outDir || 'dist' } as TransformEntry)
+          : ({ type: 'bundle', input: input.split(','), outDir: outDir || 'dist' } as BundleEntry)
+      }
+      else {
+        entry = rawEntry
+      }
+
       const exportEntries = await generateExportFromEntry(
         packageRoot,
         entry,
@@ -130,13 +142,16 @@ async function generateExportFromEntry(
 /**
  * Get export key from input path
  */
-function getExportKey(input: string): string {
-  if (input === 'index.ts' || input === 'src/index.ts') {
+function getExportKey(input: string | string[]): string {
+  // Handle array input by taking the first entry
+  const inputPath = Array.isArray(input) ? input[0] : input
+
+  if (inputPath === 'index.ts' || inputPath === 'src/index.ts') {
     return '.'
   }
 
   // Remove file extension and src/ prefix
-  let key = input.replace(/\.(ts|js|tsx|jsx)$/, '')
+  let key = inputPath.replace(/\.(ts|js|tsx|jsx)$/, '')
   key = key.replace(/^src\//, '')
 
   // Convert to export key format
@@ -181,8 +196,10 @@ function getExtensionForFormat(format: string): string {
 /**
  * Get basename from input path
  */
-function getBasename(input: string): string {
-  return input.replace(/\.(ts|js|tsx|jsx)$/, '').replace(/^src\//, '')
+function getBasename(input: string | string[]): string {
+  // Handle array input by taking the first entry
+  const inputPath = Array.isArray(input) ? input[0] : input
+  return inputPath.replace(/\.(ts|js|tsx|jsx)$/, '').replace(/^src\//, '')
 }
 
 /**
@@ -240,7 +257,7 @@ function createExportValue(entry: ExportEntry): any {
  * Discover exports from transform entries
  */
 async function discoverTransformExports(
-  packageRoot: string,
+  _packageRoot: string,
   entry: BuildEntry,
   baseDir: string,
   includeTypes?: boolean,
@@ -255,7 +272,7 @@ async function discoverTransformExports(
     import: `./${baseDir}/${getBasename(entry.input)}.mjs`,
   }
 
-  if (includeTypes && entry.dts) {
+  if (includeTypes && entry.type === 'bundle' && entry.dts) {
     exportEntry.types = getTypesPath(entry, baseDir)
   }
 
@@ -266,7 +283,7 @@ async function discoverTransformExports(
 /**
  * Find main export file
  */
-async function findMainExport(packageRoot: string, baseDir: string): Promise<any> {
+async function findMainExport(_packageRoot: string, baseDir: string): Promise<any> {
   const possibleMains = [
     'index.mjs',
     'index.js',
@@ -275,7 +292,6 @@ async function findMainExport(packageRoot: string, baseDir: string): Promise<any
 
   for (const main of possibleMains) {
     try {
-      const mainPath = join(packageRoot, baseDir, main)
       // Check if file exists (simplified check)
       const value: any = {}
 

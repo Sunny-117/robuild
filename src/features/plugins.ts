@@ -42,7 +42,7 @@ export class PluginManager {
     const results: any[] = []
 
     for (const plugin of this.plugins) {
-      const hook = plugin[hookName] as Function
+      const hook = plugin[hookName] as (...args: any[]) => any
       if (typeof hook === 'function') {
         try {
           const result = await hook.apply(plugin, args)
@@ -62,9 +62,9 @@ export class PluginManager {
    * Create plugin build context for setup
    */
   private createPluginBuild(): PluginBuild {
-    const resolveCallbacks: Array<{ filter: RegExp, namespace?: string, callback: Function }> = []
-    const loadCallbacks: Array<{ filter: RegExp, namespace?: string, callback: Function }> = []
-    const transformCallbacks: Array<{ filter: RegExp, callback: Function }> = []
+    const resolveCallbacks: Array<{ filter: RegExp, namespace?: string, callback: (...args: any[]) => any }> = []
+    const loadCallbacks: Array<{ filter: RegExp, namespace?: string, callback: (...args: any[]) => any }> = []
+    const transformCallbacks: Array<{ filter: RegExp, callback: (...args: any[]) => any }> = []
 
     return {
       onResolve: (options, callback) => {

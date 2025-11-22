@@ -12,7 +12,7 @@ import prettyBytes from 'pretty-bytes'
 
 import { rolldownBuild } from './builders/bundle'
 import { transformDir } from './builders/transform'
-import { generatePackageExports, updatePackageJsonExports } from './features/exports'
+
 import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from './features/logger'
 import { createBuildResult, executeOnSuccess } from './features/on-success'
 import { loadViteConfig } from './features/vite-config'
@@ -152,8 +152,9 @@ function normalizePath(path: string | URL | undefined, resolveFrom?: string) {
       : resolve(resolveFrom || '.', path || '.')
 }
 
-function readJSON(specifier: string) {
-  return import(specifier, {
+async function readJSON(specifier: string) {
+  const module = await import(specifier, {
     with: { type: 'json' },
-  }).then(r => r.default)
+  })
+  return module.default
 }

@@ -29,9 +29,10 @@ export function createGlobImportPlugin(options: GlobImportOptions = {}): Robuild
       let hasGlobImports = false
       let transformedCode = code
 
+      // eslint-disable-next-line no-cond-assign
       while ((match = globImportRegex.exec(code)) !== null) {
         hasGlobImports = true
-        const [fullMatch, quote, pattern, optionsStr] = match
+        const [fullMatch, , pattern, optionsStr] = match
 
         // Parse options if provided
         let globOptions: any = {}
@@ -40,7 +41,7 @@ export function createGlobImportPlugin(options: GlobImportOptions = {}): Robuild
             // Simple options parsing (in real implementation, use a proper parser)
             globOptions = parseGlobOptions(optionsStr)
           }
-          catch (error) {
+          catch {
             console.warn('Failed to parse glob options:', optionsStr)
           }
         }
@@ -93,7 +94,7 @@ async function generateGlobImport(
       ignore: ['**/node_modules/**', '**/.git/**'],
     })
   }
-  catch (error) {
+  catch {
     // In test environment, create mock files based on pattern
     if (pattern.includes('*.js')) {
       files = [resolve(importerDir, pattern.replace('*', 'module1')), resolve(importerDir, pattern.replace('*', 'module2'))]
@@ -199,7 +200,7 @@ function parseGlobOptions(optionsStr: string): any {
  * Create a virtual module for glob imports
  */
 export function createGlobVirtualModule(
-  pattern: string,
+  _pattern: string,
   files: string[],
   options: { eager?: boolean, asUrls?: boolean } = {},
 ): string {
@@ -262,6 +263,7 @@ export function extractGlobPatterns(code: string): string[] {
   const globImportRegex = /import\.meta\.glob\s*\(\s*(['"`])(.*?)\1/g
 
   let match
+  // eslint-disable-next-line no-cond-assign
   while ((match = globImportRegex.exec(code)) !== null) {
     patterns.push(match[2])
   }

@@ -142,7 +142,7 @@ export function createCjsDefaultPlugin(mode: boolean | 'auto' = 'auto'): Robuild
     name: 'cjs-default',
     transform: async (code: string, id: string) => {
       // Only process JavaScript/TypeScript files
-      if (!/\.(js|mjs|cjs|ts|mts|cts|jsx|tsx)$/.test(id)) {
+      if (!/\.(?:js|mjs|cjs|ts|mts|cts|jsx|tsx)$/.test(id)) {
         return null
       }
 
@@ -173,7 +173,7 @@ export function createCommonJSInteropPlugin(): RobuildPlugin {
     name: 'cjs-interop',
     transform: async (code: string, id: string) => {
       // Only process JavaScript files
-      if (!/\.(js|mjs|cjs)$/.test(id)) {
+      if (!/\.(?:js|mjs|cjs)$/.test(id)) {
         return null
       }
 

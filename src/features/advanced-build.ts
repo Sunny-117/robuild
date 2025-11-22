@@ -1,7 +1,7 @@
 import type { BuildContext, RobuildPlugin, TransformEntry } from '../types'
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
-import { dirname, extname, join } from 'node:path'
+import { dirname, extname, isAbsolute, join } from 'node:path'
 
 /**
  * Create skip node_modules plugin
@@ -30,15 +30,20 @@ export function createSkipNodeModulesPlugin(options?: {
 
   return {
     name: 'skip-node-modules',
-    resolveId: async (id: string) => {
+    resolveId: async (id: string, importer?: string) => {
       // Always inline modules matching noExternal patterns
       if (shouldInline(id)) {
         return null
       }
 
+      // Don't externalize entry files (when importer is undefined)
+      if (!importer) {
+        return null
+      }
+
       // Skip resolution for node_modules dependencies
-      if (id.includes('node_modules') || (!id.startsWith('.') && !id.startsWith('/'))) {
-        return { id, external: true }
+      if (id.includes('node_modules') || (!id.startsWith('.') && !id.startsWith('/') && !id.startsWith('\\'))) {
+        return { id, external: true } as any
       }
       return null
     },
@@ -86,7 +91,7 @@ export async function getNodeModulesDependencies(projectRoot: string): Promise<s
 
     return dependencies
   }
-  catch (error) {
+  catch {
     return []
   }
 }
@@ -98,7 +103,8 @@ export async function unbundleTransform(
   ctx: BuildContext,
   entry: TransformEntry,
 ): Promise<void> {
-  const inputDir = join(ctx.pkgDir, entry.input)
+  // Handle both absolute and relative paths
+  const inputDir = isAbsolute(entry.input) ? entry.input : join(ctx.pkgDir, entry.input)
   const outputDir = join(ctx.pkgDir, entry.outDir || 'dist')
 
   await processDirectoryUnbundled(inputDir, outputDir, entry)
@@ -171,7 +177,7 @@ async function processFileUnbundled(
  */
 function transformImportsForUnbundle(
   content: string,
-  filePath: string,
+  _filePath: string,
   entry: TransformEntry,
 ): string {
   let transformedContent = content
@@ -334,7 +340,7 @@ async function analyzeDirectory(
       }
     }
   }
-  catch (error) {
+  catch {
     // Ignore errors (permission issues, etc.)
   }
 }

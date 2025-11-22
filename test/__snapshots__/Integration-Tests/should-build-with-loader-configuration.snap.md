@@ -1,7 +1,7 @@
 ## index.css
 
 ```css
-.test { color: red; }
+export default ".test { color: red; }"
 
 ```
 
@@ -21,5 +21,9 @@ var data_default = {
 var styles_default = {};
 
 //#endregion
-export { data_default as data, styles_default as styles };
+//#region src/readme.txt
+var readme_default = "export default \"This is a readme file\"";
+
+//#endregion
+export { data_default as data, styles_default as styles, readme_default as text };
 ```

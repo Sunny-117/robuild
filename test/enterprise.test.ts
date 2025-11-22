@@ -95,6 +95,4 @@ describe('exports Generation', () => {
       expect(exports['.']).toContain('./lib/')
     })
   })
-
-
 })

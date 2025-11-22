@@ -205,7 +205,7 @@ export async function rolldownBuild(
         }
         if (dep instanceof RegExp) {
           // Match any RegExp we generated for an excluded package (source starts with ^<pkg>/)
-          for (const name of excludedNames) {
+          for (const name of Array.from(excludedNames)) {
             if (dep.source.startsWith(`^${escapeRegExp(name)}/`))
               return false
           }

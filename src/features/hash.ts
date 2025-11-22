@@ -35,5 +35,5 @@ export function addHashToFilename(
  */
 export function hasHash(filename: string): boolean {
   // Simple check for hash pattern: -[8 hex chars]
-  return /-[a-f0-9]{8}(\.|$)/.test(filename)
+  return /-[a-f0-9]{8}(?:\.|$)/.test(filename)
 }

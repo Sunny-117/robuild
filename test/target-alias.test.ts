@@ -44,7 +44,7 @@ export class TestClass {
   })
 
   it('should support alias configuration in bundle mode', async (ctx) => {
-    const { fileMap, testDir } = await testBuild({
+    const { fileMap } = await testBuild({
       context: ctx,
       files: {
         'src/utils/helper.ts': `export const helper = 'helper function'`,

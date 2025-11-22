@@ -80,7 +80,15 @@ export async function transformWithLoader(
       return content
 
     case 'json':
-      return `export default ${content}`
+      // Parse and re-stringify to ensure valid JSON
+      try {
+        const parsed = JSON.parse(content)
+        return `export default ${JSON.stringify(parsed)}`
+      }
+      catch {
+        // If parsing fails, treat as text
+        return `export default ${JSON.stringify(content)}`
+      }
 
     case 'css':
       return transformCssContent(content, options)
@@ -138,7 +146,7 @@ function transformFileContent(filePath: string, options?: Record<string, any>): 
 /**
  * Transform file content to data URL
  */
-function transformDataUrlContent(filePath: string, content: string, options?: Record<string, any>): string {
+function transformDataUrlContent(filePath: string, content: string, _options?: Record<string, any>): string {
   const ext = extname(filePath).toLowerCase()
   const mimeType = getMimeType(ext)
   const base64 = Buffer.from(content).toString('base64')
@@ -150,7 +158,7 @@ function transformDataUrlContent(filePath: string, content: string, options?: Re
 /**
  * Transform binary file content
  */
-function transformBinaryContent(filePath: string, options?: Record<string, any>): string {
+function transformBinaryContent(filePath: string, _options?: Record<string, any>): string {
   // For binary files, we typically return the file path or a placeholder
   const fileName = filePath.split('/').pop() || 'binary'
   return `export default ${JSON.stringify(fileName)}`
@@ -162,7 +170,7 @@ function transformBinaryContent(filePath: string, options?: Record<string, any>)
 function extractCssClassNames(content: string): string[] {
   const classRegex = /\.([a-z_-][\w-]*)/gi
   const matches = content.match(classRegex) || []
-  return [...new Set(matches.map(match => match.slice(1)))]
+  return Array.from(new Set(matches.map(match => match.slice(1))))
 }
 
 /**
@@ -206,6 +214,7 @@ export function createLoaderPlugin(loaders?: Record<string, LoaderConfig>): Robu
   return {
     name: 'loaders',
     load: async (id: string) => {
+      const ext = extname(id)
       const loader = getLoaderForFile(id, loaders)
 
       // Only handle non-JS files with custom loaders
@@ -213,12 +222,17 @@ export function createLoaderPlugin(loaders?: Record<string, LoaderConfig>): Robu
         return null
       }
 
+      // Skip JSON files unless explicitly configured - let rolldown handle them natively
+      if (loader === 'json' && !loaders?.[ext]) {
+        return null
+      }
+
       try {
         const content = await readFile(id, 'utf-8')
-        const options = loaders?.[extname(id)]?.options
+        const options = loaders?.[ext]?.options
         return await transformWithLoader(id, content, loader, options)
       }
-      catch (error) {
+      catch {
         // If file doesn't exist or can't be read, let other plugins handle it
         return null
       }
