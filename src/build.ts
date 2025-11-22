@@ -7,10 +7,9 @@ import type {
 
 import { isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
 import prettyBytes from 'pretty-bytes'
-import { watch } from 'rolldown'
+
 import { rolldownBuild } from './builders/bundle'
 import { transformDir } from './builders/transform'
 import { generatePackageExports, updatePackageJsonExports } from './features/exports'
@@ -24,6 +23,7 @@ import {
   loadWorkspaceConfig,
 } from './features/workspace'
 import { analyzeDir } from './utils'
+import { performWatchBuild } from './watch'
 
 /**
  * Build dist/ from src/
@@ -77,7 +77,7 @@ export async function build(config: BuildConfig): Promise<void> {
 /**
  * Perform the actual build process
  */
-async function performBuild(config: BuildConfig, ctx: BuildContext, startTime: number): Promise<void> {
+export async function performBuild(config: BuildConfig, ctx: BuildContext, startTime: number): Promise<void> {
   const start = Date.now()
   const hooks = config.hooks || {}
 
@@ -233,110 +233,6 @@ async function buildWorkspace(config: BuildConfig, workspaceRoot: string): Promi
   await buildWorkspacePackages(filteredPackages, buildPackage)
 
   logger.success(`Successfully built ${filteredPackages.length} packages`)
-}
-
-/**
- * Perform watch build using rolldown's built-in watch mode
- */
-async function performWatchBuild(config: BuildConfig, ctx: BuildContext, startTime: number): Promise<void> {
-  // Perform initial build
-  await performBuild(config, ctx, startTime)
-
-  // For bundle entries, use rolldown's watch mode
-  const bundleEntries = (config.entries || []).filter((entry) => {
-    if (typeof entry === 'string') {
-      return !entry.endsWith('/')
-    }
-    return entry.type === 'bundle'
-  })
-
-  if (bundleEntries.length > 0) {
-    // Use rolldown's watch mode for bundle entries
-    await startRolldownWatch(config, ctx, bundleEntries)
-  }
-  else {
-    // For transform-only builds, fall back to custom watch
-    logger.warn('Transform-only watch mode not yet implemented with rolldown')
-    // Keep the process alive
-    return new Promise(() => {})
-  }
-}
-
-/**
- * Start rolldown watch mode for bundle entries
- */
-async function startRolldownWatch(config: BuildConfig, ctx: BuildContext, bundleEntries: any[]): Promise<void> {
-  logger.info('🚧 Using rolldown built-in watch mode...')
-
-  // Create rolldown watch configurations for each bundle entry
-  const watchConfigs = []
-
-  for (const rawEntry of bundleEntries) {
-    let entry
-    if (typeof rawEntry === 'string') {
-      const [input, outDir] = rawEntry.split(':') as [string, string | undefined]
-      entry = { type: 'bundle', input: input.split(','), outDir } as any
-    }
-    else {
-      entry = rawEntry
-    }
-
-    // Normalize entry paths
-    entry = { ...entry }
-    entry.outDir = normalizePath(entry.outDir || 'dist', ctx.pkgDir)
-    entry.input = Array.isArray(entry.input)
-      ? entry.input.map((p: string) => normalizePath(p, ctx.pkgDir))
-      : normalizePath(entry.input, ctx.pkgDir)
-
-    // Create rolldown config for this entry
-    // For now, we'll use a simple configuration
-    // In a full implementation, this would use the same logic as rolldownBuild
-    const watchConfig = {
-      input: Array.isArray(entry.input) ? entry.input[0] : entry.input,
-      output: {
-        dir: entry.outDir,
-        format: 'esm' as const,
-      },
-    }
-
-    watchConfigs.push(watchConfig)
-  }
-
-  // Start watching with rolldown
-  const watcher = watch(watchConfigs)
-
-  watcher.on('event', (event) => {
-    switch (event.code) {
-      case 'START':
-        logger.info('� Rebuilding...')
-        break
-      case 'BUNDLE_START':
-        logger.info('📦 Bundling...')
-        break
-      case 'BUNDLE_END':
-        logger.success('✅ Bundle complete')
-        break
-      case 'END':
-        logger.success('🎉 Watch rebuild complete')
-        break
-      case 'ERROR':
-        logger.error('❌ Build error:', (event as any).error)
-        break
-    }
-  })
-
-  // Handle graceful shutdown
-  const cleanup = async () => {
-    consola.info('🛑 Stopping watch mode...')
-    await watcher.close()
-    process.exit(0)
-  }
-
-  process.on('SIGINT', cleanup)
-  process.on('SIGTERM', cleanup)
-
-  // Keep the process alive
-  return new Promise(() => {})
 }
 
 function readJSON(specifier: string) {
