@@ -1,3 +1,5 @@
+- [ ] 精简功能
+
 - [ ] 尽量复用 rolldown plugin system，需要自己定义的hook通过继承实现，不要有相同的钩子定义
 
 - [ ] transform mode

@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "pnpm robuild",
-    "dev": "pnpm vitest",
+    "dev": "pnpm test",
     "lint": "eslint .",
     "lint:fix": "automd && eslint . --fix",
     "robuild": "esno src/cli.ts",
