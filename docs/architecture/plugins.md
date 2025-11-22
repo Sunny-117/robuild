@@ -426,8 +426,7 @@ robuild 提供了一些官方插件：
 ```typescript
 import {
   shebangPlugin,
-  jsonPlugin,
-  envPlugin,
+  // JSON 和环境变量现在由 rolldown 原生支持
   sizeAnalyzerPlugin
 } from 'robuild/plugins'
 ```

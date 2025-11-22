@@ -124,30 +124,29 @@ shebangPlugin({
 })
 ```
 
-### 2. JSON 插件
+### 2. JSON 支持
 
-处理 JSON 文件：
+JSON 文件导入由 rolldown 原生支持，无需额外插件：
 
 ```typescript
-import { jsonPlugin } from 'robuild/plugins'
+// 直接导入 JSON 文件
+import config from './config.json'
 
 export default defineConfig({
   entries: [
     {
       type: 'bundle',
       input: './src/index.ts',
-      rolldown: {
-        plugins: [jsonPlugin()]
-      }
+      // JSON 导入自动支持，无需配置
     }
   ]
 })
 ```
 
 **功能：**
-- 导入 JSON 文件作为模块
-- 支持 JSON 路径映射
+- 原生支持 JSON 文件导入
 - 自动类型推断
+- 零配置使用
 
 ## 创建自定义插件
 

@@ -1,0 +1,1 @@
+export const multi2 = "second"
