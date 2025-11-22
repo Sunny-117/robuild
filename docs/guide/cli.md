@@ -113,30 +113,11 @@ npx robuild ./src/index.ts --alias @=./src --alias @utils=./src/utils
 
 ## 🏢 企业级功能
 
-### 工作区支持
-
-```bash
-# 启用工作区模式
-npx robuild --workspace
-
-# 过滤特定包
-npx robuild --workspace --filter "@mycompany/core"
-
-# 多个过滤器
-npx robuild --workspace --filter "@mycompany/*" --filter "packages/utils"
-
-# 排除模式
-npx robuild --workspace --filter "!@mycompany/test-*"
-```
-
 ### 包导出生成
 
 ```bash
 # 生成 package.json exports 字段
 npx robuild ./src/index.ts --generate-exports
-
-# 结合工作区使用
-npx robuild --workspace --generate-exports
 ```
 
 ## 构建模式

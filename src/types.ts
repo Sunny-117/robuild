@@ -524,43 +524,12 @@ export interface BuildConfig {
   fromVite?: boolean
 
   /**
-   * Workspace configuration for monorepo support.
-   */
-  workspace?: WorkspaceConfig
-
-  /**
    * Package exports generation configuration.
    */
   exports?: ExportsConfig
-
-  /**
-   * Package filter for workspace builds.
-   */
-  filter?: string | string[]
 }
 
-// Workspace types
-export interface WorkspaceConfig {
-  /**
-   * Workspace package patterns.
-   */
-  packages?: string[]
 
-  /**
-   * Package filter patterns.
-   */
-  filter?: string | string[]
-
-  /**
-   * Package exclude patterns.
-   */
-  exclude?: string | string[]
-
-  /**
-   * Build packages in dependency order.
-   */
-  dependencyOrder?: boolean
-}
 
 // Exports generation types
 export interface ExportsConfig {

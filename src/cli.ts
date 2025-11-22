@@ -69,13 +69,7 @@ const args = parseArgs({
     'from-vite': {
       type: 'boolean',
     },
-    'workspace': {
-      type: 'boolean',
-    },
-    'filter': {
-      type: 'string',
-      multiple: true,
-    },
+
     'generate-exports': {
       type: 'boolean',
     },
@@ -122,8 +116,7 @@ Options:
   --fail-on-warn           Fail build on warnings
   --ignore-watch <pattern> Ignore patterns in watch mode (can be used multiple times)
   --from-vite              Load configuration from Vite config file
-  --workspace              Enable workspace mode for monorepo builds
-  --filter <pattern>       Filter workspace packages by name or path pattern (can be used multiple times)
+
   --generate-exports       Generate package.json exports field
   --cjs-default <mode>     CommonJS default export handling: true, false, auto (default: auto)
   --shims                  Enable CJS/ESM compatibility shims
@@ -291,16 +284,7 @@ if (args.values['from-vite']) {
   buildConfig.fromVite = true
 }
 
-if (args.values.workspace) {
-  buildConfig.workspace = {
-    packages: ['packages/*', 'apps/*'],
-    ...config.workspace,
-  }
-}
 
-if (args.values.filter) {
-  buildConfig.filter = args.values.filter
-}
 
 if (args.values['generate-exports']) {
   buildConfig.exports = {

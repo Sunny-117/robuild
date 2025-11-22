@@ -21,7 +21,7 @@ English | <a href="./README-zh.md">简体中文</a>
 🎯 **TypeScript**: First-class TypeScript support with `.d.ts` generation
 🔄 **Dual mode**: Bundle or transform your source code
 🚀 **Stub mode**: Lightning-fast development with file linking
-🏢 **Enterprise**: Workspace support, package filtering, migration tools
+🏢 **Enterprise**: Package exports generation, migration tools
 
 ## Installation
 

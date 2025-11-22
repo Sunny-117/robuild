@@ -59,19 +59,7 @@ export default defineConfig({
 })
 ```
 
-### `workspace`
-工作区配置，用于 monorepo 项目。
 
-```typescript
-export default defineConfig({
-  workspace: {
-    packages: ['packages/*', 'apps/*'],  // 包路径模式
-    filter: '@mycompany/*',              // 包过滤器
-    dependencyOrder: true,               // 依赖顺序构建
-    parallel: true                       // 并行构建
-  }
-})
-```
 
 ### `watch`
 监听模式配置。

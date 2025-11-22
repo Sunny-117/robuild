@@ -16,12 +16,7 @@ import { generatePackageExports, updatePackageJsonExports } from './features/exp
 import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from './features/logger'
 import { createBuildResult, executeOnSuccess } from './features/on-success'
 import { loadViteConfig } from './features/vite-config'
-import {
-  buildWorkspacePackages,
-  discoverWorkspacePackages,
-  filterWorkspacePackages,
-  loadWorkspaceConfig,
-} from './features/workspace'
+
 import { analyzeDir } from './utils'
 import { performWatchBuild } from './watch'
 
@@ -42,11 +37,6 @@ export async function build(config: BuildConfig): Promise<void> {
   const pkgDir = normalizePath(config.cwd)
   const pkg = await readJSON(join(pkgDir, 'package.json')).catch(() => ({}))
   const ctx: BuildContext = { pkg, pkgDir }
-
-  // Handle workspace builds
-  if (config.workspace) {
-    return buildWorkspace(config, pkgDir)
-  }
 
   // Load Vite config if requested
   let finalConfig = config
@@ -160,79 +150,6 @@ function normalizePath(path: string | URL | undefined, resolveFrom?: string) {
     : path instanceof URL
       ? fileURLToPath(path)
       : resolve(resolveFrom || '.', path || '.')
-}
-
-/**
- * Build workspace packages
- */
-async function buildWorkspace(config: BuildConfig, workspaceRoot: string): Promise<void> {
-  logger.info('🏢 Building workspace packages...')
-
-  // Load workspace configuration
-  const workspaceConfig = await loadWorkspaceConfig(workspaceRoot)
-  if (!workspaceConfig) {
-    throw new Error('No workspace configuration found')
-  }
-
-  // Discover packages
-  const allPackages = await discoverWorkspacePackages(workspaceRoot, workspaceConfig.packages)
-
-  if (allPackages.length === 0) {
-    logger.warn('No packages found in workspace')
-    return
-  }
-
-  // Filter packages
-  const filteredPackages = filterWorkspacePackages(
-    allPackages,
-    config.filter || config.workspace?.filter,
-    config.workspace?.exclude,
-  )
-
-  if (filteredPackages.length === 0) {
-    logger.warn('No packages match the filter criteria')
-    return
-  }
-
-  logger.info(`Building ${filteredPackages.length} packages`)
-
-  // Build packages
-  const buildPackage = async (pkg: any) => {
-    logger.info(`📦 Building ${pkg.name}...`)
-
-    try {
-      // Create package-specific config
-      const packageConfig: BuildConfig = {
-        ...config,
-        cwd: pkg.path,
-        workspace: undefined, // Prevent recursive workspace builds
-      }
-
-      // Build the package
-      await build(packageConfig)
-
-      // Generate exports if enabled
-      if (config.exports?.enabled) {
-        const exportsConfig = { enabled: true, ...config.exports }
-        const exports = await generatePackageExports(pkg.path, packageConfig, exportsConfig)
-        if (config.exports.autoUpdate) {
-          await updatePackageJsonExports(pkg.path, exports)
-          logger.info(`Updated exports for ${pkg.name}`)
-        }
-      }
-
-      logger.success(`Built ${pkg.name}`)
-    }
-    catch (error) {
-      logger.error(`Failed to build ${pkg.name}:`, error)
-      throw error
-    }
-  }
-
-  // Execute builds
-  await buildWorkspacePackages(filteredPackages, buildPackage)
-
-  logger.success(`Successfully built ${filteredPackages.length} packages`)
 }
 
 function readJSON(specifier: string) {
