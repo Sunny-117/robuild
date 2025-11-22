@@ -73,7 +73,7 @@ docs/
 │   ├── esm.md             # ESM 兼容性
 │   ├── build-enhancements.md    # 构建功能增强
 │   ├── dev-experience.md        # 开发体验功能
-│   ├── enterprise.md            # 企业级功能
+│   ├── exports-generation.md    # 包导出生成
 │   ├── plugins.md               # 插件系统
 │   ├── advanced-build.md        # 高级构建选项
 │   ├── hooks.md                 # Hooks 钩子

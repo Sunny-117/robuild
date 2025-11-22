@@ -31,9 +31,9 @@ features:
   - icon: 📦
     title: 双模式构建
     details: 支持 bundle 模式和 transform 模式，满足不同构建需求
-  - icon: 🏢
-    title: 企业级功能
-    details: 工作区支持、包过滤、导出生成、迁移工具等企业级特性
+  - icon: 📤
+    title: 导出生成
+    details: 自动生成 package.json exports 字段，支持多种格式
   - icon: 🔌
     title: 插件生态
     details: 兼容 Rollup/Vite/Unplugin，支持自定义钩子和 Glob 导入

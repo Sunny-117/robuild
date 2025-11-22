@@ -85,7 +85,7 @@
 - Clean output directory for transform entries ([9184154](https://github.com/Sunny-117/robuild/commit/9184154))
 - CLI 和配置增强 ([7c6f909](https://github.com/Sunny-117/robuild/commit/7c6f909))
 - 构建功能增强 ([ba6771e](https://github.com/Sunny-117/robuild/commit/ba6771e))
-- Workspace, filter, exports and migrate tool ([e07a75f](https://github.com/Sunny-117/robuild/commit/e07a75f))
+- Workspace, filter and exports tool ([e07a75f](https://github.com/Sunny-117/robuild/commit/e07a75f))
 - Plugin system ([1b69411](https://github.com/Sunny-117/robuild/commit/1b69411))
 - Loader and shims support ([ab9b801](https://github.com/Sunny-117/robuild/commit/ab9b801))
 

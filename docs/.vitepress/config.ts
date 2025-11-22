@@ -48,9 +48,9 @@ export default defineConfig({
           ]
         },
         {
-          text: '企业级功能',
+          text: '高级功能',
           items: [
-            { text: '企业级特性', link: '/guide/enterprise' },
+            { text: '包导出生成', link: '/guide/exports-generation' },
             { text: '插件系统', link: '/guide/plugins' },
             { text: '高级构建选项', link: '/guide/advanced-build' },
           ]

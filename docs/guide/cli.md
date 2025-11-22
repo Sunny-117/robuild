@@ -111,9 +111,7 @@ npx robuild ./src/index.ts --no-external some-package
 npx robuild ./src/index.ts --alias @=./src --alias @utils=./src/utils
 ```
 
-## 🏢 企业级功能
-
-### 包导出生成
+## 📤 包导出生成
 
 ```bash
 # 生成 package.json exports 字段
@@ -319,18 +317,6 @@ robuild
     "build:prod": "robuild ./src/index.ts --minify"
   }
 }
-```
-
-### CI/CD 集成
-
-```yaml
-# GitHub Actions
-- name: Build
-  run: npx robuild ./src/index.ts
-
-# 或使用 npm script
-- name: Build
-  run: npm run build
 ```
 
 ## 下一步

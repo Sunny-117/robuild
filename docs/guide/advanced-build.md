@@ -323,7 +323,7 @@ robuild 会自动检测：
 
 ### 概述
 
-保持原有文件结构，不进行打包，适合库开发和渐进式迁移。
+保持原有文件结构，不进行打包，适合库开发。
 
 ### 基本用法
 
@@ -373,7 +373,7 @@ dist/
 ### 适用场景
 
 - **库开发**: 保持清晰的模块结构
-- **渐进迁移**: 逐步从 CommonJS 迁移到 ES 模块
+- **模块转换**: 从 CommonJS 转换到 ES 模块
 - **调试友好**: 保持源码结构便于调试
 - **Tree Shaking**: 更好的摇树优化支持
 
@@ -406,17 +406,17 @@ export default defineConfig({
     {
       type: 'bundle',
       input: './src/index.ts',
-      
+
       // 文件加载器
       loaders: {
         '.json': { loader: 'json' },
         '.css': { loader: 'css' },
         '.png': { loader: 'file' }
       },
-      
+
       // CommonJS 处理
       cjsDefault: 'auto',
-      
+
       // 兼容性垫片
       shims: {
         dirname: true,
@@ -424,18 +424,18 @@ export default defineConfig({
         exports: false,
         env: true
       },
-      
+
       // 依赖处理
       skipNodeModules: false,
-      
+
       // 输出模式
       unbundle: false,
-      
+
       // 其他选项
       format: ['esm', 'cjs'],
       platform: 'neutral'
     },
-    
+
     // Unbundle 模式的运行时文件
     {
       type: 'transform',
@@ -490,7 +490,7 @@ npx robuild ./src/index.ts \
 
 ## 📚 相关文档
 
-- [企业级功能](./enterprise.md) - 工作区和高级功能
+- [包导出生成](./exports-generation.md) - 自动生成 package.json exports
 - [插件系统](./plugins.md) - 插件开发和使用
 - [配置文件](./configuration.md) - 完整配置参考
 - [API 文档](../api/) - 程序化 API 使用
