@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v0.0.14
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.11...v0.0.14)
+
+### 🚀 Enhancements
+
+- 🎸 skipNodeModules auto inline oxc runtime helpers ([0703d24](https://github.com/Sunny-117/robuild/commit/0703d24))
+- 🎸 perform watch build using rolldown builtin watch mode ([2a87397](https://github.com/Sunny-117/robuild/commit/2a87397))
+- 🎸 generate exports ([22cff19](https://github.com/Sunny-117/robuild/commit/22cff19))
+
+### 🩹 Fixes
+
+- 🐛 JSON 内容被正确解析和序列化,入口文件不会被错误地外部化,正确处理绝对和相对路径,Rolldown 原生功 ([a2df969](https://github.com/Sunny-117/robuild/commit/a2df969))
+
+### 💅 Refactors
+
+- 💡 watch mode ([1f154cf](https://github.com/Sunny-117/robuild/commit/1f154cf))
+- 💡 remove workspace ([43f9489](https://github.com/Sunny-117/robuild/commit/43f9489))
+- 💡 remove migrate ([6eb7878](https://github.com/Sunny-117/robuild/commit/6eb7878))
+- 💡 plugin system ([7d96f94](https://github.com/Sunny-117/robuild/commit/7d96f94))
+- 💡 plugin dir ([fec34e6](https://github.com/Sunny-117/robuild/commit/fec34e6))
+
+### 🏡 Chore
+
+- Release ([5dade2b](https://github.com/Sunny-117/robuild/commit/5dade2b))
+- Update todo ([71ba597](https://github.com/Sunny-117/robuild/commit/71ba597))
+- Release ([df681e4](https://github.com/Sunny-117/robuild/commit/df681e4))
+- Todo ([21139ca](https://github.com/Sunny-117/robuild/commit/21139ca))
+- Add test case ([e2b171a](https://github.com/Sunny-117/robuild/commit/e2b171a))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## Unreleased
 
 ### 🩹 Fixes
