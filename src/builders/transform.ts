@@ -18,7 +18,7 @@ import { copyFiles } from '../features/copy'
 import { createFilename } from '../features/extensions'
 import { addHashToFilename, hasHash } from '../features/hash'
 import { transformNodeProtocol } from '../features/node-protocol'
-import { makeExecutable, SHEBANG_RE } from '../plugins/build'
+import { makeExecutable, SHEBANG_RE } from '../plugins/shebang'
 import { fmtPath } from '../utils'
 
 /**

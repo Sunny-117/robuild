@@ -1,1 +1,0 @@
-export { textPlugin } from './text'

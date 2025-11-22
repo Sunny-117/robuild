@@ -28,8 +28,9 @@ import { addHashToFilename, hasHash } from '../features/hash'
 import { createLoaderPlugin } from '../features/loaders'
 import { PluginManager } from '../features/plugins'
 import { createShimsPlugin } from '../features/shims'
+import { nodeProtocolPlugin } from '../plugins/node-protocol'
+import { makeExecutable, shebangPlugin } from '../plugins/shebang'
 import { distSize, fmtPath, sideEffectSize } from '../utils'
-import { nodeProtocolPlugin, makeExecutable, shebangPlugin } from '../plugins/build'
 
 /**
  * Convert OutputFormat to Rolldown ModuleFormat

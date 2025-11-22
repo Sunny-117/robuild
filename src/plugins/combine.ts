@@ -1,4 +1,4 @@
-import type { RobuildPlugin } from '../../types'
+import type { RobuildPlugin } from '../types'
 
 /**
  * Create a plugin that combines multiple plugins

@@ -1,1 +1,0 @@
-export { combinePlugins } from './combine'

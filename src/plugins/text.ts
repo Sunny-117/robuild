@@ -1,4 +1,4 @@
-import type { RobuildPlugin } from '../../types'
+import type { RobuildPlugin } from '../types'
 
 /**
  * Built-in plugin for text file imports

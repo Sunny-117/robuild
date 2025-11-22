@@ -1,16 +1,9 @@
 import type { RobuildPlugin } from '../types'
-import { cssPlugin, urlPlugin } from './assets'
-import { textPlugin } from './data'
-import { nodePolyfillsPlugin } from './environment'
-import { virtualPlugin } from './resolution'
-
-// Re-export all plugins from the new organized structure
-export * from './assets'
-export * from './build'
-export * from './data'
-export * from './environment'
-export * from './resolution'
-export * from './utils'
+import { cssPlugin } from './css'
+import { nodePolyfillsPlugin } from './node-polyfills'
+import { textPlugin } from './text'
+import { urlPlugin } from './url'
+import { virtualPlugin } from './virtual'
 
 /**
  * Get all built-in plugins

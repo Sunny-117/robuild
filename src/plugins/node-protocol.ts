@@ -1,5 +1,5 @@
 import type { Plugin } from 'rolldown'
-import { transformNodeProtocol } from '../../features/node-protocol'
+import { transformNodeProtocol } from '../features/node-protocol'
 
 /**
  * Rolldown plugin for Node.js protocol handling

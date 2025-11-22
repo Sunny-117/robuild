@@ -1,1 +1,0 @@
-export { virtualPlugin } from './virtual'
