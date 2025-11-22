@@ -6,6 +6,11 @@
   "author": "",
   "license": "ISC",
   "keywords": [],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs"
+    }
+  },
   "main": "index.js",
   "scripts": {
     "dev": "robuild --watch",

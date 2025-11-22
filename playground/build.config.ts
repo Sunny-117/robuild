@@ -6,4 +6,9 @@ export default defineConfig({
     input: 'src/index.ts',
     noExternal: ['react'],
   }],
+  exports: {
+    enabled: true,
+    includeTypes: true,
+    autoUpdate: true,
+  },
 })
