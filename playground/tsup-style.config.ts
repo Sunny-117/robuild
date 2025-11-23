@@ -5,10 +5,10 @@ import { defineConfig } from 'robuild'
 const testPlugin: RobuildPlugin = {
   name: 'hook-test',
   buildStart: async () => {
-    console.log('hook test===================')
+    console.log('tsup-style config: hook test')
   },
   writeBundle: async (options, bundle) => {
-    console.log('write bundle===================', Object.keys(bundle))
+    console.log('tsup-style config: write bundle', Object.keys(bundle))
   },
 }
 
@@ -20,7 +20,7 @@ export default defineConfig({
   entry: 'src/index.ts',
 
   // Output formats
-  format: ['esm'],
+  format: 'esm',
 
   // Output directory
   outDir: 'dist',
@@ -48,27 +48,6 @@ export default defineConfig({
   // Path aliases
   alias: {
     '@': path.resolve(__dirname, 'src'),
-  },
-
-  // Advanced rolldown configuration (highest priority)
-  rolldown: {
-    logLevel: 'info',
-    output: {
-      sourcemap: true,
-    },
-  },
-
-  // Hooks
-  hooks: {
-    start() {
-      console.log('start')
-    },
-    end() {
-      console.log('end')
-    },
-    rolldownConfig() {
-      console.log('rolldownConfig')
-    },
   },
 
   // Plugins

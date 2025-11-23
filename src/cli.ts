@@ -1,329 +1,267 @@
 #!/usr/bin/env node
 
 import type { BuildConfig, BuildEntry } from './types'
-import { parseArgs } from 'node:util'
+import process from 'node:process'
 import { loadConfig } from 'c12'
+import { cac } from 'cac'
 import { consola } from 'consola'
-
+import { colors as c } from 'consola/utils'
 import { build } from './build'
 
-// https://nodejs.org/api/util.html#utilparseargsconfig
-const args = parseArgs({
-  args: process.argv.slice(2),
-  allowPositionals: true,
-  options: {
-    'dir': {
-      type: 'string',
-      default: '.',
-    },
-    'stub': {
-      type: 'boolean',
-      default: false,
-    },
-    'watch': {
-      type: 'boolean',
-      default: false,
-      short: 'w',
-    },
-    'format': {
-      type: 'string',
-      multiple: true,
-    },
-    'platform': {
-      type: 'string',
-    },
-    'target': {
-      type: 'string',
-    },
-    'global-name': {
-      type: 'string',
-    },
-    'clean': {
-      type: 'boolean',
-      default: true,
-    },
-    'no-clean': {
-      type: 'boolean',
-    },
-    'external': {
-      type: 'string',
-      multiple: true,
-    },
-    'no-external': {
-      type: 'string',
-      multiple: true,
-    },
-    'log-level': {
-      type: 'string',
-    },
-    'on-success': {
-      type: 'string',
-    },
-    'fail-on-warn': {
-      type: 'boolean',
-    },
-    'ignore-watch': {
-      type: 'string',
-      multiple: true,
-    },
-    'from-vite': {
-      type: 'boolean',
-    },
+const pkg = await import('../package.json', { with: { type: 'json' } })
 
-    'generate-exports': {
-      type: 'boolean',
-    },
-    'cjs-default': {
-      type: 'string',
-    },
-    'shims': {
-      type: 'boolean',
-    },
-    'skip-node-modules': {
-      type: 'boolean',
-    },
-    'unbundle': {
-      type: 'boolean',
-    },
-    'help': {
-      type: 'boolean',
-    },
-    'version': {
-      type: 'boolean',
-    },
-  },
-})
+const cli = cac('robuild')
 
-// Handle help and version flags
-if (args.values.help) {
-  console.log(`
-Usage: robuild [options] [entries...]
+cli
+  .version(pkg.default.version)
+  .help()
 
-Options:
-  --dir <dir>              Working directory (default: ".")
-  --stub                   Generate stub files instead of building
-  -w, --watch              Enable watch mode
-  --format <format>        Output format(s): esm, cjs, iife, umd (can be used multiple times)
-  --platform <platform>    Target platform: browser, node, neutral
-  --target <target>        Target ES version: es5, es2015, es2016, es2017, es2018, es2019, es2020, es2021, es2022, esnext
-  --global-name <name>     Global variable name for IIFE/UMD formats
-  --clean                  Clean output directory before build (default: true)
-  --no-clean               Disable cleaning output directory
-  --external <module>      Mark dependencies as external (can be used multiple times)
-  --no-external <module>   Force bundle dependencies (can be used multiple times)
-  --log-level <level>      Log level: silent, error, warn, info, verbose (default: info)
-  --on-success <command>   Command to run after successful build
-  --fail-on-warn           Fail build on warnings
-  --ignore-watch <pattern> Ignore patterns in watch mode (can be used multiple times)
-  --from-vite              Load configuration from Vite config file
-
-  --generate-exports       Generate package.json exports field
-  --cjs-default <mode>     CommonJS default export handling: true, false, auto (default: auto)
-  --shims                  Enable CJS/ESM compatibility shims
-  --skip-node-modules      Skip bundling node_modules dependencies
-  --unbundle               Preserve file structure without bundling
-  --help                   Show this help message
-  --version                Show version number
-
-Examples:
-  robuild src/index.ts                    # Bundle single file
-  robuild src/index.ts --format esm cjs  # Multiple formats
-  robuild src/ --watch                   # Transform directory in watch mode
-  robuild --help                         # Show help
-`)
-  process.exit(0)
-}
-
-if (args.values.version) {
-  const pkg = await import('../package.json', { with: { type: 'json' } })
-  console.log(pkg.default.version)
-  process.exit(0)
-}
-
-const { config = {} } = await loadConfig<BuildConfig>({
-  name: 'robuild',
-  configFile: 'build.config',
-  cwd: args.values.dir,
-})
-
-// Support both entries and entry (tsup-style)
-let rawEntries: (BuildEntry | string)[]
-if (args.positionals.length > 0) {
-  rawEntries = args.positionals as string[]
-}
-else if (config.entries && config.entries.length > 0) {
-  rawEntries = config.entries
-}
-else if (config.entry) {
-  // Convert tsup-style entry to entries format
-  rawEntries = [{
-    type: 'bundle' as const,
-    entry: config.entry,
-    format: config.format,
-    outDir: config.outDir,
-    platform: config.platform,
-    target: config.target,
-    globalName: config.name,
-    minify: config.minify,
-    dts: config.dts,
-    dtsOnly: config.dtsOnly,
-    splitting: config.splitting,
-    treeshake: config.treeshake,
-    sourcemap: config.sourcemap,
-    external: config.external,
-    noExternal: config.noExternal,
-    env: config.env,
-    alias: config.alias,
-    banner: config.banner,
-    footer: config.footer,
-    shims: config.shims,
-    rolldown: config.rolldown,
-  }]
-}
-else {
-  rawEntries = []
-}
-
-const entries: BuildEntry[] = rawEntries.map((entry) => {
-  if (typeof entry === 'string') {
-    const [input, outDir] = entry.split(':') as [string, string | undefined]
-
-    if (input.endsWith('/')) {
-      // Transform entry
-      return { type: 'transform' as const, input, outDir }
+cli
+  .command('[...entries]', 'Bundle or transform files', {
+    ignoreOptionDefaultValue: true,
+    allowUnknownOptions: false,
+  })
+  .option('-c, --config <filename>', 'Use a custom config file')
+  .option('--no-config', 'Disable config file')
+  .option('--dir <dir>', 'Working directory', { default: '.' })
+  .option('--stub', 'Generate stub files instead of building')
+  .option('-w, --watch', 'Enable watch mode')
+  .option('-f, --format <format>', 'Output format(s): esm, cjs, iife, umd')
+  .option('-d, --out-dir <dir>', 'Output directory', { default: 'dist' })
+  .option('--platform <platform>', 'Target platform: browser, node, neutral', { default: 'node' })
+  .option('--target <target>', 'Target ES version: es2015, es2020, esnext, etc.', { default: 'es2022' })
+  .option('--name <name>', 'Global variable name for IIFE/UMD formats')
+  .option('--minify', 'Minify output')
+  .option('--dts', 'Generate declaration files')
+  .option('--dts-only', 'Only generate declaration files')
+  .option('--splitting', 'Enable code splitting')
+  .option('--treeshake', 'Enable tree shaking', { default: true })
+  .option('--sourcemap', 'Generate source maps')
+  .option('--clean', 'Clean output directory before build', { default: true })
+  .option('--external <module>', 'Mark dependencies as external')
+  .option('--no-external <module>', 'Force bundle dependencies')
+  .option('--shims', 'Enable CJS/ESM compatibility shims')
+  .option('--skip-node-modules', 'Skip bundling node_modules dependencies')
+  .option('--unbundle', 'Preserve file structure without bundling')
+  .option('--cjs-default <mode>', 'CommonJS default export handling: true, false, auto')
+  .option('--generate-exports', 'Generate package.json exports field')
+  .option('-l, --log-level <level>', 'Log level: silent, error, warn, info, verbose', { default: 'info' })
+  .option('--on-success <command>', 'Command to run after successful build')
+  .option('--fail-on-warn', 'Fail build on warnings')
+  .option('--ignore-watch <pattern>', 'Ignore patterns in watch mode')
+  .option('--from-vite', 'Load configuration from Vite config file')
+  .example('robuild src/index.ts')
+  .example('robuild src/index.ts --format esm --format cjs')
+  .example('robuild src/ --watch')
+  .example('robuild --config custom.config.ts')
+  .action(async (entries: string[], flags: any) => {
+    try {
+      await runBuild(entries, flags)
     }
-    else {
-      // Bundle entry
-      const baseEntry: any = {
-        type: 'bundle' as const,
-        input: input.split(','),
-        outDir,
-      }
+    catch (error) {
+      consola.error(error)
+      process.exit(1)
+    }
+  })
 
-      // Apply CLI options to bundle entries
-      // Format options
-      if (args.values.format) {
-        baseEntry.format = args.values.format
-      }
+async function runBuild(entries: string[], flags: any): Promise<void> {
+  // Set log level
+  if (flags.logLevel) {
+    consola.level = flags.logLevel === 'silent' ? 0 : flags.logLevel === 'verbose' ? 5 : 3
+  }
 
-      // Platform option
-      if (args.values.platform) {
-        baseEntry.platform = args.values.platform
-      }
+  // Show version info
+  consola.info(`robuild ${c.dim(`v${pkg.default.version}`)}`)
+  consola.info('')
 
-      // Target option
-      if (args.values.target) {
-        baseEntry.target = args.values.target
-      }
+  // Load config file
+  const configOptions: any = {
+    name: 'robuild',
+    cwd: flags.dir || '.',
+  }
 
-      // Global name for IIFE/UMD
-      if (args.values['global-name']) {
-        baseEntry.globalName = args.values['global-name']
-      }
+  // Handle --config option
+  if (flags.config) {
+    configOptions.configFile = flags.config
+  }
+  else if (flags.noConfig) {
+    configOptions.configFile = false
+  }
+  else {
+    configOptions.configFile = 'build.config'
+  }
 
-      // Clean option
-      if (args.values['no-clean']) {
-        baseEntry.clean = false
-      }
-      else if (args.values.clean !== undefined) {
-        baseEntry.clean = args.values.clean
-      }
+  const { config = {} } = await loadConfig<BuildConfig>(configOptions)
 
-      // External dependencies
-      if (args.values.external) {
-        baseEntry.external = args.values.external.map(ext =>
-          ext.startsWith('/') && ext.endsWith('/')
-            ? new RegExp(ext.slice(1, -1))
-            : ext,
-        )
-      }
+  // Support both entries and entry (tsup-style)
+  let rawEntries: (BuildEntry | string)[]
+  if (entries.length > 0) {
+    rawEntries = entries
+  }
+  else if (config.entries && config.entries.length > 0) {
+    rawEntries = config.entries
+  }
+  else if (config.entry) {
+    // Convert tsup-style entry to entries format
+    rawEntries = [{
+      type: 'bundle' as const,
+      entry: config.entry,
+      format: config.format,
+      outDir: config.outDir,
+      platform: config.platform,
+      target: config.target,
+      globalName: config.name,
+      minify: config.minify,
+      dts: config.dts,
+      dtsOnly: config.dtsOnly,
+      splitting: config.splitting,
+      treeshake: config.treeshake,
+      sourcemap: config.sourcemap,
+      external: config.external,
+      noExternal: config.noExternal,
+      env: config.env,
+      alias: config.alias,
+      banner: config.banner,
+      footer: config.footer,
+      shims: config.shims,
+      rolldown: config.rolldown,
+    }]
+  }
+  else {
+    rawEntries = []
+  }
 
-      // No external dependencies
-      if (args.values['no-external']) {
-        baseEntry.noExternal = args.values['no-external'].map(ext =>
-          ext.startsWith('/') && ext.endsWith('/')
-            ? new RegExp(ext.slice(1, -1))
-            : ext,
-        )
-      }
+  const processedEntries: BuildEntry[] = rawEntries.map((entry) => {
+    if (typeof entry === 'string') {
+      const [input, outDir] = entry.split(':') as [string, string | undefined]
 
-      // Advanced build options
-      if (args.values['cjs-default']) {
-        const mode = args.values['cjs-default']
-        baseEntry.cjsDefault = mode === 'true' ? true : mode === 'false' ? false : mode
+      if (input.endsWith('/')) {
+        // Transform entry
+        return { type: 'transform' as const, input, outDir }
       }
+      else {
+        // Bundle entry
+        const baseEntry: any = {
+          type: 'bundle' as const,
+          input: input.split(','),
+          outDir,
+        }
 
-      if (args.values.shims) {
-        baseEntry.shims = true
+        // Apply CLI options to bundle entries
+        if (flags.format) {
+          baseEntry.format = Array.isArray(flags.format) ? flags.format : [flags.format]
+        }
+
+        if (flags.platform) {
+          baseEntry.platform = flags.platform
+        }
+
+        if (flags.target) {
+          baseEntry.target = flags.target
+        }
+
+        if (flags.name) {
+          baseEntry.globalName = flags.name
+        }
+
+        if (flags.minify) {
+          baseEntry.minify = true
+        }
+
+        if (flags.dts) {
+          baseEntry.dts = true
+        }
+
+        if (flags.dtsOnly) {
+          baseEntry.dtsOnly = true
+        }
+
+        if (flags.splitting) {
+          baseEntry.splitting = true
+        }
+
+        if (flags.treeshake !== undefined) {
+          baseEntry.treeshake = flags.treeshake
+        }
+
+        if (flags.sourcemap) {
+          baseEntry.sourcemap = true
+        }
+
+        if (flags.external) {
+          baseEntry.external = Array.isArray(flags.external) ? flags.external : [flags.external]
+        }
+
+        if (flags.noExternal) {
+          baseEntry.noExternal = Array.isArray(flags.noExternal) ? flags.noExternal : [flags.noExternal]
+        }
+
+        if (flags.cjsDefault) {
+          baseEntry.cjsDefault = flags.cjsDefault
+        }
+
+        if (flags.shims) {
+          baseEntry.shims = true
+        }
+
+        if (flags.skipNodeModules) {
+          baseEntry.skipNodeModules = true
+        }
+
+        if (flags.unbundle) {
+          baseEntry.unbundle = true
+        }
+
+        return baseEntry as BuildEntry
       }
+    }
+    return entry
+  })
 
-      if (args.values['skip-node-modules']) {
-        baseEntry.skipNodeModules = true
-      }
-
-      if (args.values.unbundle) {
-        baseEntry.unbundle = true
-      }
-
-      return baseEntry as BuildEntry
+  if (flags.stub) {
+    for (const entry of processedEntries) {
+      entry.stub = true
     }
   }
-  return entry
-})
 
-if (args.values.stub) {
-  for (const entry of entries) {
-    entry.stub = true
+  if (rawEntries.length === 0) {
+    consola.error('No build entries specified.')
+    consola.info('Run `robuild --help` for usage information.')
+    process.exit(1)
   }
+
+  // Build final config with CLI overrides
+  const buildConfig: BuildConfig = {
+    cwd: flags.dir,
+    ...config,
+    entries: processedEntries,
+    watch: flags.watch
+      ? {
+          enabled: true,
+          ...config.watch,
+        }
+      : config.watch,
+    clean: flags.clean ?? config.clean,
+    logLevel: flags.logLevel || config.logLevel,
+    onSuccess: flags.onSuccess || config.onSuccess,
+    failOnWarn: flags.failOnWarn ?? config.failOnWarn,
+    ignoreWatch: flags.ignoreWatch || config.ignoreWatch,
+    fromVite: flags.fromVite ?? config.fromVite,
+    exports: flags.generateExports
+      ? { enabled: true, ...config.exports }
+      : config.exports,
+  }
+
+  await build(buildConfig)
 }
 
-if (rawEntries.length === 0) {
-  consola.error('No build entries specified.')
+// Run CLI
+cli.parse(process.argv, { run: false })
+
+try {
+  await cli.runMatchedCommand()
+}
+catch (error) {
+  consola.error(error)
   process.exit(1)
 }
-
-// Build final config with CLI overrides
-const buildConfig: BuildConfig = {
-  cwd: args.values.dir,
-  ...config,
-  entries,
-  watch: args.values.watch
-    ? {
-        enabled: true,
-        ...config.watch,
-        ...(args.values['ignore-watch'] ? { exclude: [...(config.watch?.exclude || []), ...args.values['ignore-watch']] } : {}),
-      }
-    : config.watch,
-}
-
-// Apply CLI-level options
-if (args.values['log-level']) {
-  buildConfig.logLevel = args.values['log-level'] as any
-}
-
-if (args.values['on-success']) {
-  buildConfig.onSuccess = args.values['on-success']
-}
-
-if (args.values['fail-on-warn']) {
-  buildConfig.failOnWarn = true
-}
-
-if (args.values['ignore-watch']) {
-  buildConfig.ignoreWatch = args.values['ignore-watch']
-}
-
-if (args.values['from-vite']) {
-  buildConfig.fromVite = true
-}
-
-if (args.values['generate-exports']) {
-  buildConfig.exports = {
-    enabled: true,
-    includeTypes: true,
-    autoUpdate: true,
-    ...config.exports,
-  }
-}
-
-await build(buildConfig)
