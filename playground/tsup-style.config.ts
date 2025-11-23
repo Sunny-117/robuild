@@ -10,6 +10,11 @@ const testPlugin: RobuildPlugin = {
   writeBundle: async (options, bundle) => {
     console.log('tsup-style config: write bundle', Object.keys(bundle))
   },
+  banner() {
+    return `
+    // banner test
+    `
+  },
 }
 
 /**
@@ -22,6 +27,7 @@ export default defineConfig({
   // Output formats
   format: ['esm', 'cjs'],
 
+  banner: `// @Sunny-117`,
   // Output directory
   outDir: 'dist',
 
