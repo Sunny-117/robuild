@@ -1,6 +1,37 @@
 # Changelog
 
 
+## v0.0.16
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.15...v0.0.16)
+
+### 🚀 Enhancements
+
+- **transform:** Support .tsx and .jsx file transformations, add sourcemap generation ([76b96c8](https://github.com/Sunny-117/robuild/commit/76b96c8))
+- Enhance pnpm workspace configuration and improve rolldown watch mode ([be7a3fb](https://github.com/Sunny-117/robuild/commit/be7a3fb))
+
+### 🩹 Fixes
+
+- 🐛 ts error ([8acec72](https://github.com/Sunny-117/robuild/commit/8acec72))
+
+### 💅 Refactors
+
+- **tests:** Remove deprecated test files and consolidate test utilities ([13cb8e2](https://github.com/Sunny-117/robuild/commit/13cb8e2))
+- Remove outdated snapshot files and improve snapshot handling ([d3a8fdd](https://github.com/Sunny-117/robuild/commit/d3a8fdd))
+- Consolidate examples into unified playground structure ([07dc0df](https://github.com/Sunny-117/robuild/commit/07dc0df))
+
+### 🏡 Chore
+
+- 🤖 remove temp file ([ffed4a6](https://github.com/Sunny-117/robuild/commit/ffed4a6))
+- 🤖 remove test helper file ([02f5a36](https://github.com/Sunny-117/robuild/commit/02f5a36))
+- 🤖 remove cli test files ([4b51bda](https://github.com/Sunny-117/robuild/commit/4b51bda))
+- Remove unused dependency 'defu' and update output format configuration ([75c8d8f](https://github.com/Sunny-117/robuild/commit/75c8d8f))
+- 🤖 remove logs ([fc467c0](https://github.com/Sunny-117/robuild/commit/fc467c0))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.15
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.14...v0.0.15)
