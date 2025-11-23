@@ -1,6 +1,6 @@
 # 插件系统
 
-robuild 的插件系统提供了强大的扩展能力，允许你自定义构建流程和添加新功能。
+robuild 的插件系统基于 rolldown 的原生插件架构，提供了强大的扩展能力，允许你自定义构建流程和添加新功能。
 
 ## 插件系统架构
 
@@ -8,181 +8,228 @@ robuild 的插件系统提供了强大的扩展能力，允许你自定义构建
 
 ```mermaid
 graph TB
-    A[构建引擎] --> B[插件管理器]
-    B --> C[Bundle 插件]
-    B --> D[Transform 插件]
-    B --> E[通用插件]
+    A[构建引擎] --> B[RobuildPluginManager]
+    B --> C[Rolldown 插件]
+    B --> D[Robuild 插件]
+    B --> E[第三方插件]
 
-    C --> F[rolldown 插件]
-    C --> G[自定义插件]
+    C --> F[原生 rolldown 插件]
+    C --> G[Rollup 兼容插件]
 
-    D --> H[oxc 插件]
-    D --> I[文件处理插件]
+    D --> H[扩展 rolldown 插件]
+    D --> I[Robuild 特有钩子]
 
-    E --> J[Hooks 插件]
-    E --> K[工具插件]
+    E --> J[Vite 插件]
+    E --> K[Unplugin 插件]
 
-    subgraph "插件生命周期"
-        L[注册]
-        M[初始化]
-        N[执行]
-        O[清理]
+    subgraph "插件钩子系统"
+        L[rolldown 钩子]
+        M[robuild 钩子]
+        N[插件适配器]
     end
 
     B --> L
     B --> M
     B --> N
-    B --> O
 ```
 
 ## 插件类型
 
-### 1. Bundle 插件
+### 1. RobuildPlugin 接口
 
-用于 Bundle 模式的插件，基于 rolldown 的插件系统：
+robuild 插件继承自 rolldown 的 Plugin 接口，并添加了 robuild 特有的钩子：
 
 ```typescript
-interface BundlePlugin {
-  name: string
-  setup?: (build: BuildContext) => void | Promise<void>
-  transform?: (code: string, id: string) => string | Promise<string>
-  load?: (id: string) => string | Promise<string>
-  generateBundle?: (options: GenerateBundleOptions) => void | Promise<void>
+import type { Plugin as RolldownPlugin } from 'rolldown'
+
+export interface RobuildPlugin extends RolldownPlugin {
+  // Robuild 特有钩子（使用 robuild 前缀避免冲突）
+  robuildSetup?: (context: RobuildPluginContext) => void | Promise<void>
+  robuildBuildStart?: (context: RobuildPluginContext) => void | Promise<void>
+  robuildBuildEnd?: (context: RobuildPluginContext, result?: any) => void | Promise<void>
+
+  // 插件元数据，用于兼容性检测
+  meta?: {
+    framework?: 'rolldown' | 'rollup' | 'vite' | 'unplugin' | 'robuild'
+    robuild?: boolean
+    rollup?: boolean
+    vite?: boolean
+    webpack?: boolean
+    esbuild?: boolean
+    unplugin?: boolean
+  }
 }
 ```
 
-### 2. Transform 插件
-
-用于 Transform 模式的插件，基于 oxc 的转换系统：
+### 2. 插件上下文
 
 ```typescript
-interface TransformPlugin {
-  name: string
-  setup?: (context: TransformContext) => void | Promise<void>
-  transform?: (code: string, id: string) => string | Promise<string>
-  resolve?: (id: string, importer?: string) => string | Promise<string>
+export interface RobuildPluginContext {
+  config: RobuildConfig
+  entries: BuildEntry[]
+  mode: 'bundle' | 'transform'
+  target: string
+  format: string[]
+  platform: 'browser' | 'node' | 'neutral'
 }
 ```
 
-### 3. 通用插件
-
-可以在任何构建模式下使用的插件：
+### 3. 插件选项
 
 ```typescript
-interface UniversalPlugin {
-  name: string
-  setup?: (context: BuildContext) => void | Promise<void>
-  beforeBuild?: (entry: BuildEntry) => void | Promise<void>
-  afterBuild?: (result: BuildResult) => void | Promise<void>
-}
+export type RobuildPluginOption =
+  | RobuildPlugin
+  | RobuildPluginFactory
+  | false
+  | null
+  | undefined
+
+export type RobuildPluginFactory = (...args: any[]) => RobuildPlugin
 ```
 
 ## 插件管理器
 
-### 核心实现
+### RobuildPluginManager
+
+新的插件管理器基于 rolldown 的插件系统，提供了更好的性能和兼容性：
 
 ```typescript
-// src/plugins/manager.ts
-export class PluginManager {
-  private plugins: Map<string, Plugin> = new Map()
-  private bundlePlugins: BundlePlugin[] = []
-  private transformPlugins: TransformPlugin[] = []
-  private universalPlugins: UniversalPlugin[] = []
+// src/features/plugin-manager.ts
+export class RobuildPluginManager {
+  private plugins: RobuildPlugin[] = []
+  private context: RobuildPluginContext
 
-  constructor(private context: BuildContext) {}
+  constructor(context: RobuildPluginContext) {
+    this.context = context
+  }
 
-  // 注册插件
-  register(plugin: Plugin): void {
-    if (this.plugins.has(plugin.name)) {
-      throw new Error(`插件已存在: ${plugin.name}`)
+  // 添加插件
+  addPlugin(plugin: RobuildPluginOption): void {
+    if (!plugin) return
+
+    const resolvedPlugin = typeof plugin === 'function'
+      ? plugin()
+      : plugin
+
+    this.plugins.push(resolvedPlugin)
+  }
+
+  // 添加多个插件
+  addPlugins(plugins: RobuildPluginOption[]): void {
+    for (const plugin of plugins) {
+      this.addPlugin(plugin)
     }
+  }
 
-    this.plugins.set(plugin.name, plugin)
+  // 获取 rolldown 兼容的插件列表
+  getRolldownPlugins(): RolldownPlugin[] {
+    return this.plugins.map(plugin => this.adaptPlugin(plugin))
+  }
 
-    // 分类插件
-    if (this.isBundlePlugin(plugin)) {
-      this.bundlePlugins.push(plugin as BundlePlugin)
-    } else if (this.isTransformPlugin(plugin)) {
-      this.transformPlugins.push(plugin as TransformPlugin)
-    } else if (this.isUniversalPlugin(plugin)) {
-      this.universalPlugins.push(plugin as UniversalPlugin)
+  // 执行 robuild 特有钩子
+  async executeRobuildHooks(hookName: string, ...args: any[]): Promise<void> {
+    for (const plugin of this.plugins) {
+      const hook = (plugin as any)[hookName]
+      if (hook) {
+        try {
+          await this.callHook(hook, ...args)
+        } catch (error) {
+          console.warn(`插件 ${plugin.name} 的 ${hookName} 钩子执行失败:`, error)
+        }
+      }
     }
   }
 
-  // 获取插件
-  getPlugin(name: string): Plugin | undefined {
-    return this.plugins.get(name)
+  // 适配插件到 rolldown 格式
+  private adaptPlugin(plugin: RobuildPlugin): RolldownPlugin {
+    // 检测插件类型并适配
+    const meta = (plugin as any).meta || {}
+
+    if (meta.vite) {
+      return this.adaptVitePlugin(plugin)
+    } else if (meta.unplugin) {
+      return this.adaptUnpluginPlugin(plugin)
+    } else {
+      // 直接返回，rolldown 兼容 rollup 插件
+      return plugin as RolldownPlugin
+    }
   }
 
-  // 获取 Bundle 插件
-  getBundlePlugins(): BundlePlugin[] {
-    return this.bundlePlugins
-  }
-
-  // 获取 Transform 插件
-  getTransformPlugins(): TransformPlugin[] {
-    return this.transformPlugins
-  }
-
-  // 获取通用插件
-  getUniversalPlugins(): UniversalPlugin[] {
-    return this.universalPlugins
+  // 安全调用插件钩子
+  private callHook(hook: any, ...args: any[]): any {
+    if (typeof hook === 'function') {
+      return hook(...args)
+    }
+    if (hook && typeof hook.handler === 'function') {
+      return hook.handler(...args)
+    }
+    return null
   }
 }
 ```
 
-### 插件生命周期管理
+### 插件工具函数
 
 ```typescript
-export class PluginLifecycleManager {
-  constructor(private pluginManager: PluginManager) {}
+// src/features/plugin-utils.ts
 
-  // 初始化所有插件
-  async initialize(): Promise<void> {
-    const plugins = [
-      ...this.pluginManager.getBundlePlugins(),
-      ...this.pluginManager.getTransformPlugins(),
-      ...this.pluginManager.getUniversalPlugins()
-    ]
+// 创建 robuild 插件
+export function createRobuildPlugin(options: {
+  name: string
+  setup?: (context: RobuildPluginContext) => void | Promise<void>
+  hooks?: Partial<RobuildPlugin>
+}): RobuildPlugin {
+  const { name, setup, hooks = {} } = options
 
-    for (const plugin of plugins) {
-      if (plugin.setup) {
-        try {
-          await plugin.setup(this.context)
-        } catch (error) {
-          throw new PluginError(`插件初始化失败: ${plugin.name}`, error)
-        }
-      }
+  return {
+    name,
+    robuildSetup: setup,
+    ...hooks,
+    meta: {
+      framework: 'robuild',
+      robuild: true
     }
   }
+}
 
-  // 执行构建前钩子
-  async beforeBuild(entry: BuildEntry): Promise<void> {
-    const plugins = this.pluginManager.getUniversalPlugins()
+// 创建转换插件
+export function createTransformPlugin(options: {
+  name: string
+  filter?: RegExp
+  transform: (code: string, id: string) => string | Promise<string>
+}): RobuildPlugin {
+  const { name, filter = /.*/, transform } = options
 
-    for (const plugin of plugins) {
-      if (plugin.beforeBuild) {
-        try {
-          await plugin.beforeBuild(entry)
-        } catch (error) {
-          console.warn(`插件 beforeBuild 失败: ${plugin.name}`, error)
-        }
-      }
+  return {
+    name,
+    transform: {
+      filter,
+      handler: transform
+    },
+    meta: {
+      framework: 'robuild',
+      robuild: true
     }
   }
+}
 
-  // 执行构建后钩子
-  async afterBuild(result: BuildResult): Promise<void> {
-    const plugins = this.pluginManager.getUniversalPlugins()
+// 组合多个插件
+export function combinePlugins(...plugins: RobuildPluginOption[]): RobuildPlugin[] {
+  return plugins.filter(Boolean) as RobuildPlugin[]
+}
 
-    for (const plugins of plugins) {
-      if (plugin.afterBuild) {
-        try {
-          await plugin.afterBuild(result)
-        } catch (error) {
-          console.warn(`插件 afterBuild 失败: ${plugin.name}`, error)
-        }
-      }
+// 扩展 rolldown 插件
+export function extendRolldownPlugin(
+  basePlugin: RolldownPlugin,
+  extensions: Partial<RobuildPlugin>
+): RobuildPlugin {
+  return {
+    ...basePlugin,
+    ...extensions,
+    meta: {
+      framework: 'rolldown',
+      rolldown: true,
+      robuild: true
     }
   }
 }

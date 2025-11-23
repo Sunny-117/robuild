@@ -7,6 +7,7 @@ import type {
   MinifyOptions,
   OutputOptions,
   RolldownBuild,
+  Plugin as RolldownPlugin,
   RolldownPluginOption,
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
@@ -314,47 +315,53 @@ export type TransformEntry = _BuildEntry & {
 
 export type BuildEntry = BundleEntry | TransformEntry
 
-// Plugin system types
-export interface RobuildPlugin {
-  name: string
-  setup?: (build: PluginBuild) => void | Promise<void>
-  // Rollup plugin compatibility
-  buildStart?: (opts: any) => void | Promise<void>
-  buildEnd?: (error?: Error) => void | Promise<void>
-  resolveId?: (id: string, importer?: string) => string | null | Promise<string | null>
-  load?: (id: string) => string | null | Promise<string | null>
-  transform?: (code: string, id: string) => string | { code: string, map?: any } | null | Promise<string | { code: string, map?: any } | null>
-  generateBundle?: (options: any, bundle: any) => void | Promise<void>
-  writeBundle?: (options: any, bundle: any) => void | Promise<void>
-  // Vite plugin compatibility
-  config?: (config: any, env: any) => any | Promise<any>
-  configResolved?: (config: any) => void | Promise<void>
-  configureServer?: (server: any) => void | Promise<void>
-  // Unplugin compatibility
-  unplugin?: boolean
+/**
+ * Robuild plugin extends rolldown plugin with additional hooks
+ */
+export interface RobuildPlugin extends RolldownPlugin {
+  // Robuild-specific hooks for build lifecycle
+  robuildSetup?: (context: RobuildPluginContext) => void | Promise<void>
+  robuildBuildStart?: (context: RobuildPluginContext) => void | Promise<void>
+  robuildBuildEnd?: (context: RobuildPluginContext, result?: any) => void | Promise<void>
+
+  // Plugin metadata for compatibility detection
   meta?: {
-    framework?: string
+    framework?: 'rolldown' | 'rollup' | 'vite' | 'unplugin' | 'robuild'
+    robuild?: boolean
     rollup?: boolean
     vite?: boolean
     webpack?: boolean
     esbuild?: boolean
+    unplugin?: boolean
   }
 }
 
-export interface PluginBuild {
-  onResolve: (options: { filter: RegExp, namespace?: string }, callback: (args: any) => any) => void
-  onLoad: (options: { filter: RegExp, namespace?: string }, callback: (args: any) => any) => void
-  onTransform: (options: { filter: RegExp }, callback: (args: any) => any) => void
-  resolve: (path: string, options?: any) => Promise<any>
-  getConfig: () => BuildConfig
-}
-
-export interface PluginContext {
+/**
+ * Context provided to robuild-specific plugin hooks
+ */
+export interface RobuildPluginContext {
   config: BuildConfig
   entry: BuildEntry
-  plugins: RobuildPlugin[]
-  hooks: BuildHooks
+  pkgDir: string
+  outDir: string
+  format: OutputFormat | OutputFormat[]
+  platform: Platform
+  target: string
 }
+
+/**
+ * Plugin factory function type
+ */
+export type RobuildPluginFactory<T = any> = (options?: T) => RobuildPlugin
+
+/**
+ * Union type for all supported plugin types
+ */
+export type RobuildPluginOption
+  = | RobuildPlugin
+    | RolldownPlugin
+    | RobuildPluginFactory
+    | any // For external plugins (rollup/vite/unplugin)
 
 // Glob import types
 export interface GlobImportOptions {
@@ -485,7 +492,7 @@ export interface BuildConfig {
   /**
    * Plugins to use during build
    */
-  plugins?: RobuildPlugin[]
+  plugins?: RobuildPluginOption[]
 
   /**
    * Glob import configuration

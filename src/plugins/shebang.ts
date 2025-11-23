@@ -1,12 +1,12 @@
 // Ported from https://github.com/unjs/unbuild/blob/main/src/builders/rollup/plugins/shebang.ts
 
-import type { Plugin } from 'rolldown'
+import type { RobuildPlugin } from '../types'
 import { promises as fsp } from 'node:fs'
 import { resolve } from 'node:path'
 
 export const SHEBANG_RE: RegExp = /^#![^\n]*/
 
-export function shebangPlugin(): Plugin {
+export function shebangPlugin(): RobuildPlugin {
   return {
     name: 'robuild-shebang',
     async writeBundle(options, bundle): Promise<void> {

@@ -26,7 +26,7 @@ import { copyFiles } from '../features/copy'
 import { createGlobImportPlugin } from '../features/glob-import'
 import { addHashToFilename, hasHash } from '../features/hash'
 import { createLoaderPlugin } from '../features/loaders'
-import { PluginManager } from '../features/plugins'
+import { RobuildPluginManager } from '../features/plugin-manager'
 import { createShimsPlugin } from '../features/shims'
 import { nodeProtocolPlugin } from '../plugins/node-protocol'
 import { makeExecutable, shebangPlugin } from '../plugins/shebang'
@@ -117,8 +117,8 @@ export async function rolldownBuild(
   )
 
   // Initialize plugin manager
-  const pluginManager = new PluginManager(config || {}, entry)
-  await pluginManager.initialize()
+  const pluginManager = new RobuildPluginManager(config || {}, entry, ctx.pkgDir)
+  await pluginManager.initializeRobuildHooks()
 
   // Get configuration with defaults
   const formats = Array.isArray(entry.format) ? entry.format : [entry.format || 'esm']
@@ -128,8 +128,11 @@ export async function rolldownBuild(
   const fullOutDir = resolve(ctx.pkgDir, outDir)
   const isMultiFormat = formats.length > 1
 
-  // Execute plugin buildStart hooks
-  await pluginManager.executeHook('buildStart', { inputs, formats, platform, target })
+  // Update plugin context with build parameters
+  pluginManager.updateContext({ format: formats, platform, target, outDir: fullOutDir })
+
+  // Execute robuild buildStart hooks
+  await pluginManager.executeRobuildBuildStart()
 
   // Clean output directory if requested
   await cleanOutputDir(ctx.pkgDir, fullOutDir, entry.clean ?? true)
@@ -275,31 +278,28 @@ export async function rolldownBuild(
     }
   }
 
-  // Convert robuild plugins to rolldown plugins
-  const rolldownPlugins: Plugin[] = []
-
-  // Add built-in plugins
-  rolldownPlugins.push(
+  // Get rolldown plugins from plugin manager
+  const rolldownPlugins: Plugin[] = [
+    // Add built-in plugins first
     shebangPlugin(),
     nodeProtocolPlugin(entry.nodeProtocol || false),
-  )
+  ]
 
-  // Add glob import plugin if enabled
+  // Add feature plugins - convert robuild plugins to rolldown plugins
   if (config?.globImport?.enabled) {
     const globPlugin = createGlobImportPlugin(config.globImport)
     if (globPlugin.transform) {
-      // Convert to rolldown plugin format
       rolldownPlugins.push({
         name: 'glob-import',
-        transform: async (code: string, id: string) => {
-          const result = await globPlugin.transform!(code, id)
+        transform: async (code: string, id: string, _meta: any) => {
+          // Call the robuild plugin transform with only the parameters it expects
+          const result = await (globPlugin.transform as any)(code, id)
           return result ? { code: result } : null
         },
       } as Plugin)
     }
   }
 
-  // Add advanced build plugins
   if (entry.loaders) {
     const loaderPlugin = createLoaderPlugin(entry.loaders)
     if (loaderPlugin.load) {
@@ -310,28 +310,14 @@ export async function rolldownBuild(
     }
   }
 
-  // Temporarily disable CJS default export plugin due to syntax issues
-  // TODO: Fix CJS transformation logic
-  // if (entry.cjsDefault !== false) {
-  //   const cjsPlugin = createCjsDefaultPlugin(entry.cjsDefault)
-  //   if (cjsPlugin.transform) {
-  //     rolldownPlugins.push({
-  //       name: 'cjs-default',
-  //       transform: async (code: string, id: string) => {
-  //         const result = await cjsPlugin.transform!(code, id)
-  //         return result ? { code: result } : null
-  //       },
-  //     } as Plugin)
-  //   }
-  // }
-
   if (entry.shims) {
     const shimsPlugin = createShimsPlugin(entry.shims)
     if (shimsPlugin.transform) {
       rolldownPlugins.push({
         name: 'shims',
-        transform: async (code: string, id: string) => {
-          const result = await shimsPlugin.transform!(code, id)
+        transform: async (code: string, id: string, _meta: any) => {
+          // Call the robuild plugin transform with only the parameters it expects
+          const result = await (shimsPlugin.transform as any)(code, id)
           return result ? { code: result } : null
         },
       } as Plugin)
@@ -351,24 +337,8 @@ export async function rolldownBuild(
     }
   }
 
-  // Add user plugins
-  if (config?.plugins) {
-    for (const plugin of pluginManager.getPlugins()) {
-      if (plugin.transform || plugin.resolveId || plugin.load) {
-        rolldownPlugins.push({
-          name: plugin.name,
-          resolveId: plugin.resolveId,
-          load: plugin.load,
-          transform: plugin.transform
-            ? async (code: string, id: string) => {
-              const result = await plugin.transform!(code, id)
-              return result ? (typeof result === 'string' ? { code: result } : result) : null
-            }
-            : undefined,
-        } as Plugin)
-      }
-    }
-  }
+  // Add user plugins from plugin manager
+  rolldownPlugins.push(...pluginManager.getRolldownPlugins())
 
   const baseRolldownConfig = defu(entry.rolldown, {
     cwd: ctx.pkgDir,
@@ -540,8 +510,8 @@ export async function rolldownBuild(
     await copyFiles(ctx.pkgDir, fullOutDir, entry.copy)
   }
 
-  // Execute plugin buildEnd hooks
-  await pluginManager.executeHook('buildEnd', { allOutputEntries })
+  // Execute robuild buildEnd hooks
+  await pluginManager.executeRobuildBuildEnd({ allOutputEntries })
 
   // Display build results
   consola.log(

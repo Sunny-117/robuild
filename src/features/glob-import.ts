@@ -250,7 +250,10 @@ export async function transformGlobImports(
 ): Promise<string | null> {
   const plugin = createGlobImportPlugin(options)
   if (plugin.transform) {
-    return await plugin.transform(code, id) as string | null
+    const result = typeof plugin.transform === 'function'
+      ? await (plugin.transform as any).call(null, code, id, {})
+      : await (plugin.transform as any).handler.call(null, code, id, {})
+    return typeof result === 'string' ? result : result?.code || null
   }
   return null
 }
