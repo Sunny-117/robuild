@@ -1,0 +1,1 @@
+export function add(e,t){return e+t}export function multiply(e,t){return e*t}

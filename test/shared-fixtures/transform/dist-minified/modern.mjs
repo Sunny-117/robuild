@@ -1,0 +1,1 @@
+export const arrow=()=>`arrow`;export const optional=e=>e??`default`;

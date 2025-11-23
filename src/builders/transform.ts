@@ -204,6 +204,8 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
     from: pathToFileURL(entryPath),
     extensions: entry.resolve?.extensions ?? [
       '.ts',
+      '.tsx',
+      '.jsx',
       '.js',
       '.mjs',
       '.cjs',
@@ -248,7 +250,7 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
     const resolvedAbsolute = resolveModulePath(moduleId, resolveOptions)
     const newId = relative(
       dirname(entryPath),
-      resolvedAbsolute.replace(/\.ts$/, '.mjs'),
+      resolvedAbsolute.replace(/\.(ts|tsx|jsx)$/, '.mjs'),
     )
     magicString.remove(req.start, req.end)
     magicString.prependLeft(

@@ -1,1 +1,0 @@
-export const entry2 = "second entry"
