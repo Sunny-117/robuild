@@ -57,25 +57,63 @@ export default defineConfig({
 
 ### `hooks`
 
-构建生命周期钩子：
+构建生命周期钩子（用于构建流程控制）：
 
 ```typescript
 export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
+    // 构建开始时调用
     start: (ctx) => {
       console.log('构建开始')
     },
+    // 构建结束时调用
     end: (ctx) => {
       console.log('构建完成')
     },
-    beforeBuild: (ctx, entry) => {
-      console.log('准备构建:', entry.input)
+    // 入口标准化后调用
+    entries: (entries, ctx) => {
+      console.log('处理入口:', entries)
     },
-    afterBuild: (ctx, entry, result) => {
-      console.log('构建完成:', entry.input)
+    // rolldown 配置最终确定前调用
+    rolldownConfig: (cfg, ctx) => {
+      console.log('rolldown 配置:', cfg)
+    },
+    // rolldown 输出配置最终确定前调用
+    rolldownOutput: (cfg, res, ctx) => {
+      console.log('rolldown 输出配置:', cfg)
     }
   }
+})
+```
+
+**注意：** 如果需要使用插件钩子（如 `buildStart`、`writeBundle`、`transform` 等），请使用 `plugins` 字段而不是 `hooks`。
+
+### `plugins`
+
+插件配置（用于自定义构建逻辑）：
+
+```typescript
+import type { RobuildPlugin } from 'robuild'
+
+const myPlugin: RobuildPlugin = {
+  name: 'my-plugin',
+  // Rolldown 插件钩子
+  buildStart: async () => {
+    console.log('插件：构建开始')
+  },
+  writeBundle: async (options, bundle) => {
+    console.log('插件：写入完成', Object.keys(bundle))
+  },
+  transform: async (code, id) => {
+    // 转换代码
+    return { code: transformedCode }
+  }
+}
+
+export default defineConfig({
+  entries: ['./src/index.ts'],
+  plugins: [myPlugin]
 })
 ```
 

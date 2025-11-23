@@ -391,26 +391,37 @@ export interface GlobImportOptions {
 }
 
 export interface BuildHooks {
+  /**
+   * Called at the start of the build process
+   */
   start?: (ctx: BuildContext) => void | Promise<void>
+  
+  /**
+   * Called at the end of the build process
+   */
   end?: (ctx: BuildContext) => void | Promise<void>
+  
+  /**
+   * Called after entries are normalized
+   */
   entries?: (entries: BuildEntry[], ctx: BuildContext) => void | Promise<void>
+  
+  /**
+   * Called before rolldown config is finalized
+   */
   rolldownConfig?: (
     cfg: InputOptions,
     ctx: BuildContext,
   ) => void | Promise<void>
+  
+  /**
+   * Called before rolldown output config is finalized
+   */
   rolldownOutput?: (
     cfg: OutputOptions,
     res: RolldownBuild,
     ctx: BuildContext,
   ) => void | Promise<void>
-  // Plugin hooks
-  buildStart?: (ctx: BuildContext) => void | Promise<void>
-  buildEnd?: (ctx: BuildContext, result?: any) => void | Promise<void>
-  resolveId?: (id: string, importer?: string, ctx?: BuildContext) => string | null | Promise<string | null>
-  load?: (id: string, ctx?: BuildContext) => string | null | Promise<string | null>
-  transform?: (code: string, id: string, ctx?: BuildContext) => string | { code: string, map?: any } | null | Promise<string | { code: string, map?: any } | null>
-  generateBundle?: (options: any, bundle: any, ctx?: BuildContext) => void | Promise<void>
-  writeBundle?: (options: any, bundle: any, ctx?: BuildContext) => void | Promise<void>
 }
 
 export interface WatchOptions {
@@ -477,7 +488,15 @@ export interface BuildResult {
 export interface BuildConfig {
   cwd?: string | URL
   entries?: (BuildEntry | string)[]
+  
+  /**
+   * Build lifecycle hooks.
+   * 
+   * For plugin-style hooks (buildStart, writeBundle, transform, etc.),
+   * use the `plugins` field instead.
+   */
   hooks?: BuildHooks
+  
   watch?: WatchOptions
   /**
    * Output directory for builds.
@@ -490,7 +509,10 @@ export interface BuildConfig {
   clean?: boolean | string[]
 
   /**
-   * Plugins to use during build
+   * Plugins to use during build.
+   * 
+   * Plugins support all Rolldown plugin hooks (buildStart, writeBundle, transform, etc.)
+   * and can be used for custom build logic.
    */
   plugins?: RobuildPluginOption[]
 

@@ -7,8 +7,9 @@ const testPlugin: RobuildPlugin = {
     // Hook implementation
     console.log('hook test===================')
   },
-  writeBundle: async (...a) => {
-    console.log('write bundle===================', a)
+  writeBundle: async (options, bundle) => {
+    console.log('write bundle===================', Object.keys(bundle))
+    console.log('options:', options)
   },
 }
 
@@ -18,6 +19,8 @@ export default defineConfig({
     input: 'src/index.ts',
     noExternal: ['react'],
   }],
+  // Use plugins for Rolldown plugin hooks like writeBundle, buildStart, transform, etc.
+  // hooks field is only for build lifecycle hooks (start, end, entries, rolldownConfig, rolldownOutput)
   exports: {
     enabled: true,
     includeTypes: true,
