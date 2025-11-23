@@ -1,1 +1,0 @@
-export const utils: string = 'utility functions'
