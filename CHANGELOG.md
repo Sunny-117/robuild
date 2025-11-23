@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v0.0.15
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.14...v0.0.15)
+
+### 🚀 Enhancements
+
+- 🎸 supports advanced rolldown configuration ([ebd15bd](https://github.com/Sunny-117/robuild/commit/ebd15bd))
+- 🎸 Supports TSUP-style configurations, enhancing build fle ([406cb93](https://github.com/Sunny-117/robuild/commit/406cb93))
+- 🎸 Update CLI options and improve default entry handling ([861b7b1](https://github.com/Sunny-117/robuild/commit/861b7b1))
+
+### 💅 Refactors
+
+- 💡 plugin hooks follow rolldown ([3ef35f7](https://github.com/Sunny-117/robuild/commit/3ef35f7))
+- 💡 hooks field is only for build lifecycle hooks ([735afd4](https://github.com/Sunny-117/robuild/commit/735afd4))
+- Replace util.parseArgs with cac for CLI argument parsing ([5eb286f](https://github.com/Sunny-117/robuild/commit/5eb286f))
+
+### 🏡 Chore
+
+- 🤖 remove builtin plugins entry ([0e73228](https://github.com/Sunny-117/robuild/commit/0e73228))
+- Disable isolatedDeclarations ([a76b420](https://github.com/Sunny-117/robuild/commit/a76b420))
+- Plugin hook example ([a6764c3](https://github.com/Sunny-117/robuild/commit/a6764c3))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.14
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.11...v0.0.14)
