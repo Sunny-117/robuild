@@ -427,7 +427,6 @@ export async function rolldownBuild(
       ]
     }
 
-    console.log(1111, formatConfig)
     const res = await rolldown(formatConfig)
 
     // Determine output directory for this format

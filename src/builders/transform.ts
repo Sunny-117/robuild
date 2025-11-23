@@ -309,7 +309,6 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
   )
 
   if (transformErrors.length > 0) {
-    // console.log(sourceText);
     await writeFile(
       'build-dump.ts',
       `/** Error dump for ${entryPath} */\n\n${sourceText}`,
