@@ -186,7 +186,7 @@ export { value };
 `;
 
 exports[`bundle mode > output formats > should output IIFE format 1`] = `
-"## browser/index.js
+"## index.js
 
 \`\`\`js
 var MyLib = (function(exports) {
@@ -204,7 +204,7 @@ return exports;
 `;
 
 exports[`bundle mode > output formats > should output multiple formats 1`] = `
-"## cjs/index.cjs
+"## index.cjs
 
 \`\`\`js
 

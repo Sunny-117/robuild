@@ -20,7 +20,7 @@ export default defineConfig({
   entry: 'src/index.ts',
 
   // Output formats
-  format: 'esm',
+  format: ['esm', 'cjs'],
 
   // Output directory
   outDir: 'dist',

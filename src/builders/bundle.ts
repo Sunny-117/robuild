@@ -12,7 +12,6 @@ import { builtinModules } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
 import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
-import { defu } from 'defu'
 import { resolveModulePath } from 'exsolve'
 import { parseSync } from 'oxc-parser'
 import prettyBytes from 'pretty-bytes'
@@ -386,7 +385,7 @@ export async function rolldownBuild(
   // Merge with user's rolldown config (user config has highest priority)
   // Extract output config separately as it's handled per-format
   const { output: userOutputConfig, plugins: userPlugins, ...userRolldownConfig } = entry.rolldown || {}
-  
+
   const baseRolldownConfig: InputOptions = {
     ...robuildGeneratedConfig,
     ...userRolldownConfig,
@@ -435,23 +434,22 @@ export async function rolldownBuild(
     let entryFileName = `[name]${extension}`
 
     if (isMultiFormat) {
-      // For multi-format builds, create subdirectories
+      // For multi-format builds, use different extensions to avoid conflicts
+      // All formats are placed in the same directory (tsup-style behavior)
       if (format === 'cjs') {
-        formatOutDir = join(fullOutDir, 'cjs')
         entryFileName = `[name].cjs`
       }
+      else if (format === 'esm') {
+        entryFileName = `[name].mjs`
+      }
       else if (format === 'iife' || format === 'umd') {
-        formatOutDir = join(fullOutDir, platform === 'browser' ? 'browser' : format)
+        // IIFE/UMD use .js extension
         entryFileName = `[name].js`
       }
-      // ESM stays in root directory as index.mjs
     }
     else {
-      // For single format builds, still create subdirectories for IIFE/UMD on browser platform
-      if ((format === 'iife' || format === 'umd') && platform === 'browser') {
-        formatOutDir = join(fullOutDir, 'browser')
-        entryFileName = `[name].js`
-      }
+      // For single format builds, use the default extension
+      // No subdirectories needed since there's only one format
     }
 
     // Build base output config from robuild options
