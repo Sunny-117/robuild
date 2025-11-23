@@ -1,1 +1,0 @@
-export function Button(e){return{label:e.label,onClick:e.onClick}}
