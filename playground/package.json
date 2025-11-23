@@ -18,18 +18,22 @@
     "build:tsup-style": "robuild --config tsup-style.config.ts",
     "build:unbuild-style": "robuild --config unbuild-style.config.ts",
     "build:oxc-runtime-inline": "robuild --config oxc-runtime-inline.config.ts --watch",
+    "build:vue": "robuild --config vue-support-config.ts",
     "transform": "robuild --config transform.config.ts",
     "preview": "live-server"
   },
   "dependencies": {
     "@types/react": "^19.2.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "vue": "^3.5.24"
   },
   "devDependencies": {
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.3",
     "live-server": "^1.2.2",
-    "robuild": "workspace:*"
+    "robuild": "workspace:*",
+    "unplugin-vue": "^7.0.8",
+    "vue-tsc": "^3.1.5"
   }
 }

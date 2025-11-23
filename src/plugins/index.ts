@@ -1,6 +1,4 @@
 export { combinePlugins } from '../features/plugin-utils'
-// Re-export all individual plugins
-export { cssPlugin } from './css'
 export { nodePolyfillsPlugin } from './node-polyfills'
 export { nodeProtocolPlugin } from './node-protocol'
 
