@@ -14,7 +14,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "robuild --watch",
-    "build": "robuild --config tsup-style.config.ts"
+    "build": "robuild --config tsup-style.config.ts",
+    "transform": "robuild --config transform.config.ts"
   },
   "dependencies": {
     "@types/react": "^19.2.0",

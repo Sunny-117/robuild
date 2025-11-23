@@ -86,12 +86,14 @@ export async function transformDir(
         const entryPath = join(entry.input, entryName)
         const ext = extname(entryPath)
         switch (ext) {
-          case '.ts': {
+          case '.ts':
+          case '.tsx':
+          case '.jsx': {
             {
               const transformed = await transformModule(entryPath, entry)
 
               // Determine output filename with proper extension
-              const baseName = entryName.replace(/\.ts$/, '')
+              const baseName = entryName.replace(/\.(ts|tsx|jsx)$/, '')
               const outputFileName = createFilename(baseName, 'esm', false, {
                 platform: entry.platform,
                 fixedExtension: entry.fixedExtension,
@@ -101,6 +103,15 @@ export async function transformDir(
               let entryDistPath = join(entry.outDir!, outputFileName)
               await mkdir(dirname(entryDistPath), { recursive: true })
               await writeFile(entryDistPath, transformed.code, 'utf8')
+
+              // Write sourcemap if requested
+              if (entry.sourcemap && transformed.map) {
+                const mapPath = `${entryDistPath}.map`
+                const mapContent = typeof transformed.map === 'string'
+                  ? transformed.map
+                  : JSON.stringify(transformed.map)
+                await writeFile(mapPath, mapContent, 'utf8')
+              }
 
               // Add hash to filename if requested
               if (entry.hash && !hasHash(entryDistPath)) {
@@ -169,8 +180,12 @@ export async function transformDir(
 async function transformModule(entryPath: string, entry: TransformEntry) {
   let sourceText = await readFile(entryPath, 'utf8')
 
+  // Determine language based on file extension
+  const ext = extname(entryPath)
+  const lang = ext === '.tsx' || ext === '.jsx' ? 'tsx' : 'ts'
+
   const sourceOptions = {
-    lang: 'ts',
+    lang,
     sourceType: 'module',
   } as const
 
@@ -256,11 +271,12 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
 
   sourceText = magicString.toString()
 
-  const transformed = transform(entryPath, sourceText, {
+  const transformed = await transform(entryPath, sourceText, {
     ...entry.oxc,
     ...sourceOptions,
     cwd: dirname(entryPath),
     target: entry.target || 'es2022',
+    sourcemap: !!entry.sourcemap,
     typescript: {
       declaration: { stripInternal: true },
       ...entry.oxc?.typescript,
@@ -286,7 +302,7 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
   }
 
   if (entry.minify) {
-    const res = minify(
+    const res = await minify(
       entryPath,
       transformed.code,
       entry.minify === true ? {} : entry.minify,

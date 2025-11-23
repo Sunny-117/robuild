@@ -60,7 +60,7 @@ export async function distSize(
   })
 
   const code = output[0].code
-  const { code: minified } = minify(entry, code)
+  const { code: minified } = await minify(entry, code)
 
   return {
     size: Buffer.byteLength(code),

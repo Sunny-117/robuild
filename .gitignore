@@ -8,3 +8,4 @@ dist
 *.env*
 tsconfig.robuildinfo
 docs/.vitepress/cache
+dist-transform
