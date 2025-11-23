@@ -3,7 +3,7 @@ import type { BuildConfig } from '../../src/types'
 import path from 'node:path'
 import process from 'node:process'
 import { build } from '../../src/build'
-import { cleanTestDir, getTestDir, writeFixtures } from './fixtures'
+import { cleanTestDir, writeFixtures } from './fixtures'
 import { expectSnapshot } from './snapshot'
 
 /**

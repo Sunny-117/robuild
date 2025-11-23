@@ -9,5 +9,6 @@ export default defineConfig({
     target: 'es2015',
     skipNodeModules: true,
     sourcemap: true,
+    platform: 'browser',
   }],
 })

@@ -1,0 +1,25 @@
+{
+  "name": "oxc-runtime-inline",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.11.1",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "index.js",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch",
+    "preview": "live-server"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.3",
+    "live-server": "^1.2.2",
+    "robuild": "workspace:*"
+  }
+}

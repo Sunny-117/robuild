@@ -50,6 +50,10 @@ export async function performWatchBuild(
 
 /**
  * Start rolldown watch mode for bundle entries
+ *
+ * Note: Watch mode currently uses simplified rolldown configuration.
+ * For full feature parity with build mode, the initial build is performed first.
+ * The watch mode then monitors for file changes and triggers rebuilds.
  */
 export async function startRolldownWatch(
   ctx: BuildContext,
@@ -79,14 +83,47 @@ export async function startRolldownWatch(
       ? entry.input.map((i: string) => normalizePath(i, ctx.pkgDir))
       : normalizePath(entry.input, ctx.pkgDir)
 
-    // Create rolldown config for this entry
-    // For now, we'll use a simple configuration
-    // In a full implementation, this would use the same logic as rolldownBuild
+    // Get target and other options from entry
+    const target = entry.target || 'es2022'
+    const platform = entry.platform || 'node'
+    const format = entry.format || 'esm'
+
+    // Determine the correct file extension based on format
+    const getExtension = (fmt: string) => {
+      switch (fmt) {
+        case 'esm':
+          return '.mjs'
+        case 'cjs':
+          return '.cjs'
+        case 'iife':
+        case 'umd':
+          return '.js'
+        default:
+          return '.mjs'
+      }
+    }
+
+    const extension = getExtension(Array.isArray(format) ? format[0] : format)
+    const rolldownFormat = Array.isArray(format) ? format[0] : format
+    const formatMap: Record<string, 'es' | 'cjs' | 'iife' | 'umd'> = {
+      esm: 'es',
+      cjs: 'cjs',
+      iife: 'iife',
+      umd: 'umd',
+    }
+
+    // Create rolldown config for this entry with proper transform options
     const watchConfig = {
       input: Array.isArray(entry.input) ? entry.input[0] : entry.input,
       output: {
         dir: entry.outDir,
-        format: 'esm' as const,
+        format: formatMap[rolldownFormat] || 'es',
+        entryFileNames: `[name]${extension}`,
+        sourcemap: entry.sourcemap,
+      },
+      platform: platform === 'node' ? 'node' : 'neutral',
+      transform: {
+        target,
       },
     }
 
