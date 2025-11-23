@@ -30,14 +30,15 @@ cli
   .option('-d, --out-dir <dir>', 'Output directory', { default: 'dist' })
   .option('--platform <platform>', 'Target platform: browser, node, neutral', { default: 'node' })
   .option('--target <target>', 'Target ES version: es2015, es2020, esnext, etc.', { default: 'es2022' })
-  .option('--name <name>', 'Global variable name for IIFE/UMD formats')
+  .option('--global-name <name>', 'Global variable name for IIFE/UMD formats')
   .option('--minify', 'Minify output')
   .option('--dts', 'Generate declaration files')
   .option('--dts-only', 'Only generate declaration files')
   .option('--splitting', 'Enable code splitting')
   .option('--treeshake', 'Enable tree shaking', { default: true })
   .option('--sourcemap', 'Generate source maps')
-  .option('--clean', 'Clean output directory before build', { default: true })
+  .option('--clean', 'Clean output directory before build')
+  .option('--no-clean', 'Disable cleaning output directory')
   .option('--external <module>', 'Mark dependencies as external')
   .option('--no-external <module>', 'Force bundle dependencies')
   .option('--shims', 'Enable CJS/ESM compatibility shims')
@@ -128,7 +129,17 @@ async function runBuild(entries: string[], flags: any): Promise<void> {
     }]
   }
   else {
-    rawEntries = []
+    // Default entry: src/index.ts
+    const { existsSync } = await import('node:fs')
+    const { resolve } = await import('node:path')
+    const defaultEntry = resolve(flags.dir || '.', 'src/index.ts')
+
+    if (existsSync(defaultEntry)) {
+      rawEntries = ['src/index.ts']
+    }
+    else {
+      rawEntries = []
+    }
   }
 
   const processedEntries: BuildEntry[] = rawEntries.map((entry) => {
@@ -160,8 +171,8 @@ async function runBuild(entries: string[], flags: any): Promise<void> {
           baseEntry.target = flags.target
         }
 
-        if (flags.name) {
-          baseEntry.globalName = flags.name
+        if (flags.globalName) {
+          baseEntry.globalName = flags.globalName
         }
 
         if (flags.minify) {
@@ -192,7 +203,7 @@ async function runBuild(entries: string[], flags: any): Promise<void> {
           baseEntry.external = Array.isArray(flags.external) ? flags.external : [flags.external]
         }
 
-        if (flags.noExternal) {
+        if (flags.noExternal !== undefined && flags.noExternal !== true) {
           baseEntry.noExternal = Array.isArray(flags.noExternal) ? flags.noExternal : [flags.noExternal]
         }
 
@@ -241,7 +252,7 @@ async function runBuild(entries: string[], flags: any): Promise<void> {
           ...config.watch,
         }
       : config.watch,
-    clean: flags.clean ?? config.clean,
+    clean: flags.clean === false ? false : (flags.clean ?? config.clean ?? true),
     logLevel: flags.logLevel || config.logLevel,
     onSuccess: flags.onSuccess || config.onSuccess,
     failOnWarn: flags.failOnWarn ?? config.failOnWarn,

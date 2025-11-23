@@ -44,7 +44,7 @@ return exports;
 //#region index.d.ts
 declare function hello(name: string): string;
 declare const version: string;
-declare const _default: string;
+declare const _default: "Multi-format test library";
 //#endregion
 export { _default as default, hello, version };
 ```
