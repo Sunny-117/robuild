@@ -137,10 +137,10 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
     }
 
     // Check for input or entry (tsup compatibility)
-    const hasInput = entry.type === 'transform' 
-      ? !!entry.input 
+    const hasInput = entry.type === 'transform'
+      ? !!entry.input
       : !!((entry as BundleEntry).input || (entry as BundleEntry).entry)
-    
+
     if (!hasInput) {
       throw new Error(
         `Build entry missing \`input\` or \`entry\`: ${JSON.stringify(entry, null, 2)}`,
@@ -148,26 +148,35 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
     }
     entry = { ...entry }
     entry.outDir = normalizePath(entry.outDir || 'dist', ctx.pkgDir)
-    
+
     // Normalize input/entry paths
-    const entryInput = (entry as BundleEntry).input || (entry as BundleEntry).entry
-    if (entryInput) {
-      if (typeof entryInput === 'object' && !Array.isArray(entryInput)) {
-        // Handle object format (named entries)
-        const normalizedInput: Record<string, string> = {}
-        for (const [key, value] of Object.entries(entryInput)) {
-          normalizedInput[key] = normalizePath(value, ctx.pkgDir)
-        }
-        ;(entry as BundleEntry).input = normalizedInput
-      }
-      else if (Array.isArray(entryInput)) {
-        ;(entry as BundleEntry).input = entryInput.map(p => normalizePath(p, ctx.pkgDir))
-      }
-      else {
-        ;(entry as BundleEntry).input = normalizePath(entryInput, ctx.pkgDir)
+    if (entry.type === 'transform') {
+      // Normalize transform entry input
+      if ((entry as TransformEntry).input) {
+        ;(entry as TransformEntry).input = normalizePath((entry as TransformEntry).input, ctx.pkgDir)
       }
     }
-    
+    else {
+      // Normalize bundle entry input/entry
+      const entryInput = (entry as BundleEntry).input || (entry as BundleEntry).entry
+      if (entryInput) {
+        if (typeof entryInput === 'object' && !Array.isArray(entryInput)) {
+          // Handle object format (named entries)
+          const normalizedInput: Record<string, string> = {}
+          for (const [key, value] of Object.entries(entryInput)) {
+            normalizedInput[key] = normalizePath(value, ctx.pkgDir)
+          }
+          ;(entry as BundleEntry).input = normalizedInput
+        }
+        else if (Array.isArray(entryInput)) {
+          ;(entry as BundleEntry).input = entryInput.map(p => normalizePath(p, ctx.pkgDir))
+        }
+        else {
+          ;(entry as BundleEntry).input = normalizePath(entryInput, ctx.pkgDir)
+        }
+      }
+    }
+
     return entry
   })
 

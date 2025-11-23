@@ -78,12 +78,31 @@ export async function transformDir(
   const fullOutDir = resolve(ctx.pkgDir, entry.outDir!)
   await cleanOutputDir(ctx.pkgDir, fullOutDir, entry.clean ?? true)
 
+  // Ensure input is a directory - if it's a file, use its directory
+  const { statSync } = await import('node:fs')
+  let inputDir = entry.input
+  try {
+    const stats = statSync(inputDir)
+    if (stats.isFile()) {
+      inputDir = dirname(inputDir)
+      consola.warn(`Transform input should be a directory, not a file. Using directory: ${fmtPath(inputDir)}`)
+    }
+  }
+  catch (error: any) {
+    if (error.code !== 'ENOENT') {
+      throw error
+    }
+    // If path doesn't exist, assume it's meant to be a directory
+  }
+
   const promises: Promise<string>[] = []
 
-  for await (const entryName of await glob('**/*.*', { cwd: entry.input })) {
+  const files = await glob('**/*.*', { cwd: inputDir })
+
+  for await (const entryName of files) {
     promises.push(
       (async () => {
-        const entryPath = join(entry.input, entryName)
+        const entryPath = join(inputDir, entryName)
         const ext = extname(entryPath)
         switch (ext) {
           case '.ts':

@@ -427,10 +427,11 @@ export async function rolldownBuild(
       ]
     }
 
+    console.log(1111, formatConfig)
     const res = await rolldown(formatConfig)
 
     // Determine output directory for this format
-    let formatOutDir = fullOutDir
+    const formatOutDir = fullOutDir
     let entryFileName = `[name]${extension}`
 
     if (isMultiFormat) {

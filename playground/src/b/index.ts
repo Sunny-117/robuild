@@ -1,2 +1,3 @@
-import {c} from '@/c';
-export const b = '111'+c
+import { c } from '@/c'
+
+export const b = `111${c}`

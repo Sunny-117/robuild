@@ -17,7 +17,7 @@ const testPlugin: RobuildPlugin = {
 export default defineConfig({
   entries: [{
     type: 'bundle',
-    input: 'src/index.ts',
+    input: 'src/index.tsx',
     noExternal: ['react'],
     alias: {
       '@': path.resolve(__dirname, 'src'),

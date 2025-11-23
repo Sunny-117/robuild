@@ -14,14 +14,22 @@
   "main": "index.js",
   "scripts": {
     "dev": "robuild --watch",
-    "build": "robuild --config tsup-style.config.ts",
-    "transform": "robuild --config transform.config.ts"
+    "build:transform": "robuild --config transform.config.ts",
+    "build:tsup-style": "robuild --config tsup-style.config.ts",
+    "build:unbuild-style": "robuild --config unbuild-style.config.ts",
+    "build:oxc-runtime-inline": "robuild --config oxc-runtime-inline.config.ts --watch",
+    "transform": "robuild --config transform.config.ts",
+    "preview": "live-server"
   },
   "dependencies": {
     "@types/react": "^19.2.0",
-    "react": "^19.2.0"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.3",
+    "live-server": "^1.2.2",
     "robuild": "workspace:*"
   }
 }

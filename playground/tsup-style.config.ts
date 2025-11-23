@@ -34,6 +34,8 @@ export default defineConfig({
   // Generate declaration files
   dts: true,
 
+  minify: false,
+
   // Tree shaking
   treeshake: {
     moduleSideEffects: 'no-external',
@@ -42,8 +44,10 @@ export default defineConfig({
   // Source maps
   sourcemap: true,
 
-  // Bundle react
-  noExternal: ['react'],
+  // External dependencies (don't bundle react to keep output smaller)
+  external: ['react'],
+  // Or bundle react:
+  // noExternal: ['react'],
 
   // Path aliases
   alias: {
@@ -58,5 +62,10 @@ export default defineConfig({
     enabled: true,
     includeTypes: true,
     autoUpdate: true,
+  },
+  hooks: {
+    rolldownConfig(cfg) {
+      console.log({ logger: cfg.resolve?.alias })
+    },
   },
 })

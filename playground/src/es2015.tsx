@@ -32,10 +32,9 @@ export class AsyncClass {
 // 对象解构（也可能需要 helper）
 export const { a, ...rest } = { a: 1, b: 2, c: 3 }
 
-async function run() {
+export async function run() {
   console.log(await fetchData())
   console.log(await asyncArrow())
   console.log(new AsyncClass().method())
   console.log({ a, ...rest })
 }
-run()

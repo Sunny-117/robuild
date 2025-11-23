@@ -27,17 +27,26 @@ export function analyzeDir(dir: string | string[]): {
 
   let totalSize = 0
 
-  const files = readdirSync(dir, { withFileTypes: true, recursive: true })
+  try {
+    const files = readdirSync(dir, { withFileTypes: true, recursive: true })
 
-  for (const file of files) {
-    const fullPath = join(file.parentPath, file.name)
-    if (file.isFile()) {
-      const { size } = statSync(fullPath)
-      totalSize += size
+    for (const file of files) {
+      const fullPath = join(file.parentPath, file.name)
+      if (file.isFile()) {
+        const { size } = statSync(fullPath)
+        totalSize += size
+      }
     }
-  }
 
-  return { size: totalSize, files: files.length }
+    return { size: totalSize, files: files.length }
+  }
+  catch (error: any) {
+    // If directory doesn't exist or can't be read, return zero
+    if (error.code === 'ENOENT' || error.code === 'ENOTDIR') {
+      return { size: 0, files: 0 }
+    }
+    throw error
+  }
 }
 
 export async function distSize(
