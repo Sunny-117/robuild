@@ -356,20 +356,24 @@ export default defineConfig({
 
 ## Rolldown 配置
 
-### `RolldownOptions`
+### 高级透传配置
+
+`rolldown` 字段允许你直接传递任何 Rolldown 的 `InputOptions` 和 `OutputOptions`。这些配置具有**最高优先级**，会覆盖 robuild 的默认配置。
 
 ```typescript
-interface RolldownOptions {
-  platform?: 'neutral' | 'node' | 'browser' // 目标平台
-  target?: string                           // 目标环境
-  external?: (string | RegExp | Function)[] // 外部依赖
+interface RolldownOptions extends InputOptions {
   plugins?: Plugin[]                        // 插件列表
-  define?: Record<string, string>           // 全局变量定义
   output?: OutputOptions                    // 输出选项
+  // ... 所有 Rolldown InputOptions
 }
 ```
 
-### Rolldown 示例
+**优先级说明：**
+- `rolldown` 配置 > robuild 生成的配置
+- 适用于需要精细控制 Rolldown 行为的场景
+- 使用时需注意可能与 robuild 的其他功能冲突
+
+### 基础示例
 
 ```typescript
 export default defineConfig({
@@ -378,8 +382,30 @@ export default defineConfig({
       type: 'bundle',
       input: './src/index.ts',
       rolldown: {
+        // 直接传递 Rolldown 配置
         platform: 'neutral',
-        target: 'ES2020',
+        treeshake: {
+          moduleSideEffects: false,
+          propertyReadSideEffects: false,
+        },
+        logLevel: 'debug',
+      }
+    }
+  ]
+})
+```
+
+### 高级示例
+
+```typescript
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      rolldown: {
+        // Input 配置
+        platform: 'neutral',
         external: [
           'lodash',
           'chalk',
@@ -390,17 +416,70 @@ export default defineConfig({
           'process.env.NODE_ENV': '"production"',
           'global': 'globalThis'
         },
+        treeshake: {
+          moduleSideEffects: 'no-external',
+          propertyReadSideEffects: false,
+          tryCatchDeoptimization: false,
+        },
+        // 添加额外的 Rolldown 插件
+        plugins: [
+          customRolldownPlugin(),
+        ],
+        // Output 配置（会覆盖 robuild 的输出配置）
         output: {
-          format: ['esm', 'cjs'],
           manualChunks: {
             vendor: ['lodash', 'chalk']
-          }
+          },
+          chunkFileNames: 'chunks/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash][extname]',
+          // 高级输出选项
+          generatedCode: {
+            arrowFunctions: true,
+            constBindings: true,
+            objectShorthand: true,
+          },
+          interop: 'auto',
+          esModule: 'if-default-prop',
         }
       }
     }
   ]
 })
 ```
+
+### 与其他配置的关系
+
+```typescript
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      
+      // robuild 配置（优先级较低）
+      platform: 'node',
+      target: 'es2020',
+      external: ['lodash'],
+      
+      // rolldown 配置（优先级最高，会覆盖上面的配置）
+      rolldown: {
+        platform: 'neutral',  // 覆盖 platform: 'node'
+        external: ['chalk'],  // 覆盖 external: ['lodash']
+        // 其他 Rolldown 特有的配置
+        treeshake: false,
+        logLevel: 'debug',
+      }
+    }
+  ]
+})
+```
+
+### 完整的 Rolldown 配置选项
+
+参考 [Rolldown 官方文档](https://rolldown.rs/reference/config-options) 了解所有可用的配置选项：
+
+- **Input Options**: `input`, `external`, `plugins`, `treeshake`, `platform`, `define`, `resolve`, `transform` 等
+- **Output Options**: `dir`, `format`, `entryFileNames`, `chunkFileNames`, `assetFileNames`, `sourcemap`, `minify`, `banner`, `footer` 等
 
 ## Oxc 配置
 

@@ -265,11 +265,33 @@ export type BundleEntry = _BuildEntry & {
   minify?: boolean | 'dce-only' | MinifyOptions
 
   /**
-   * Options passed to rolldown.
+   * Advanced rolldown configuration.
+   * 
+   * This allows passing any rolldown InputOptions and OutputOptions directly.
+   * These options have the highest priority and will override other robuild settings.
+   * 
+   * Use with caution as it may conflict with robuild's built-in features.
    *
    * See [rolldown config options](https://rolldown.rs/reference/config-options) for more details.
+   * 
+   * @example
+   * ```ts
+   * {
+   *   rolldown: {
+   *     treeshake: false,
+   *     logLevel: 'debug',
+   *     plugins: [customPlugin()],
+   *     output: {
+   *       generatedCode: { arrowFunctions: true }
+   *     }
+   *   }
+   * }
+   * ```
    */
-  rolldown?: InputOptions & { plugins?: RolldownPluginOption[] }
+  rolldown?: Partial<InputOptions> & { 
+    plugins?: RolldownPluginOption[]
+    output?: Partial<OutputOptions>
+  }
 
   /**
    * Declaration generation options.

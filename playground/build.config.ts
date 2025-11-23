@@ -20,18 +20,30 @@ export default defineConfig({
     noExternal: ['react'],
     alias: {
       '@': path.resolve(__dirname, 'src')
-    }
+    },
+    // Advanced rolldown configuration (highest priority)
+    rolldown: {
+      // These options will override robuild's defaults
+      logLevel: 'info',
+      treeshake: {
+        moduleSideEffects: 'no-external',
+      },
+      output: {
+        // Custom output configuration
+        sourcemap: true,
+      },
+    },
   }],
   // Use plugins for Rolldown plugin hooks like writeBundle, buildStart, transform, etc.
   // hooks field is only for build lifecycle hooks (start, end, entries, rolldownConfig, rolldownOutput)
   hooks: {
-    start(ctx) {
+    start() {
       console.log('start');
     },
-    end(ctx) {
+    end() {
       console.log('end');
     },
-    rolldownConfig(cfg, ctx) {
+    rolldownConfig() {
       console.log('rolldownConfig');
     },
   }, 

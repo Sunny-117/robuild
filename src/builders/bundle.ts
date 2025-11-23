@@ -340,7 +340,8 @@ export async function rolldownBuild(
   // Add user plugins from plugin manager
   rolldownPlugins.push(...pluginManager.getRolldownPlugins())
 
-  const baseRolldownConfig = defu(entry.rolldown, {
+  // Build base config from robuild options
+  const robuildGeneratedConfig: InputOptions = {
     cwd: ctx.pkgDir,
     input: inputs,
     plugins: rolldownPlugins,
@@ -355,7 +356,21 @@ export async function rolldownBuild(
     transform: {
       target,
     },
-  } satisfies InputOptions)
+  }
+
+  // Merge with user's rolldown config (user config has highest priority)
+  // Extract output config separately as it's handled per-format
+  const { output: userOutputConfig, plugins: userPlugins, ...userRolldownConfig } = entry.rolldown || {}
+  
+  const baseRolldownConfig: InputOptions = {
+    ...robuildGeneratedConfig,
+    ...userRolldownConfig,
+    // Merge plugins array (robuild plugins + user plugins)
+    plugins: [
+      ...rolldownPlugins,
+      ...(Array.isArray(userPlugins) ? userPlugins : userPlugins ? [userPlugins] : []),
+    ],
+  }
 
   await hooks.rolldownConfig?.(baseRolldownConfig, ctx)
 
@@ -381,7 +396,11 @@ export async function rolldownBuild(
 
     // Only add DTS plugin for ESM format (DTS plugin doesn't support CJS)
     if (entry.dts !== false && format === 'esm') {
-      formatConfig.plugins = [...formatConfig.plugins, ...dts({ ...(entry.dts as DtsOptions) })]
+      const dtsPlugins = dts({ ...(entry.dts as DtsOptions) })
+      formatConfig.plugins = [
+        ...(Array.isArray(formatConfig.plugins) ? formatConfig.plugins : [formatConfig.plugins]),
+        ...(Array.isArray(dtsPlugins) ? dtsPlugins : [dtsPlugins]),
+      ]
     }
 
     const res = await rolldown(formatConfig)
@@ -410,7 +429,8 @@ export async function rolldownBuild(
       }
     }
 
-    const outConfig: OutputOptions = {
+    // Build base output config from robuild options
+    const robuildOutputConfig: OutputOptions = {
       dir: formatOutDir,
       format: rolldownFormat,
       entryFileNames: entryFileName,
@@ -424,7 +444,13 @@ export async function rolldownBuild(
     // Enable source maps if requested on the entry
     if (entry.sourcemap !== undefined) {
       // Rollup/Rolldown supports boolean | 'inline' | 'hidden'
-      ;(outConfig as any).sourcemap = entry.sourcemap as any
+      ;(robuildOutputConfig as any).sourcemap = entry.sourcemap as any
+    }
+
+    // Merge with user's output config (user config has highest priority)
+    const outConfig: OutputOptions = {
+      ...robuildOutputConfig,
+      ...(userOutputConfig || {}),
     }
 
     await hooks.rolldownOutput?.(outConfig, res, ctx)

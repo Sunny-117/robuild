@@ -394,6 +394,304 @@ robuild 会分析项目结构并提供建议：
 }
 ```
 
+## ⚙️ Rolldown 配置透传
+
+### 概述
+
+robuild 允许你直接透传 Rolldown 的所有配置选项，这些配置具有**最高优先级**，会覆盖 robuild 的默认设置。这为需要精细控制构建行为的场景提供了最大的灵活性。
+
+### 基本用法
+
+```typescript
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      rolldown: {
+        // 直接传递 Rolldown InputOptions
+        logLevel: 'debug',
+        treeshake: false,
+        platform: 'neutral',
+      }
+    }
+  ]
+})
+```
+
+### 配置优先级
+
+```typescript
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      
+      // robuild 配置（优先级较低）
+      platform: 'node',
+      target: 'es2020',
+      external: ['lodash'],
+      
+      // rolldown 配置（优先级最高）
+      rolldown: {
+        platform: 'neutral',  // ✅ 覆盖 platform: 'node'
+        external: ['chalk'],  // ✅ 覆盖 external: ['lodash']
+        logLevel: 'debug',    // ✅ 额外的 Rolldown 选项
+      }
+    }
+  ]
+})
+```
+
+### 高级 Tree Shaking
+
+```typescript
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      rolldown: {
+        treeshake: {
+          // 模块副作用处理
+          moduleSideEffects: 'no-external',
+          
+          // 属性读取副作用
+          propertyReadSideEffects: false,
+          
+          // try-catch 优化
+          tryCatchDeoptimization: false,
+          
+          // 未知全局变量处理
+          unknownGlobalSideEffects: false,
+        }
+      }
+    }
+  ]
+})
+```
+
+### 输出配置透传
+
+```typescript
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      rolldown: {
+        output: {
+          // 手动分包
+          manualChunks: {
+            vendor: ['react', 'react-dom'],
+            utils: ['lodash', 'date-fns'],
+          },
+          
+          // 文件命名
+          chunkFileNames: 'chunks/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash][extname]',
+          
+          // 代码生成选项
+          generatedCode: {
+            arrowFunctions: true,
+            constBindings: true,
+            objectShorthand: true,
+          },
+          
+          // 互操作性
+          interop: 'auto',
+          esModule: 'if-default-prop',
+          
+          // Source map
+          sourcemap: true,
+          sourcemapExcludeSources: false,
+        }
+      }
+    }
+  ]
+})
+```
+
+### 添加 Rolldown 插件
+
+```typescript
+import { defineConfig } from 'robuild'
+import { visualizer } from 'rollup-plugin-visualizer'
+
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      rolldown: {
+        // 添加额外的 Rolldown/Rollup 插件
+        plugins: [
+          visualizer({
+            filename: 'stats.html',
+            gzipSize: true,
+          }),
+        ],
+      }
+    }
+  ],
+  // robuild 插件会自动与 rolldown 插件合并
+  plugins: [myRobuildPlugin()],
+})
+```
+
+### 调试配置
+
+```typescript
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      rolldown: {
+        // 启用详细日志
+        logLevel: 'debug',
+        
+        // 禁用优化以便调试
+        treeshake: false,
+        
+        // 保留注释
+        output: {
+          comments: 'all',
+          sourcemap: 'inline',
+        }
+      }
+    }
+  ]
+})
+```
+
+### 性能优化配置
+
+```typescript
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      rolldown: {
+        // 激进的 tree shaking
+        treeshake: {
+          moduleSideEffects: false,
+          propertyReadSideEffects: false,
+          tryCatchDeoptimization: false,
+        },
+        
+        // 优化输出
+        output: {
+          // 压缩选项
+          minify: true,
+          
+          // 代码分割
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              return 'vendor'
+            }
+          },
+          
+          // 优化代码生成
+          generatedCode: {
+            arrowFunctions: true,
+            constBindings: true,
+            objectShorthand: true,
+          },
+        }
+      }
+    }
+  ]
+})
+```
+
+### 完整示例
+
+```typescript
+import { defineConfig } from 'robuild'
+
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      
+      // robuild 基础配置
+      format: ['esm', 'cjs'],
+      platform: 'neutral',
+      target: 'es2020',
+      
+      // rolldown 高级配置（最高优先级）
+      rolldown: {
+        // 构建选项
+        logLevel: 'info',
+        platform: 'neutral',
+        
+        // Tree shaking
+        treeshake: {
+          moduleSideEffects: 'no-external',
+          propertyReadSideEffects: false,
+        },
+        
+        // 外部依赖
+        external: (id) => {
+          return id.startsWith('node:') || id.includes('node_modules')
+        },
+        
+        // 全局变量定义
+        define: {
+          'process.env.NODE_ENV': JSON.stringify('production'),
+          '__VERSION__': JSON.stringify('1.0.0'),
+        },
+        
+        // 路径解析
+        resolve: {
+          alias: {
+            '@': './src',
+            '~': './src/utils',
+          },
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        },
+        
+        // 输出配置
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom'],
+          },
+          chunkFileNames: 'chunks/[name]-[hash].js',
+          sourcemap: true,
+          generatedCode: {
+            arrowFunctions: true,
+            constBindings: true,
+          },
+        },
+        
+        // 额外插件
+        plugins: [
+          // 自定义 Rolldown 插件
+        ],
+      }
+    }
+  ]
+})
+```
+
+### 注意事项
+
+1. **配置冲突**: `rolldown` 配置会覆盖 robuild 的默认配置，可能导致某些 robuild 功能失效
+2. **类型安全**: 使用 TypeScript 可以获得完整的类型提示和检查
+3. **文档参考**: 详细的 Rolldown 配置选项请参考 [Rolldown 官方文档](https://rolldown.rs/reference/config-options)
+4. **插件合并**: `rolldown.plugins` 会与 robuild 的内置插件和 `plugins` 字段合并
+
+### 适用场景
+
+- 需要精细控制 Rolldown 行为
+- 使用 Rolldown 特有的功能
+- 性能优化和调试
+- 与现有 Rolldown/Rollup 配置迁移
+
 ## 🔧 组合使用
 
 ### 完整配置示例
