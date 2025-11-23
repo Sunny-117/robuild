@@ -1,7 +1,3 @@
-// Re-export from organized structure for backward compatibility
-
-// Re-export the main builtin functions for backward compatibility
-export { getBuiltinPlugins } from './builtin'
 export { combinePlugins } from './combine'
 // Re-export all individual plugins
 export { cssPlugin } from './css'
