@@ -15,12 +15,15 @@ test/
 │   ├── fixtures.ts      # Fixture management
 │   ├── snapshot.ts      # Snapshot utilities
 │   └── index.ts         # Public API
-├── shared-fixtures/     # Shared test fixtures (optional)
+├── __snapshots__/       # Vitest snapshot files (.snap)
+│   ├── bundle.test.ts.snap
+│   ├── transform.test.ts.snap
+│   └── cli.test.ts.snap
+├── shared-fixtures/     # Shared test fixtures (optional, currently empty)
 ├── temp/                # Temporary build outputs (gitignored)
-├── __snapshots__/       # Snapshot files
-├── bundle.test.ts       # Bundle mode tests
-├── transform.test.ts    # Transform mode tests
-└── cli.test.ts          # CLI tests
+├── bundle.test.ts       # Bundle mode tests (17 tests)
+├── transform.test.ts    # Transform mode tests (13 tests)
+└── cli.test.ts          # CLI tests (11 tests)
 ```
 
 ### Core Concepts
@@ -115,14 +118,14 @@ await testBuild({
   context,
   files: { /* ... */ },
   config: { /* ... */ },
-  
+
   // Custom output directory
   outDir: 'dist/custom',
-  
+
   // Filter snapshot files
   snapshotPattern: /\.mjs$/,
   snapshotExclude: [/\.map$/],
-  
+
   // Hooks
   beforeBuild: async (testDir) => {
     // Setup before build
@@ -130,7 +133,7 @@ await testBuild({
   afterBuild: async (outputDir) => {
     // Verify after build
   },
-  
+
   // Working directory
   cwd: 'packages/core',
 })
@@ -144,7 +147,7 @@ Use a function for dynamic config:
 await testBuild({
   context,
   files: { /* ... */ },
-  config: (cwd) => ({
+  config: cwd => ({
     entries: [
       {
         type: 'transform',
@@ -257,8 +260,8 @@ it('test', async (context) => {
   await testBuild({
     context,
     files: { /* ... */ },
-    options: { /* ... */ },  // ❌ old
-    expectDir: 'dist',       // ❌ old
+    options: { /* ... */ }, // ❌ old
+    expectDir: 'dist', // ❌ old
   })
 })
 ```
@@ -271,8 +274,8 @@ it('test', async (context) => {
   await testBuild({
     context,
     files: { /* ... */ },
-    config: { /* ... */ },   // ✅ new
-    outDir: 'dist',          // ✅ new
+    config: { /* ... */ }, // ✅ new
+    outDir: 'dist', // ✅ new
   })
 })
 ```

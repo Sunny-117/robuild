@@ -1,6 +1,6 @@
 import type { TestContext } from 'vitest'
 import { existsSync } from 'node:fs'
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 /**
@@ -109,7 +109,6 @@ export async function createSnapshot(
 export async function expectSnapshot(
   context: TestContext,
   dir: string,
-  snapshotPath: string,
   options: {
     pattern?: RegExp
     exclude?: RegExp[]
@@ -122,12 +121,8 @@ export async function expectSnapshot(
   const { expect } = context
   const result = await createSnapshot(dir, options)
 
-  // Write snapshot file
-  await mkdir(path.dirname(snapshotPath), { recursive: true })
-  await writeFile(snapshotPath, result.snapshot, 'utf8')
-
-  // Assert snapshot matches
-  await expect(result.snapshot).toMatchFileSnapshot(snapshotPath)
+  // Use Vitest's inline snapshot
+  expect(result.snapshot).toMatchSnapshot()
 
   return result
 }

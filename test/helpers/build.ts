@@ -6,9 +6,6 @@ import { build } from '../../src/build'
 import { cleanTestDir, getTestDir, writeFixtures } from './fixtures'
 import { expectSnapshot } from './snapshot'
 
-const dirname = path.dirname(new URL(import.meta.url).pathname)
-const snapshotsDir = path.resolve(dirname, '../__snapshots__')
-
 /**
  * Change working directory temporarily
  */
@@ -150,8 +147,7 @@ export async function testBuild(options: TestBuildOptions): Promise<TestBuildRes
     await afterBuild?.(outputDir)
 
     // Create snapshot
-    const snapshotPath = path.resolve(snapshotsDir, `${testName}.snap.md`)
-    const result = await expectSnapshot(context, outputDir, snapshotPath, {
+    const result = await expectSnapshot(context, outputDir, {
       pattern: snapshotPattern,
       exclude: snapshotExclude,
     })

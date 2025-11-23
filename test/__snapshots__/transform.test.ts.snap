@@ -1,0 +1,335 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`transform mode > TypeScript/JSX support > should transform JSX files 1`] = `
+"## Component.d.mts
+
+\`\`\`ts
+export default function Component();
+\`\`\`
+
+## Component.mjs
+
+\`\`\`js
+import { jsx as _jsx } from "react/jsx-runtime";
+export default function Component() {
+	return /* @__PURE__ */ _jsx("div", { children: "Hello" });
+}
+\`\`\`
+"
+`;
+
+exports[`transform mode > TypeScript/JSX support > should transform TSX files 1`] = `
+"## Button.d.mts
+
+\`\`\`ts
+export interface ButtonProps {
+	label: string;
+}
+export default function Button(props: ButtonProps);
+\`\`\`
+
+## Button.mjs
+
+\`\`\`js
+import { jsx as _jsx } from "react/jsx-runtime";
+export default function Button(props) {
+	return /* @__PURE__ */ _jsx("button", { children: props.label });
+}
+\`\`\`
+
+## index.d.mts
+
+\`\`\`ts
+export { default as Button } from "./Button.mjs";
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export { default as Button } from "./Button.mjs";
+\`\`\`
+"
+`;
+
+exports[`transform mode > basic transformation > should copy non-TypeScript files 1`] = `
+"## README.md
+
+\`\`\`md
+# Documentation
+\`\`\`
+
+## data.json
+
+\`\`\`json
+{"key": "value"}
+\`\`\`
+
+## index.d.mts
+
+\`\`\`ts
+export declare const version = "1.0.0";
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export const version = "1.0.0";
+\`\`\`
+"
+`;
+
+exports[`transform mode > basic transformation > should transform directory structure 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+export { add } from "./math.mjs";
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export { add } from "./math.mjs";
+\`\`\`
+
+## math.d.mts
+
+\`\`\`ts
+export declare function add(a: number, b: number);
+\`\`\`
+
+## math.mjs
+
+\`\`\`js
+export function add(a, b) {
+	return a + b;
+}
+\`\`\`
+
+## utils/format.d.mts
+
+\`\`\`ts
+export declare function format(v: any);
+\`\`\`
+
+## utils/format.mjs
+
+\`\`\`js
+export function format(v) {
+	return String(v);
+}
+\`\`\`
+"
+`;
+
+exports[`transform mode > basic transformation > should transform single file 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+export declare const value = 42;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export const value = 42;
+\`\`\`
+"
+`;
+
+exports[`transform mode > clean option > should clean output directory 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+export declare const value = 1;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export const value = 1;
+\`\`\`
+"
+`;
+
+exports[`transform mode > clean option > should clean output directory 2`] = `
+"## index.d.mts
+
+\`\`\`ts
+export declare const value = 2;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export const value = 2;
+\`\`\`
+"
+`;
+
+exports[`transform mode > customization > should add banner and footer 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+export declare const lib = "my-lib";
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+// Copyright 2024
+export const lib = "my-lib";
+
+// End
+\`\`\`
+"
+`;
+
+exports[`transform mode > customization > should handle node protocol 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+import { readFile } from "fs/promises";
+import path from "path";
+export { readFile, path };
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+import { readFile } from "fs/promises";
+import node:path from "path";
+export { readFile, path };
+\`\`\`
+"
+`;
+
+exports[`transform mode > customization > should handle target option 1`] = `
+"## modern.d.mts
+
+\`\`\`ts
+export declare const arrow: () => string;
+export declare const optional: unknown;
+\`\`\`
+
+## modern.mjs
+
+\`\`\`js
+export const arrow = () => "arrow";
+export const optional = (x) => x !== null && x !== void 0 ? x : "default";
+\`\`\`
+"
+`;
+
+exports[`transform mode > optimization > should generate sourcemaps 1`] = `
+"## helper.d.mts
+
+\`\`\`ts
+export declare function double(n: number);
+\`\`\`
+
+## helper.mjs
+
+\`\`\`js
+export function double(n) {
+	return n * 2;
+}
+\`\`\`
+
+## helper.mjs.map
+
+\`\`\`map
+{"mappings":"AAAA,OAAO,SAAS,OAAO,GAAW;AAAE,QAAO,IAAI","names":[],"sources":["/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/optimization/should-generate-sourcemaps/src/helper.ts"],"sourcesContent":["export function double(n: number) { return n * 2 }"],"version":3}
+\`\`\`
+
+## index.d.mts
+
+\`\`\`ts
+export declare const value = 42;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export const value = 42;
+\`\`\`
+
+## index.mjs.map
+
+\`\`\`map
+{"mappings":"AAAA,OAAO,MAAM,QAAQ","names":[],"sources":["/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/optimization/should-generate-sourcemaps/src/index.ts"],"sourcesContent":["export const value = 42"],"version":3}
+\`\`\`
+"
+`;
+
+exports[`transform mode > optimization > should minify transformed files 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+export declare function longFunctionName(parameter: string): string;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export function longFunctionName(e){return e.toUpperCase()}
+\`\`\`
+"
+`;
+
+exports[`transform mode > path resolution > should handle path aliases 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+import { helper } from "./utils/helper.mjs";
+export { helper };
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+import { helper } from "./utils/helper.mjs";
+export { helper };
+\`\`\`
+
+## utils/helper.d.mts
+
+\`\`\`ts
+export declare function helper(): string;
+\`\`\`
+
+## utils/helper.mjs
+
+\`\`\`js
+export function helper() {
+	return "help";
+}
+\`\`\`
+"
+`;
+
+exports[`transform mode > path resolution > should resolve relative imports 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+export { util } from "./utils/util.mjs";
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export { util } from "./utils/util.mjs";
+\`\`\`
+
+## utils/util.d.mts
+
+\`\`\`ts
+export declare const util = "utility";
+\`\`\`
+
+## utils/util.mjs
+
+\`\`\`js
+export const util = "utility";
+\`\`\`
+"
+`;

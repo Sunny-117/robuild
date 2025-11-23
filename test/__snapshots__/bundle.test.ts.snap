@@ -1,0 +1,269 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`bundle mode > basic bundling > should bundle multiple entries 1`] = `
+"## a/entry1.mjs
+
+\`\`\`js
+//#region entry1.ts
+const a = 1;
+
+//#endregion
+export { a };
+\`\`\`
+
+## b/entry2.mjs
+
+\`\`\`js
+//#region entry2.ts
+const b = 2;
+
+//#endregion
+export { b };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > basic bundling > should bundle simple file 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > basic bundling > should bundle with TypeScript types 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+//#region index.d.ts
+interface User {
+  name: string;
+  age: number;
+}
+declare function greet(user: User): string;
+//#endregion
+export { User, greet };
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+function greet(user) {
+	return \`Hello, \${user.name}!\`;
+}
+
+//#endregion
+export { greet };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > customization > should add banner and footer 1`] = `
+"## index.mjs
+
+\`\`\`js
+// Copyright 2024
+//#region index.ts
+const lib = "my-lib";
+
+//#endregion
+export { lib };
+// End
+\`\`\`
+"
+`;
+
+exports[`bundle mode > customization > should handle define constants 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const mode = "production";
+
+//#endregion
+export { mode };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > customization > should handle environment variables 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const version = "1.0.0";
+
+//#endregion
+export { version };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > external dependencies > should handle external dependencies 1`] = `
+"## index.mjs
+
+\`\`\`js
+import React from "react";
+
+export { React };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > external dependencies > should handle regex external patterns 1`] = `
+"## index.mjs
+
+\`\`\`js
+import { foo } from "@scope/package";
+
+export { foo };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > optimization > should generate sourcemap 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const version = "1.0.0";
+
+//#endregion
+export { version };
+//# sourceMappingURL=index.mjs.map
+\`\`\`
+
+## index.mjs.map
+
+\`\`\`map
+{"version":3,"file":"index.mjs","names":[],"sources":["../index.ts"],"sourcesContent":["export const version = \\"1.0.0\\""],"mappings":";AAAA,MAAa,UAAU"}
+\`\`\`
+"
+`;
+
+exports[`bundle mode > optimization > should minify output 1`] = `
+"## index.mjs
+
+\`\`\`js
+function e(e){return e.reduce((e,t)=>e+t,0)}export{e as calculate};
+\`\`\`
+"
+`;
+
+exports[`bundle mode > output formats > should output CJS format 1`] = `
+"## index.cjs
+
+\`\`\`js
+
+//#region index.ts
+function hello() {
+	return "hello";
+}
+
+//#endregion
+module.exports = hello;
+\`\`\`
+"
+`;
+
+exports[`bundle mode > output formats > should output ESM format 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const value = 42;
+
+//#endregion
+export { value };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > output formats > should output IIFE format 1`] = `
+"## browser/index.js
+
+\`\`\`js
+var MyLib = (function(exports) {
+
+
+//#region index.ts
+const PI = 3.14;
+
+//#endregion
+exports.PI = PI;
+return exports;
+})({});
+\`\`\`
+"
+`;
+
+exports[`bundle mode > output formats > should output multiple formats 1`] = `
+"## cjs/index.cjs
+
+\`\`\`js
+
+//#region index.ts
+function add(a, b) {
+	return a + b;
+}
+
+//#endregion
+exports.add = add;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+function add(a, b) {
+	return a + b;
+}
+
+//#endregion
+export { add };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > platform specific > should handle node protocol 1`] = `
+"## index.mjs
+
+\`\`\`js
+import { readFile } from "fs/promises";
+
+export { readFile };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > platform specific > should target browser platform 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const platform = "browser";
+
+//#endregion
+export { platform };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > platform specific > should target node platform 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const platform = "node";
+
+//#endregion
+export { platform };
+\`\`\`
+"
+`;
