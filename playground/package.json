@@ -19,6 +19,7 @@
     "build:unbuild-style": "robuild --config unbuild-style.config.ts",
     "build:oxc-runtime-inline": "robuild --config oxc-runtime-inline.config.ts --watch",
     "build:vue": "robuild --config vue-support-config.ts",
+    "build:assets": "robuild --config asset-loader-config.ts",
     "transform": "robuild --config transform.config.ts",
     "preview": "live-server"
   },

@@ -5,6 +5,7 @@ import type { TransformOptions } from 'oxc-transform'
 import type {
   InputOptions,
   MinifyOptions,
+  ModuleType,
   OutputOptions,
   RolldownBuild,
   Plugin as RolldownPlugin,
@@ -34,7 +35,24 @@ export type OutExtensionFactory = (format: OutputFormat) => {
 }
 
 // Loader types
-export type LoaderType = 'js' | 'jsx' | 'ts' | 'tsx' | 'json' | 'css' | 'text' | 'binary' | 'file' | 'dataurl' | 'empty'
+/**
+ * Loader types for robuild.
+ *
+ * Rolldown native types:
+ * - 'js', 'jsx', 'ts', 'tsx' - JavaScript/TypeScript files
+ * - 'json' - JSON files
+ * - 'text' - Text files (imported as string)
+ * - 'base64' - Files imported as base64 data URL
+ * - 'file' - Files imported as file path (copied to output)
+ * - 'empty' - Empty module
+ * - 'binary' - Binary files
+ * - 'css' - CSS files
+ * - 'asset' - Asset files (Rolldown decides between file/base64 based on size)
+ *
+ * Robuild extensions:
+ * - 'dataurl' - Alias for 'base64'
+ */
+export type LoaderType = ModuleType | 'dataurl'
 
 export interface LoaderConfig {
   loader: LoaderType
@@ -213,6 +231,18 @@ export interface _BuildEntry {
 
   /**
    * File type loaders configuration.
+   *
+   * Maps file extensions to loader types. Uses Rolldown's native moduleTypes.
+   *
+   * @example
+   * ```ts
+   * loaders: {
+   *   '.png': { loader: 'asset' },      // Auto base64 for small files, file path for large
+   *   '.jpg': { loader: 'file' },       // Always emit as file
+   *   '.svg': { loader: 'text' },       // Import as string
+   *   '.woff': { loader: 'base64' },    // Import as data URL
+   * }
+   * ```
    */
   loaders?: Record<string, LoaderConfig>
 
@@ -664,6 +694,13 @@ export interface BuildConfig {
    * @default false
    */
   sourcemap?: boolean | 'inline' | 'hidden'
+
+  /**
+   * File type loaders configuration (tsup-style).
+   *
+   * @see _BuildEntry.loaders
+   */
+  loaders?: Record<string, LoaderConfig>
 
   /**
    * External dependencies (tsup-style).

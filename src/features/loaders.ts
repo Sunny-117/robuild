@@ -3,7 +3,13 @@ import { readFile } from 'node:fs/promises'
 import { extname } from 'node:path'
 
 /**
- * Default loader mappings for common file extensions
+ * Default loader mappings for common file extensions.
+ *
+ * Uses Rolldown's native moduleTypes:
+ * - 'asset': Auto-detect (base64 for small files, file path for large)
+ * - 'file': Always emit as separate file
+ * - 'base64': Always inline as base64 data URL
+ * - 'text': Import as string
  */
 export const DEFAULT_LOADERS: Record<string, LoaderType> = {
   '.js': 'js',
@@ -25,26 +31,34 @@ export const DEFAULT_LOADERS: Record<string, LoaderType> = {
   '.html': 'text',
   '.xml': 'text',
   '.svg': 'text',
-  '.png': 'file',
-  '.jpg': 'file',
-  '.jpeg': 'file',
-  '.gif': 'file',
-  '.webp': 'file',
-  '.ico': 'file',
-  '.woff': 'file',
-  '.woff2': 'file',
-  '.ttf': 'file',
-  '.eot': 'file',
+  // Images - use 'asset' for automatic optimization
+  '.png': 'asset',
+  '.jpg': 'asset',
+  '.jpeg': 'asset',
+  '.gif': 'asset',
+  '.webp': 'asset',
+  '.ico': 'asset',
+  '.avif': 'asset',
+  // Fonts - use 'asset' for automatic optimization
+  '.woff': 'asset',
+  '.woff2': 'asset',
+  '.ttf': 'asset',
+  '.eot': 'asset',
+  '.otf': 'asset',
+  // Media files - use 'file' to always emit
   '.mp4': 'file',
   '.webm': 'file',
+  '.ogg': 'file',
   '.wav': 'file',
   '.mp3': 'file',
   '.flac': 'file',
   '.aac': 'file',
+  // Binary files
   '.zip': 'binary',
   '.tar': 'binary',
   '.gz': 'binary',
   '.br': 'binary',
+  '.wasm': 'binary',
 }
 
 /**

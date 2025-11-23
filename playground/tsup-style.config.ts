@@ -40,6 +40,11 @@ export default defineConfig({
   treeshake: {
     moduleSideEffects: 'no-external',
   },
+  rolldown: {
+    moduleTypes: {
+      '.png': 'asset',
+    },
+  },
 
   // Source maps
   sourcemap: true,

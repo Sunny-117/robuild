@@ -53,6 +53,7 @@ function normalizeTsupConfig(config: BuildConfig): BuildConfig {
       footer: config.footer,
       shims: config.shims,
       rolldown: config.rolldown,
+      loaders: config.loaders,
     }
 
     return {
@@ -134,6 +135,26 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
     }
     else {
       entry = rawEntry
+    }
+
+    // Inherit top-level config fields if not specified in entry
+    if (entry.type === 'bundle') {
+      const bundleEntry = entry as BundleEntry
+      if (!bundleEntry.loaders && config.loaders) {
+        bundleEntry.loaders = config.loaders
+      }
+      if (!bundleEntry.alias && config.alias) {
+        bundleEntry.alias = config.alias
+      }
+      if (!bundleEntry.shims && config.shims) {
+        bundleEntry.shims = config.shims
+      }
+      if (!bundleEntry.external && config.external) {
+        bundleEntry.external = config.external
+      }
+      if (!bundleEntry.noExternal && config.noExternal) {
+        bundleEntry.noExternal = config.noExternal
+      }
     }
 
     // Check for input or entry (tsup compatibility)

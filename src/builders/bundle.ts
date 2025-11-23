@@ -1,6 +1,7 @@
 import type {
   InputOptions,
   ModuleFormat,
+  ModuleTypes,
   OutputChunk,
   OutputOptions,
   Plugin,
@@ -24,7 +25,6 @@ import { resolveChunkAddon } from '../features/banner'
 import { copyFiles } from '../features/copy'
 import { createGlobImportPlugin } from '../features/glob-import'
 import { addHashToFilename, hasHash } from '../features/hash'
-import { createLoaderPlugin } from '../features/loaders'
 import { RobuildPluginManager } from '../features/plugin-manager'
 import { createShimsPlugin } from '../features/shims'
 import { nodeProtocolPlugin } from '../plugins/node-protocol'
@@ -314,15 +314,6 @@ export async function rolldownBuild(
     }
   }
 
-  if (entry.loaders) {
-    const loaderPlugin = createLoaderPlugin(entry.loaders)
-    if (loaderPlugin.load) {
-      rolldownPlugins.push({
-        name: 'loaders',
-        load: loaderPlugin.load,
-      } as Plugin)
-    }
-  }
 
   if (entry.shims) {
     const shimsPlugin = createShimsPlugin(entry.shims)
@@ -354,6 +345,15 @@ export async function rolldownBuild(
   // Add user plugins from plugin manager
   rolldownPlugins.push(...pluginManager.getRolldownPlugins())
 
+  // Build moduleTypes config from loaders
+  const moduleTypes: ModuleTypes = {}
+  if (entry.loaders) {
+    for (const [ext, config] of Object.entries(entry.loaders)) {
+      // Cast to ModuleType since LoaderType extends ModuleType
+      moduleTypes[ext] = config.loader as any
+    }
+  }
+
   // Build base config from robuild options
   const robuildGeneratedConfig: InputOptions = {
     cwd: ctx.pkgDir,
@@ -370,6 +370,8 @@ export async function rolldownBuild(
     transform: {
       target,
     },
+    // Add moduleTypes for static asset handling
+    ...(Object.keys(moduleTypes).length > 0 ? { moduleTypes } : {}),
   }
 
   // Handle treeshake configuration
