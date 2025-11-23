@@ -111,8 +111,14 @@ export async function rolldownBuild(
   hooks: BuildHooks,
   config?: BuildConfig,
 ): Promise<void> {
+  // Support both 'input' and 'entry' (tsup compatibility)
+  const entryInput = entry.input || entry.entry
+  if (!entryInput) {
+    throw new Error('Entry input is required')
+  }
+
   const inputs: Record<string, string> = normalizeBundleInputs(
-    entry.input,
+    entryInput,
     ctx,
   )
 
@@ -136,6 +142,15 @@ export async function rolldownBuild(
 
   // Clean output directory if requested
   await cleanOutputDir(ctx.pkgDir, fullOutDir, entry.clean ?? true)
+
+  // Handle dtsOnly mode (only generate declaration files)
+  if (entry.dtsOnly) {
+    consola.info('Running in dtsOnly mode - only generating declaration files')
+    // Force dts to be enabled
+    entry.dts = entry.dts === false ? true : (entry.dts || true)
+    // We'll skip the normal build and only run DTS generation
+    // This will be handled in the format loop below
+  }
 
   if (entry.stub) {
     for (const [distName, srcPath] of Object.entries(inputs)) {
@@ -358,6 +373,16 @@ export async function rolldownBuild(
     },
   }
 
+  // Handle treeshake configuration
+  if (entry.treeshake !== undefined) {
+    if (typeof entry.treeshake === 'boolean') {
+      robuildGeneratedConfig.treeshake = entry.treeshake
+    }
+    else {
+      robuildGeneratedConfig.treeshake = entry.treeshake
+    }
+  }
+
   // Merge with user's rolldown config (user config has highest priority)
   // Extract output config separately as it's handled per-format
   const { output: userOutputConfig, plugins: userPlugins, ...userRolldownConfig } = entry.rolldown || {}
@@ -565,11 +590,24 @@ export async function rolldownBuild(
 }
 
 export function normalizeBundleInputs(
-  input: string | string[],
+  input: string | string[] | Record<string, string>,
   ctx: BuildContext,
 ): Record<string, string> {
   const inputs: Record<string, string> = {}
 
+  // Handle object format (tsup-style named entries)
+  if (typeof input === 'object' && !Array.isArray(input)) {
+    for (const [name, src] of Object.entries(input)) {
+      const resolvedSrc = resolveModulePath(src, {
+        from: ctx.pkgDir,
+        extensions: ['.ts', '.js', '.mjs', '.cjs', '.json'],
+      })
+      inputs[name] = resolvedSrc
+    }
+    return inputs
+  }
+
+  // Handle string or array format
   for (let src of Array.isArray(input) ? input : [input]) {
     src = resolveModulePath(src, {
       from: ctx.pkgDir,

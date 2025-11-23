@@ -254,8 +254,22 @@ export type BundleEntry = _BuildEntry & {
 
   /**
    * Entry point(s) to bundle relative to the project root.
+   *
+   * Supports multiple formats:
+   * - Single file: `'src/index.ts'`
+   * - Multiple files: `['src/index.ts', 'src/cli.ts']`
+   * - Named entries: `{ index: 'src/index.ts', cli: 'src/cli.ts' }`
+   *
+   * @alias entry (tsup compatibility)
    */
-  input: string | string[]
+  input?: string | string[] | Record<string, string>
+
+  /**
+   * Entry point(s) to bundle (tsup-style alias for `input`)
+   *
+   * @alias input
+   */
+  entry?: string | string[] | Record<string, string>
 
   /**
    * Minify the output using rolldown.
@@ -265,15 +279,48 @@ export type BundleEntry = _BuildEntry & {
   minify?: boolean | 'dce-only' | MinifyOptions
 
   /**
+   * Enable code splitting.
+   *
+   * When enabled, shared code will be extracted into separate chunks.
+   *
+   * @default false
+   */
+  splitting?: boolean
+
+  /**
+   * Tree shaking configuration.
+   *
+   * - `true`: Enable tree shaking (default)
+   * - `false`: Disable tree shaking
+   * - Object: Pass directly to Rolldown's treeshake option
+   *
+   * @default true
+   */
+  treeshake?: boolean | InputOptions['treeshake']
+
+  /**
+   * Inject environment variables at build time.
+   *
+   * @example
+   * ```ts
+   * env: {
+   *   NODE_ENV: 'production',
+   *   API_URL: 'https://api.example.com'
+   * }
+   * ```
+   */
+  env?: Record<string, string>
+
+  /**
    * Advanced rolldown configuration.
-   * 
+   *
    * This allows passing any rolldown InputOptions and OutputOptions directly.
    * These options have the highest priority and will override other robuild settings.
-   * 
+   *
    * Use with caution as it may conflict with robuild's built-in features.
    *
    * See [rolldown config options](https://rolldown.rs/reference/config-options) for more details.
-   * 
+   *
    * @example
    * ```ts
    * {
@@ -288,7 +335,7 @@ export type BundleEntry = _BuildEntry & {
    * }
    * ```
    */
-  rolldown?: Partial<InputOptions> & { 
+  rolldown?: Partial<InputOptions> & {
     plugins?: RolldownPluginOption[]
     output?: Partial<OutputOptions>
   }
@@ -303,6 +350,13 @@ export type BundleEntry = _BuildEntry & {
    * Set to `false` to disable.
    */
   dts?: boolean | DtsOptions
+
+  /**
+   * Only generate declaration files without JavaScript output.
+   *
+   * @default false
+   */
+  dtsOnly?: boolean
 }
 
 export type TransformEntry = _BuildEntry & {
@@ -417,17 +471,17 @@ export interface BuildHooks {
    * Called at the start of the build process
    */
   start?: (ctx: BuildContext) => void | Promise<void>
-  
+
   /**
    * Called at the end of the build process
    */
   end?: (ctx: BuildContext) => void | Promise<void>
-  
+
   /**
    * Called after entries are normalized
    */
   entries?: (entries: BuildEntry[], ctx: BuildContext) => void | Promise<void>
-  
+
   /**
    * Called before rolldown config is finalized
    */
@@ -435,7 +489,7 @@ export interface BuildHooks {
     cfg: InputOptions,
     ctx: BuildContext,
   ) => void | Promise<void>
-  
+
   /**
    * Called before rolldown output config is finalized
    */
@@ -509,21 +563,155 @@ export interface BuildResult {
 
 export interface BuildConfig {
   cwd?: string | URL
-  entries?: (BuildEntry | string)[]
-  
+
   /**
-   * Build lifecycle hooks.
-   * 
-   * For plugin-style hooks (buildStart, writeBundle, transform, etc.),
-   * use the `plugins` field instead.
+   * Build entries configuration.
+   *
+   * Supports multiple formats:
+   * - Array of entries: `[{ type: 'bundle', input: 'src/index.ts' }]`
+   * - String shortcuts: `['src/index.ts']`
+   * - Single entry object (tsup-style): omit `entries` and use top-level config
    */
-  hooks?: BuildHooks
-  
-  watch?: WatchOptions
+  entries?: (BuildEntry | string)[]
+
   /**
-   * Output directory for builds.
+   * Entry point(s) for tsup-style configuration.
+   *
+   * When using this, you don't need to specify `entries`.
+   *
+   * @example
+   * ```ts
+   * {
+   *   entry: ['src/index.ts', 'src/cli.ts'],
+   *   format: ['esm', 'cjs'],
+   *   dts: true
+   * }
+   * ```
+   */
+  entry?: string | string[] | Record<string, string>
+
+  /**
+   * Output format(s) for tsup-style configuration.
+   *
+   * @default ['esm']
+   */
+  format?: OutputFormat | OutputFormat[]
+
+  /**
+   * Output directory for tsup-style configuration.
+   *
+   * @default 'dist'
    */
   outDir?: string
+
+  /**
+   * Target platform for tsup-style configuration.
+   *
+   * @default 'node'
+   */
+  platform?: Platform
+
+  /**
+   * Target ES version for tsup-style configuration.
+   *
+   * @default 'es2022'
+   */
+  target?: Target
+
+  /**
+   * Global variable name for IIFE/UMD formats (tsup-style).
+   */
+  name?: string
+
+  /**
+   * Minify output (tsup-style).
+   *
+   * @default false
+   */
+  minify?: boolean | 'dce-only' | MinifyOptions
+
+  /**
+   * Generate declaration files (tsup-style).
+   *
+   * @default false
+   */
+  dts?: boolean | DtsOptions
+
+  /**
+   * Only generate declaration files (tsup-style).
+   *
+   * @default false
+   */
+  dtsOnly?: boolean
+
+  /**
+   * Enable code splitting (tsup-style).
+   *
+   * @default false
+   */
+  splitting?: boolean
+
+  /**
+   * Tree shaking configuration (tsup-style).
+   *
+   * @default true
+   */
+  treeshake?: boolean | InputOptions['treeshake']
+
+  /**
+   * Generate source maps (tsup-style).
+   *
+   * @default false
+   */
+  sourcemap?: boolean | 'inline' | 'hidden'
+
+  /**
+   * External dependencies (tsup-style).
+   */
+  external?: (string | RegExp)[] | ((id: string, importer?: string) => boolean)
+
+  /**
+   * Dependencies to bundle (tsup-style).
+   */
+  noExternal?: (string | RegExp)[] | ((id: string, importer?: string) => boolean)
+
+  /**
+   * Inject environment variables (tsup-style).
+   */
+  env?: Record<string, string>
+
+  /**
+   * Module path aliases (tsup-style).
+   */
+  alias?: Record<string, string>
+
+  /**
+   * Add banner to output files (tsup-style).
+   */
+  banner?: string | ChunkAddon
+
+  /**
+   * Add footer to output files (tsup-style).
+   */
+  footer?: string | ChunkAddon
+
+  /**
+   * Enable shims for Node.js globals (tsup-style).
+   */
+  shims?: boolean | ShimsConfig
+
+  /**
+   * Advanced rolldown configuration (tsup-style).
+   *
+   * This allows passing any rolldown InputOptions and OutputOptions directly.
+   * These options have the highest priority and will override other robuild settings.
+   *
+   * @see BundleEntry.rolldown
+   */
+  rolldown?: Partial<InputOptions> & {
+    plugins?: RolldownPluginOption[]
+    output?: Partial<OutputOptions>
+  }
 
   /**
    * Clean output directory before build.
@@ -531,8 +719,18 @@ export interface BuildConfig {
   clean?: boolean | string[]
 
   /**
+   * Build lifecycle hooks.
+   *
+   * For plugin-style hooks (buildStart, writeBundle, transform, etc.),
+   * use the `plugins` field instead.
+   */
+  hooks?: BuildHooks
+
+  watch?: WatchOptions
+
+  /**
    * Plugins to use during build.
-   * 
+   *
    * Plugins support all Rolldown plugin hooks (buildStart, writeBundle, transform, etc.)
    * and can be used for custom build logic.
    */

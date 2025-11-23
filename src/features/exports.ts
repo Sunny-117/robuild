@@ -142,7 +142,12 @@ async function generateExportFromEntry(
 /**
  * Get export key from input path
  */
-function getExportKey(input: string | string[]): string {
+function getExportKey(input: string | string[] | Record<string, string>): string {
+  // Handle object input (named entries)
+  if (typeof input === 'object' && !Array.isArray(input)) {
+    const keys = Object.keys(input)
+    return keys[0] || 'index'
+  }
   // Handle array input by taking the first entry
   const inputPath = Array.isArray(input) ? input[0] : input
 
@@ -196,7 +201,13 @@ function getExtensionForFormat(format: string): string {
 /**
  * Get basename from input path
  */
-function getBasename(input: string | string[]): string {
+function getBasename(input: string | string[] | Record<string, string>): string {
+  // Handle object input (named entries)
+  if (typeof input === 'object' && !Array.isArray(input)) {
+    const keys = Object.keys(input)
+    const firstKey = keys[0]
+    return firstKey || 'index'
+  }
   // Handle array input by taking the first entry
   const inputPath = Array.isArray(input) ? input[0] : input
   return inputPath.replace(/\.(ts|js|tsx|jsx)$/, '').replace(/^src\//, '')

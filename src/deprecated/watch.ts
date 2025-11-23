@@ -1,4 +1,4 @@
-import type { BuildConfig, BuildContext, WatchOptions } from '../types'
+import type { BuildConfig, BuildContext, BundleEntry, WatchOptions } from '../types'
 import { join, relative } from 'node:path'
 // chokidar: If you've used globs before and want do replicate the functionality with v4:
 // https://github.com/paulmillr/chokidar#upgrading
@@ -235,7 +235,22 @@ async function getWatchPatterns(
         patterns.push(`${entry.input}/**/*`)
       }
       else {
-        const inputs = Array.isArray(entry.input) ? entry.input : [entry.input]
+        const entryInput = (entry as BundleEntry).input || (entry as BundleEntry).entry
+        if (!entryInput) continue
+        
+        // Handle different input formats
+        let inputs: string[] = []
+        if (typeof entryInput === 'object' && !Array.isArray(entryInput)) {
+          // Object format (named entries)
+          inputs = Object.values(entryInput)
+        }
+        else if (Array.isArray(entryInput)) {
+          inputs = entryInput
+        }
+        else {
+          inputs = [entryInput]
+        }
+        
         for (const inputFile of inputs) {
           patterns.push(inputFile)
           // Also watch the directory containing the input file

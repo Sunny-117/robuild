@@ -21,6 +21,50 @@ import { analyzeDir } from './utils'
 import { performWatchBuild } from './watch'
 
 /**
+ * Normalize tsup-style config to entries-based config
+ */
+function normalizeTsupConfig(config: BuildConfig): BuildConfig {
+  // If entries already exist, no need to normalize
+  if (config.entries && config.entries.length > 0) {
+    return config
+  }
+
+  // If entry field exists (tsup-style), convert to entries
+  if (config.entry) {
+    const entry: BundleEntry = {
+      type: 'bundle',
+      entry: config.entry,
+      format: config.format,
+      outDir: config.outDir,
+      platform: config.platform,
+      target: config.target,
+      globalName: config.name,
+      minify: config.minify,
+      dts: config.dts,
+      dtsOnly: config.dtsOnly,
+      splitting: config.splitting,
+      treeshake: config.treeshake,
+      sourcemap: config.sourcemap,
+      external: config.external,
+      noExternal: config.noExternal,
+      env: config.env,
+      alias: config.alias,
+      banner: config.banner,
+      footer: config.footer,
+      shims: config.shims,
+      rolldown: config.rolldown,
+    }
+
+    return {
+      ...config,
+      entries: [entry],
+    }
+  }
+
+  return config
+}
+
+/**
  * Build dist/ from src/
  */
 export async function build(config: BuildConfig): Promise<void> {
@@ -45,6 +89,9 @@ export async function build(config: BuildConfig): Promise<void> {
     const viteConfig = await loadViteConfig(pkgDir)
     finalConfig = { ...viteConfig, ...config } // config overrides vite config
   }
+
+  // Normalize tsup-style config to entries-based config
+  finalConfig = normalizeTsupConfig(finalConfig)
 
   // Check if watch mode is enabled
   if (finalConfig.watch?.enabled) {
@@ -89,16 +136,38 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
       entry = rawEntry
     }
 
-    if (!entry.input) {
+    // Check for input or entry (tsup compatibility)
+    const hasInput = entry.type === 'transform' 
+      ? !!entry.input 
+      : !!((entry as BundleEntry).input || (entry as BundleEntry).entry)
+    
+    if (!hasInput) {
       throw new Error(
-        `Build entry missing \`input\`: ${JSON.stringify(entry, null, 2)}`,
+        `Build entry missing \`input\` or \`entry\`: ${JSON.stringify(entry, null, 2)}`,
       )
     }
     entry = { ...entry }
     entry.outDir = normalizePath(entry.outDir || 'dist', ctx.pkgDir)
-    entry.input = Array.isArray(entry.input)
-      ? entry.input.map(p => normalizePath(p, ctx.pkgDir))
-      : normalizePath(entry.input, ctx.pkgDir)
+    
+    // Normalize input/entry paths
+    const entryInput = (entry as BundleEntry).input || (entry as BundleEntry).entry
+    if (entryInput) {
+      if (typeof entryInput === 'object' && !Array.isArray(entryInput)) {
+        // Handle object format (named entries)
+        const normalizedInput: Record<string, string> = {}
+        for (const [key, value] of Object.entries(entryInput)) {
+          normalizedInput[key] = normalizePath(value, ctx.pkgDir)
+        }
+        ;(entry as BundleEntry).input = normalizedInput
+      }
+      else if (Array.isArray(entryInput)) {
+        ;(entry as BundleEntry).input = entryInput.map(p => normalizePath(p, ctx.pkgDir))
+      }
+      else {
+        ;(entry as BundleEntry).input = normalizePath(entryInput, ctx.pkgDir)
+      }
+    }
+    
     return entry
   })
 

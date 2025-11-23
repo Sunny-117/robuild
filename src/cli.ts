@@ -146,10 +146,43 @@ const { config = {} } = await loadConfig<BuildConfig>({
   cwd: args.values.dir,
 })
 
-const rawEntries
-  = args.positionals.length > 0
-    ? (args.positionals as string[])
-    : config.entries || []
+// Support both entries and entry (tsup-style)
+let rawEntries: (BuildEntry | string)[]
+if (args.positionals.length > 0) {
+  rawEntries = args.positionals as string[]
+}
+else if (config.entries && config.entries.length > 0) {
+  rawEntries = config.entries
+}
+else if (config.entry) {
+  // Convert tsup-style entry to entries format
+  rawEntries = [{
+    type: 'bundle' as const,
+    entry: config.entry,
+    format: config.format,
+    outDir: config.outDir,
+    platform: config.platform,
+    target: config.target,
+    globalName: config.name,
+    minify: config.minify,
+    dts: config.dts,
+    dtsOnly: config.dtsOnly,
+    splitting: config.splitting,
+    treeshake: config.treeshake,
+    sourcemap: config.sourcemap,
+    external: config.external,
+    noExternal: config.noExternal,
+    env: config.env,
+    alias: config.alias,
+    banner: config.banner,
+    footer: config.footer,
+    shims: config.shims,
+    rolldown: config.rolldown,
+  }]
+}
+else {
+  rawEntries = []
+}
 
 const entries: BuildEntry[] = rawEntries.map((entry) => {
   if (typeof entry === 'string') {
