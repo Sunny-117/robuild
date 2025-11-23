@@ -113,7 +113,7 @@ export async function transformDir(
 
               // Determine output filename with proper extension
               const baseName = entryName.replace(/\.(ts|tsx|jsx)$/, '')
-              const outputFileName = createFilename(baseName, 'esm', false, {
+              const outputFileName = createFilename(baseName, 'es', false, {
                 platform: entry.platform,
                 fixedExtension: entry.fixedExtension,
                 outExtensions: entry.outExtensions,
@@ -145,7 +145,7 @@ export async function transformDir(
               }
 
               if (transformed.declaration) {
-                const dtsFileName = createFilename(baseName, 'esm', true, {
+                const dtsFileName = createFilename(baseName, 'es', true, {
                   platform: entry.platform,
                   fixedExtension: entry.fixedExtension,
                   outExtensions: entry.outExtensions,
@@ -332,8 +332,8 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
   }
 
   // Apply banner/footer
-  const banner = resolveChunkAddon(entry.banner, 'esm') // Transform mode uses ESM
-  const footer = resolveChunkAddon(entry.footer, 'esm')
+  const banner = resolveChunkAddon(entry.banner, 'es') // Transform mode uses ESM
+  const footer = resolveChunkAddon(entry.footer, 'es')
   transformed.code = addBannerFooter(transformed.code, banner, footer)
 
   // Apply Node.js protocol handling

@@ -1,3 +1,4 @@
+import type { ModuleFormat } from 'rolldown'
 import type { BuildConfig, BuildEntry } from '../types'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -133,8 +134,8 @@ function convertFormats(formats?: string[]): any[] | undefined {
   if (!formats)
     return undefined
 
-  const formatMap: Record<string, string> = {
-    es: 'esm',
+  const formatMap: Record<string, ModuleFormat> = {
+    es: 'es',
     cjs: 'cjs',
     umd: 'umd',
     iife: 'iife',

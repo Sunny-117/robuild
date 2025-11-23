@@ -7,7 +7,7 @@ import type {
   Plugin,
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
-import type { BuildConfig, BuildContext, BuildHooks, BundleEntry, OutputFormat, Platform } from '../types'
+import type { BuildConfig, BuildContext, BuildHooks, BundleEntry, Platform } from '../types'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { builtinModules } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
@@ -32,28 +32,10 @@ import { makeExecutable, shebangPlugin } from '../plugins/shebang'
 import { distSize, fmtPath, sideEffectSize } from '../utils'
 
 /**
- * Convert OutputFormat to Rolldown ModuleFormat
- */
-function formatToRolldownFormat(format: OutputFormat): ModuleFormat {
-  switch (format) {
-    case 'esm':
-      return 'es'
-    case 'cjs':
-      return 'cjs'
-    case 'iife':
-      return 'iife'
-    case 'umd':
-      return 'umd'
-    default:
-      return 'es'
-  }
-}
-
-/**
  * Get file extension for format
  */
 function getFormatExtension(
-  format: OutputFormat,
+  format: ModuleFormat,
   platform: Platform,
   fixedExtension = false,
 ): string {
@@ -63,9 +45,12 @@ function getFormatExtension(
   }
 
   switch (format) {
+    case 'es':
     case 'esm':
+    case 'module':
       return '.mjs' // Always use .mjs for ESM to be explicit about module type
     case 'cjs':
+    case 'commonjs':
       return platform === 'node' ? '.cjs' : '.js'
     case 'iife':
     case 'umd':
@@ -126,7 +111,7 @@ export async function rolldownBuild(
   await pluginManager.initializeRobuildHooks()
 
   // Get configuration with defaults
-  const formats = Array.isArray(entry.format) ? entry.format : [entry.format || 'esm']
+  const formats = Array.isArray(entry.format) ? entry.format : [entry.format || 'es']
   const platform = entry.platform || 'node'
   const target = entry.target || 'es2022'
   const outDir = entry.outDir || 'dist'
@@ -314,7 +299,6 @@ export async function rolldownBuild(
     }
   }
 
-
   if (entry.shims) {
     const shimsPlugin = createShimsPlugin(entry.shims)
     if (shimsPlugin.transform) {
@@ -402,7 +386,7 @@ export async function rolldownBuild(
 
   // Build for each format
   const allOutputEntries: Array<{
-    format: OutputFormat
+    format: ModuleFormat
     name: string
     exports: string[]
     deps: string[]
@@ -414,14 +398,13 @@ export async function rolldownBuild(
   const filePathMap = new Map<string, string>() // Map filename to full path for logging
 
   for (const format of formats) {
-    const rolldownFormat = formatToRolldownFormat(format)
     const extension = getFormatExtension(format, platform, entry.fixedExtension)
 
     // Create config for this format
     const formatConfig = { ...baseRolldownConfig }
 
     // Only add DTS plugin for ESM format (DTS plugin doesn't support CJS)
-    if (entry.dts !== false && format === 'esm') {
+    if (entry.dts !== false && (format === 'es' || format === 'esm' || format === 'module')) {
       const dtsPlugins = dts({ ...(entry.dts as DtsOptions) })
       formatConfig.plugins = [
         ...(Array.isArray(formatConfig.plugins) ? formatConfig.plugins : [formatConfig.plugins]),
@@ -438,10 +421,10 @@ export async function rolldownBuild(
     if (isMultiFormat) {
       // For multi-format builds, use different extensions to avoid conflicts
       // All formats are placed in the same directory (tsup-style behavior)
-      if (format === 'cjs') {
+      if (format === 'cjs' || format === 'commonjs') {
         entryFileName = `[name].cjs`
       }
-      else if (format === 'esm') {
+      else if (format === 'es' || format === 'esm' || format === 'module') {
         entryFileName = `[name].mjs`
       }
       else if (format === 'iife' || format === 'umd') {
@@ -457,7 +440,7 @@ export async function rolldownBuild(
     // Build base output config from robuild options
     const robuildOutputConfig: OutputOptions = {
       dir: formatOutDir,
-      format: rolldownFormat,
+      format,
       entryFileNames: entryFileName,
       chunkFileNames: `_chunks/[name]-[hash]${extension}`,
       minify: entry.minify,

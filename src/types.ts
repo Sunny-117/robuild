@@ -5,6 +5,7 @@ import type { TransformOptions } from 'oxc-transform'
 import type {
   InputOptions,
   MinifyOptions,
+  ModuleFormat,
   ModuleType,
   OutputOptions,
   RolldownBuild,
@@ -13,8 +14,14 @@ import type {
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
 
-export type OutputFormat = 'esm' | 'cjs' | 'iife' | 'umd'
+/**
+ * Target platform
+ */
 export type Platform = 'browser' | 'node' | 'neutral'
+
+/**
+ * Target ES version
+ */
 export type Target = 'es5' | 'es2015' | 'es2016' | 'es2017' | 'es2018' | 'es2019' | 'es2020' | 'es2021' | 'es2022' | 'esnext'
 
 // Copy functionality types
@@ -29,7 +36,7 @@ export type CopyOptions = Array<string | CopyEntry>
 export type ChunkAddon = string | Record<string, string>
 
 // Output extensions types
-export type OutExtensionFactory = (format: OutputFormat) => {
+export type OutExtensionFactory = (format: ModuleFormat) => {
   js?: string
   dts?: string
 }
@@ -111,9 +118,15 @@ export interface _BuildEntry {
   /**
    * Output format(s) for the build.
    *
-   * Defaults to `['esm']` if not provided.
+   * Uses Rolldown's ModuleFormat:
+   * - 'es' / 'esm' / 'module': ES modules (default)
+   * - 'cjs' / 'commonjs': CommonJS
+   * - 'iife': Immediately Invoked Function Expression
+   * - 'umd': Universal Module Definition
+   *
+   * @default ['es']
    */
-  format?: OutputFormat | OutputFormat[]
+  format?: ModuleFormat | ModuleFormat[]
 
   /**
    * Target platform for the build.
@@ -450,7 +463,7 @@ export interface RobuildPluginContext {
   entry: BuildEntry
   pkgDir: string
   outDir: string
-  format: OutputFormat | OutputFormat[]
+  format: ModuleFormat | ModuleFormat[]
   platform: Platform
   target: string
 }
@@ -580,7 +593,7 @@ export type OnSuccessCallback = string | ((result: BuildResult) => void | Promis
 
 export interface BuildResult {
   entries: Array<{
-    format: OutputFormat
+    format: ModuleFormat
     name: string
     exports: string[]
     deps: string[]
@@ -613,7 +626,7 @@ export interface BuildConfig {
    * ```ts
    * {
    *   entry: ['src/index.ts', 'src/cli.ts'],
-   *   format: ['esm', 'cjs'],
+   *   format: ['es', 'cjs'],
    *   dts: true
    * }
    * ```
@@ -623,9 +636,9 @@ export interface BuildConfig {
   /**
    * Output format(s) for tsup-style configuration.
    *
-   * @default ['esm']
+   * @default ['es']
    */
-  format?: OutputFormat | OutputFormat[]
+  format?: ModuleFormat | ModuleFormat[]
 
   /**
    * Output directory for tsup-style configuration.

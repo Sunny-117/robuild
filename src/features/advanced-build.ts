@@ -234,7 +234,7 @@ function updateImportExtension(importPath: string, entry: TransformEntry): strin
  * Get output extension for unbundle mode
  */
 function getUnbundleOutputExtension(inputExt: string, entry: TransformEntry): string {
-  const format = Array.isArray(entry.format) ? entry.format[0] : entry.format || 'esm'
+  const format = Array.isArray(entry.format) ? entry.format[0] : entry.format || 'es'
 
   switch (inputExt) {
     case '.ts':

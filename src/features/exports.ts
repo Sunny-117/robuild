@@ -173,7 +173,7 @@ function getOutputPath(entry: BuildEntry, format: string, baseDir: string): stri
   if (format === 'cjs') {
     return `./${baseDir}/cjs/${basename}${extension}`
   }
-  else if (format === 'esm') {
+  else if (format === 'es') {
     return `./${baseDir}/${basename}${extension}`
   }
   else {
@@ -186,7 +186,7 @@ function getOutputPath(entry: BuildEntry, format: string, baseDir: string): stri
  */
 function getExtensionForFormat(format: string): string {
   switch (format) {
-    case 'esm':
+    case 'es':
       return '.mjs'
     case 'cjs':
       return '.cjs'
@@ -226,7 +226,7 @@ function getTypesPath(entry: BuildEntry, baseDir: string): string {
  */
 function assignFormatToExport(exportEntry: ExportEntry, format: string, path: string): void {
   switch (format) {
-    case 'esm':
+    case 'es':
       exportEntry.import = path
       break
     case 'cjs':

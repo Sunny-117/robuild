@@ -1,11 +1,12 @@
-import type { ChunkAddon, OutputFormat } from '../types'
+import type { ModuleFormat } from 'rolldown'
+import type { ChunkAddon } from '../types'
 
 /**
  * Resolve banner/footer addon for specific format
  */
 export function resolveChunkAddon(
   addon: string | ChunkAddon | undefined,
-  format: OutputFormat,
+  format: ModuleFormat,
 ): string | undefined {
   if (!addon) {
     return undefined
@@ -16,7 +17,7 @@ export function resolveChunkAddon(
   }
 
   // Handle format-specific addons
-  const formatKey = format === 'esm' ? 'js' : format
+  const formatKey = format === 'es' ? 'js' : format
   return addon[formatKey] || addon.js
 }
 

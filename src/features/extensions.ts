@@ -1,10 +1,11 @@
-import type { OutExtensionFactory, OutputFormat, Platform } from '../types'
+import type { ModuleFormat } from 'rolldown'
+import type { OutExtensionFactory, Platform } from '../types'
 
 /**
  * Resolve JavaScript output extension
  */
 export function resolveJsOutputExtension(
-  format: OutputFormat,
+  format: ModuleFormat,
   platform: Platform = 'node',
   fixedExtension = false,
 ): string {
@@ -13,7 +14,7 @@ export function resolveJsOutputExtension(
   }
 
   switch (format) {
-    case 'esm':
+    case 'es':
       return platform === 'browser' ? 'js' : 'mjs'
     case 'cjs':
       return platform === 'browser' ? 'js' : 'cjs'
@@ -29,7 +30,7 @@ export function resolveJsOutputExtension(
  * Resolve DTS output extension
  */
 export function resolveDtsOutputExtension(
-  format: OutputFormat,
+  format: ModuleFormat,
   fixedExtension = false,
 ): string {
   if (fixedExtension) {
@@ -37,7 +38,7 @@ export function resolveDtsOutputExtension(
   }
 
   switch (format) {
-    case 'esm':
+    case 'es':
       return 'd.mts'
     case 'cjs':
       return 'd.cts'
@@ -50,7 +51,7 @@ export function resolveDtsOutputExtension(
  * Apply custom output extensions
  */
 export function applyOutExtensions(
-  format: OutputFormat,
+  format: ModuleFormat,
   outExtensions?: OutExtensionFactory,
 ): { js: string, dts: string } {
   const defaultJs = resolveJsOutputExtension(format)
@@ -72,7 +73,7 @@ export function applyOutExtensions(
  */
 export function createFilename(
   basename: string,
-  format: OutputFormat,
+  format: ModuleFormat,
   isDts = false,
   options: {
     platform?: Platform

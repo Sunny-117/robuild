@@ -1,6 +1,7 @@
 import type {
   BuildConfig,
   BuildContext,
+  BuildEntry,
   BundleEntry,
   TransformEntry,
 } from './types'
@@ -21,6 +22,61 @@ import { analyzeDir } from './utils'
 import { performWatchBuild } from './watch'
 
 /**
+ * Shared configuration fields between BuildConfig and BuildEntry
+ */
+const SHARED_CONFIG_FIELDS = [
+  'format',
+  'outDir',
+  'platform',
+  'target',
+  'minify',
+  'dts',
+  'dtsOnly',
+  'splitting',
+  'treeshake',
+  'sourcemap',
+  'external',
+  'noExternal',
+  'env',
+  'alias',
+  'banner',
+  'footer',
+  'shims',
+  'rolldown',
+  'loaders',
+] as const
+
+/**
+ * Inherit configuration from parent config to entry
+ * Only inherits fields that are not already set in the entry
+ */
+function inheritConfig<T extends Partial<BuildEntry>>(
+  entry: T,
+  config: BuildConfig,
+  additionalMappings?: Record<string, string>,
+): T {
+  const result: any = { ...entry }
+
+  // Inherit shared fields
+  for (const field of SHARED_CONFIG_FIELDS) {
+    if (result[field] === undefined && config[field] !== undefined) {
+      ;result[field] = config[field]
+    }
+  }
+
+  // Handle additional field mappings (e.g., 'name' -> 'globalName')
+  if (additionalMappings) {
+    for (const [configKey, entryKey] of Object.entries(additionalMappings)) {
+      if (result[entryKey] === undefined && (config as any)[configKey] !== undefined) {
+        ;result[entryKey] = (config as any)[configKey]
+      }
+    }
+  }
+
+  return result
+}
+
+/**
  * Normalize tsup-style config to entries-based config
  */
 function normalizeTsupConfig(config: BuildConfig): BuildConfig {
@@ -31,30 +87,16 @@ function normalizeTsupConfig(config: BuildConfig): BuildConfig {
 
   // If entry field exists (tsup-style), convert to entries
   if (config.entry) {
-    const entry: BundleEntry = {
-      type: 'bundle',
-      entry: config.entry,
-      format: config.format,
-      outDir: config.outDir,
-      platform: config.platform,
-      target: config.target,
-      globalName: config.name,
-      minify: config.minify,
-      dts: config.dts,
-      dtsOnly: config.dtsOnly,
-      splitting: config.splitting,
-      treeshake: config.treeshake,
-      sourcemap: config.sourcemap,
-      external: config.external,
-      noExternal: config.noExternal,
-      env: config.env,
-      alias: config.alias,
-      banner: config.banner,
-      footer: config.footer,
-      shims: config.shims,
-      rolldown: config.rolldown,
-      loaders: config.loaders,
-    }
+    const entry: BundleEntry = inheritConfig(
+      {
+        type: 'bundle' as const,
+        entry: config.entry,
+      },
+      config,
+      {
+        name: 'globalName', // Map 'name' to 'globalName'
+      },
+    )
 
     return {
       ...config,
@@ -139,22 +181,10 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
 
     // Inherit top-level config fields if not specified in entry
     if (entry.type === 'bundle') {
-      const bundleEntry = entry as BundleEntry
-      if (!bundleEntry.loaders && config.loaders) {
-        bundleEntry.loaders = config.loaders
-      }
-      if (!bundleEntry.alias && config.alias) {
-        bundleEntry.alias = config.alias
-      }
-      if (!bundleEntry.shims && config.shims) {
-        bundleEntry.shims = config.shims
-      }
-      if (!bundleEntry.external && config.external) {
-        bundleEntry.external = config.external
-      }
-      if (!bundleEntry.noExternal && config.noExternal) {
-        bundleEntry.noExternal = config.noExternal
-      }
+      entry = inheritConfig(entry as BundleEntry, config)
+    }
+    else if (entry.type === 'transform') {
+      entry = inheritConfig(entry as TransformEntry, config)
     }
 
     // Check for input or entry (tsup compatibility)

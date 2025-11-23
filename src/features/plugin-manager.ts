@@ -20,7 +20,7 @@ export class RobuildPluginManager {
       entry,
       pkgDir,
       outDir: entry.outDir || 'dist',
-      format: entry.format || 'esm',
+      format: entry.format || 'es',
       platform: entry.platform || 'node',
       target: entry.target || 'es2022',
     }

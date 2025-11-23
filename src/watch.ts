@@ -1,3 +1,4 @@
+import type { ModuleFormat, WatchOptions } from 'rolldown'
 import type { BuildConfig, BuildContext } from './types'
 import { isAbsolute, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -62,7 +63,7 @@ export async function startRolldownWatch(
   logger.info('🚧 Using rolldown built-in watch mode...')
 
   // Create rolldown watch configurations for each bundle entry
-  const watchConfigs = []
+  const watchConfigs: WatchOptions[] = []
 
   for (const rawEntry of bundleEntries) {
     let entry
@@ -86,12 +87,12 @@ export async function startRolldownWatch(
     // Get target and other options from entry
     const target = entry.target || 'es2022'
     const platform = entry.platform || 'node'
-    const format = entry.format || 'esm'
+    const format = entry.format || 'es'
 
     // Determine the correct file extension based on format
     const getExtension = (fmt: string) => {
       switch (fmt) {
-        case 'esm':
+        case 'es':
           return '.mjs'
         case 'cjs':
           return '.cjs'
@@ -105,7 +106,7 @@ export async function startRolldownWatch(
 
     const extension = getExtension(Array.isArray(format) ? format[0] : format)
     const rolldownFormat = Array.isArray(format) ? format[0] : format
-    const formatMap: Record<string, 'es' | 'cjs' | 'iife' | 'umd'> = {
+    const formatMap: Record<string, ModuleFormat> = {
       esm: 'es',
       cjs: 'cjs',
       iife: 'iife',
@@ -125,7 +126,7 @@ export async function startRolldownWatch(
       transform: {
         target,
       },
-    }
+    } satisfies WatchOptions
 
     watchConfigs.push(watchConfig)
   }

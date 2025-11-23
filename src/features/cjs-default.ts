@@ -196,7 +196,7 @@ if (typeof exports === 'object' && typeof module !== 'undefined') {
  * Analyze module format
  */
 export function analyzeModuleFormat(code: string): {
-  format: 'cjs' | 'esm' | 'mixed' | 'unknown'
+  format: 'cjs' | 'es' | 'mixed' | 'unknown'
   confidence: number
 } {
   const detection = detectCommonJSExports(code)
@@ -213,7 +213,7 @@ export function analyzeModuleFormat(code: string): {
   }
 
   if (esmScore > cjsScore) {
-    return { format: 'esm', confidence: esmScore / 3 }
+    return { format: 'es', confidence: esmScore / 3 }
   }
 
   return { format: 'unknown', confidence: 0 }
@@ -229,7 +229,7 @@ export function getRecommendedCjsDefaultMode(code: string): boolean | 'auto' {
     return true
   }
 
-  if (analysis.format === 'esm' && analysis.confidence > 0.5) {
+  if (analysis.format === 'es' && analysis.confidence > 0.5) {
     return false
   }
 
