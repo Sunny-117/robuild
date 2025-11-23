@@ -66,7 +66,7 @@ describe('transform mode', () => {
     })
   })
 
-  describe('TypeScript/JSX support', () => {
+  describe('typeScript/JSX support', () => {
     it('should transform TSX files', async (context) => {
       await testBuild({
         context,
@@ -170,7 +170,7 @@ describe('transform mode', () => {
           'src/index.ts': `import { helper } from '@/utils/helper'\nexport { helper }`,
           'src/utils/helper.ts': `export function helper() { return 'help' }`,
         },
-        config: (cwd) => ({
+        config: cwd => ({
           entries: [
             {
               type: 'transform',
@@ -274,7 +274,7 @@ describe('transform mode', () => {
 
   describe('clean option', () => {
     it('should clean output directory', async (context) => {
-      const { workingDir, outputDir } = await testBuild({
+      await testBuild({
         context,
         files: {
           'src/index.ts': `export const value = 1`,

@@ -8,7 +8,7 @@ import { cleanTestDir, getTestDir } from './helpers'
  * CLI tests
  * Tests for command-line interface functionality
  */
-describe('CLI', () => {
+describe('cLI', () => {
   let testDir: string
   let cliPath: string
 
