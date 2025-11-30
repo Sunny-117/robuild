@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v0.0.17
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.16...v0.0.17)
+
+### 🚀 Enhancements
+
+- 🎸 loaders are now handled via rolldown's moduleTypes conf ([8c14b81](https://github.com/Sunny-117/robuild/commit/8c14b81))
+- 🎸 rolldown watch functionality ([98251ac](https://github.com/Sunny-117/robuild/commit/98251ac))
+
+### 💅 Refactors
+
+- Remove CSS plugin and update plugin exports ([db9b743](https://github.com/Sunny-117/robuild/commit/db9b743))
+- Normalize format values and consolidate config inheritance ([ac33734](https://github.com/Sunny-117/robuild/commit/ac33734))
+
+### 🏡 Chore
+
+- Remove sconfig.tsbuildinfo ([67442d7](https://github.com/Sunny-117/robuild/commit/67442d7))
+- Update deployment workflow to use pnpm for package management ([44b99cd](https://github.com/Sunny-117/robuild/commit/44b99cd))
+- Remove pnpm version specification from setup ([c2e705f](https://github.com/Sunny-117/robuild/commit/c2e705f))
+- 🤖 remove unuseless code ([2e774fe](https://github.com/Sunny-117/robuild/commit/2e774fe))
+- 🤖 banner case ([464480b](https://github.com/Sunny-117/robuild/commit/464480b))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.16
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.15...v0.0.16)
