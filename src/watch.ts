@@ -39,7 +39,7 @@ export async function performWatchBuild(
 
   if (bundleEntries.length > 0) {
     // Use rolldown's watch mode for bundle entries
-    await startRolldownWatch(ctx, bundleEntries)
+    await startRolldownWatch(config, ctx, bundleEntries)
   }
   else {
     // For transform-only builds, fall back to custom watch
@@ -57,10 +57,14 @@ export async function performWatchBuild(
  * The watch mode then monitors for file changes and triggers rebuilds.
  */
 export async function startRolldownWatch(
+  config: BuildConfig,
   ctx: BuildContext,
   bundleEntries: any[],
 ): Promise<void> {
   logger.info('🚧 Using rolldown built-in watch mode...')
+
+  // Import plugin manager
+  const { RobuildPluginManager } = await import('./features/plugin-manager')
 
   // Create rolldown watch configurations for each bundle entry
   const watchConfigs: WatchOptions[] = []
@@ -79,10 +83,29 @@ export async function startRolldownWatch(
       entry = rawEntry
     }
 
+    // Get the actual input (support both 'input' and 'entry' for tsup compatibility)
+    const entryInput = entry.input || entry.entry
+    if (!entryInput) {
+      logger.warn('Skipping entry without input:', entry)
+      continue
+    }
+
     // Normalize input path
-    entry.input = Array.isArray(entry.input)
-      ? entry.input.map((i: string) => normalizePath(i, ctx.pkgDir))
-      : normalizePath(entry.input, ctx.pkgDir)
+    let normalizedInput: string | string[] | Record<string, string>
+    if (typeof entryInput === 'object' && !Array.isArray(entryInput)) {
+      // Handle object format (named entries)
+      const normalizedObj: Record<string, string> = {}
+      for (const [key, value] of Object.entries(entryInput)) {
+        normalizedObj[key] = normalizePath(value as string, ctx.pkgDir)
+      }
+      normalizedInput = normalizedObj
+    }
+    else if (Array.isArray(entryInput)) {
+      normalizedInput = entryInput.map((i: string) => normalizePath(i, ctx.pkgDir))
+    }
+    else {
+      normalizedInput = normalizePath(entryInput, ctx.pkgDir)
+    }
 
     // Get target and other options from entry
     const target = entry.target || 'es2022'
@@ -113,9 +136,29 @@ export async function startRolldownWatch(
       umd: 'umd',
     }
 
+    // Determine the input for rolldown watch
+    // For arrays, use the first entry; for objects, use the object directly
+    let rolldownInput: string | Record<string, string>
+    if (Array.isArray(normalizedInput)) {
+      rolldownInput = normalizedInput[0]
+    }
+    else if (typeof normalizedInput === 'object') {
+      rolldownInput = normalizedInput
+    }
+    else {
+      rolldownInput = normalizedInput
+    }
+
+    // Create plugin manager for this entry to get rolldown plugins
+    const pluginManager = new RobuildPluginManager(config, entry, ctx.pkgDir)
+    const rolldownPlugins = [
+      ...pluginManager.getRolldownPlugins(),
+      ...(entry.rolldown?.plugins || []),
+    ]
+
     // Create rolldown config for this entry with proper transform options
     const watchConfig = {
-      input: Array.isArray(entry.input) ? entry.input[0] : entry.input,
+      input: rolldownInput,
       output: {
         dir: entry.outDir,
         format: formatMap[rolldownFormat] || 'es',
@@ -126,6 +169,7 @@ export async function startRolldownWatch(
       transform: {
         target,
       },
+      plugins: rolldownPlugins,
     } satisfies WatchOptions
 
     watchConfigs.push(watchConfig)
