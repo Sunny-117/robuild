@@ -347,12 +347,12 @@ export async function rolldownBuild(
     external: typeof entry.external === 'function'
       ? entry.external
       : externalDeps,
-    define: defineOptions,
     resolve: {
       alias: entry.alias || {},
     },
     transform: {
       target,
+      define: defineOptions,
     },
     // Add moduleTypes for static asset handling
     ...(Object.keys(moduleTypes).length > 0 ? { moduleTypes } : {}),
@@ -442,7 +442,37 @@ export async function rolldownBuild(
       dir: formatOutDir,
       format,
       entryFileNames: entryFileName,
-      chunkFileNames: `_chunks/[name]-[hash]${extension}`,
+      // Use function to handle dts chunks - output to root dir without hash for stable output
+      chunkFileNames: (chunk) => {
+        // Check if this is a dts chunk (ends with .d or contains .d.)
+        // DTS entry chunks should go to root directory, not _chunks/
+        // Return .mjs extension so rolldown-plugin-dts can convert it to .d.mts
+        if (chunk.name.endsWith('.d') || chunk.name.includes('.d.')) {
+          return `[name].mjs`
+        }
+        return `_chunks/[name]-[hash]${extension}`
+      },
+
+      // 问题原因
+      // rolldown 1.0.0-rc.3 有一个优化："Avoid Unnecessary Facade Chunks"，这改变了 chunk 分割行为。rolldown-plugin-dts 将 dts 文件作为 chunk 类型 emit，所以它会使用 chunkFileNames 配置。之前的配置 _chunks/[name]-[hash]${extension} 导致 dts 文件输出为带 hash 的文件名（如 _chunks/index-hDZaHp_q.d.mts）。
+
+      // 解决方案
+      // 修改 chunkFileNames 为一个函数，检测 dts chunk 并为其返回不同的文件名模板：
+
+      // chunkFileNames: (chunk) => {
+      //   // 检测 dts chunk
+      //   if (chunk.name.endsWith('.d') || chunk.name.includes('.d.')) {
+      //     // 输出到根目录，不带 hash，使用 .mjs 扩展名让 rolldown-plugin-dts 转换为 .d.mts
+      //     return `[name].mjs`
+      //   }
+      //   // 其他 chunk 保持原有行为
+      //   return `_chunks/[name]-[hash]${extension}`
+      // }
+      // 这样：
+
+      // dts 文件输出为固定文件名 index.d.mts（不带 hash）
+      // 其他 chunk 文件仍然带有 hash（_chunks/xxx-[hash].mjs）
+
       minify: entry.minify,
       name: entry.globalName, // For IIFE/UMD formats
       banner: resolveChunkAddon(entry.banner, format),

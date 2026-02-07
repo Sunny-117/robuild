@@ -191,9 +191,10 @@ exports[`bundle mode > output formats > should output IIFE format 1`] = `
 \`\`\`js
 var MyLib = (function(exports) {
 
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 
 //#region index.ts
-const PI = 3.14;
+	const PI = 3.14;
 
 //#endregion
 exports.PI = PI;
@@ -207,6 +208,7 @@ exports[`bundle mode > output formats > should output multiple formats 1`] = `
 "## index.cjs
 
 \`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 
 //#region index.ts
 function add(a, b) {
