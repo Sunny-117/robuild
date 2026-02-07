@@ -16,12 +16,12 @@ English | <a href="./README-zh.md">简体中文</a>
 
 ## Features
 
-⚡ **Fast**: Built on top of [rolldown](https://rolldown.rs/) and [oxc](https://oxc.rs/)
-📦 **Zero config**: Works out of the box, configurable when needed
-🎯 **TypeScript**: First-class TypeScript support with `.d.ts` generation
-🔄 **Dual mode**: Bundle or transform your source code
-🚀 **Stub mode**: Lightning-fast development with file linking
-📤 **Exports**: Automatic package.json exports generation
+- ⚡ **Fast**: Built on top of [rolldown](https://rolldown.rs/) and [oxc](https://oxc.rs/)
+- 📦 **Zero config**: Works out of the box, configurable when needed
+- 🎯 **TypeScript**: First-class TypeScript support with `.d.ts` generation
+- 🔄 **Dual mode**: Bundle or transform your source code
+- 🚀 **Stub mode**: Lightning-fast development with file linking
+- 📤 **Exports**: Automatic package.json exports generation
 
 ## Installation
 

@@ -10,12 +10,12 @@
 
 ## 功能特性
 
-⚡ **快速**: 基于 [rolldown](https://rolldown.rs/) 和 [oxc](https://oxc.rs/) 构建
-📦 **零配置**: 开箱即用，需要时可配置
-🎯 **TypeScript**: 一流的 TypeScript 支持，自动生成 `.d.ts` 文件
-🔄 **双模式**: 打包或转换您的源代码
-🚀 **Stub 模式**: 文件链接的闪电般快速开发
-📤 **导出生成**: 自动生成 package.json exports 字段
+- ⚡ **快速**: 基于 [rolldown](https://rolldown.rs/) 和 [oxc](https://oxc.rs/) 构建
+- 📦 **零配置**: 开箱即用，需要时可配置
+- 🎯 **TypeScript**: 一流的 TypeScript 支持，自动生成 `.d.ts` 文件
+- 🔄 **双模式**: 打包或转换您的源代码
+- 🚀 **Stub 模式**: 文件链接的闪电般快速开发
+- 📤 **导出生成**: 自动生成 package.json exports 字段
 
 ## 安装
 
