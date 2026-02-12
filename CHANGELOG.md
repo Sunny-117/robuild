@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.0.19
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.18...v0.0.19)
+
+### 🚀 Enhancements
+
+- Add watch mode configuration and external dependencies handling ([715279b](https://github.com/Sunny-117/robuild/commit/715279b))
+- Turbo build cache ([23ec7ef](https://github.com/Sunny-117/robuild/commit/23ec7ef))
+
+### 💅 Refactors
+
+- Extract external dependencies resolution to shared module ([5d6e984](https://github.com/Sunny-117/robuild/commit/5d6e984))
+
+### 📖 Documentation
+
+- Format ([dbd3825](https://github.com/Sunny-117/robuild/commit/dbd3825))
+
+### 🏡 Chore
+
+- Update rolldown ([fed2fe7](https://github.com/Sunny-117/robuild/commit/fed2fe7))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.18
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.17...v0.0.18)
