@@ -6,8 +6,6 @@
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![bundle][bundle-src]][bundle-href]
-[![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 [![Coverage][coverage-src]][coverage-href]
 
@@ -131,11 +129,8 @@ pnpm test:coverage
 [npm-version-href]: https://npmjs.com/package/robuild
 [npm-downloads-src]: https://img.shields.io/npm/dm/robuild?style=flat&colorA=080f12&colorB=1fa669
 [npm-downloads-href]: https://npmjs.com/package/robuild
-[bundle-src]: https://img.shields.io/bundlephobia/minzip/robuild?style=flat&colorA=080f12&colorB=1fa669&label=minzip
 [bundle-href]: https://bundlephobia.com/result?p=robuild
 [license-src]: https://img.shields.io/github/license/Sunny-117/robuild.svg?style=flat&colorA=080f12&colorB=1fa669
 [license-href]: https://github.com/Sunny-117/robuild/blob/main/LICENSE
-[jsdocs-src]: https://img.shields.io/badge/jsdocs-reference-080f12?style=flat&colorA=080f12&colorB=1fa669
-[jsdocs-href]: https://www.jsdocs.io/package/robuild
 [coverage-src]: https://img.shields.io/badge/coverage-30.9%25-orange?style=flat&colorA=080f12
 [coverage-href]: #test-coverage
