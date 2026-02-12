@@ -102,7 +102,9 @@ async function generateExportFromEntry(
   const exports: ExportEntry[] = []
 
   if (entry.type === 'bundle') {
-    const exportKey = getExportKey(entry.input)
+    // Use entry or input field, fallback to default
+    const inputValue = entry.input ?? entry.entry ?? 'src/index.ts'
+    const exportKey = getExportKey(inputValue)
     const exportEntry: ExportEntry = { key: exportKey }
 
     // Handle different formats
@@ -168,7 +170,8 @@ function getExportKey(input: string | string[] | Record<string, string>): string
  */
 function getOutputPath(entry: BuildEntry, format: string, baseDir: string): string {
   const extension = getExtensionForFormat(format)
-  const basename = getBasename(entry.input)
+  const inputValue = entry.type === 'bundle' ? (entry.input ?? entry.entry ?? 'src/index.ts') : entry.input
+  const basename = getBasename(inputValue)
 
   if (format === 'cjs') {
     return `./${baseDir}/cjs/${basename}${extension}`
@@ -217,7 +220,8 @@ function getBasename(input: string | string[] | Record<string, string>): string 
  * Get types path for entry
  */
 function getTypesPath(entry: BuildEntry, baseDir: string): string {
-  const basename = getBasename(entry.input)
+  const inputValue = entry.type === 'bundle' ? (entry.input ?? entry.entry ?? 'src/index.ts') : entry.input
+  const basename = getBasename(inputValue)
   return `./${baseDir}/${basename}.d.ts`
 }
 
@@ -277,10 +281,11 @@ async function discoverTransformExports(
 
   // This is a simplified implementation
   // In practice, you'd scan the output directory for generated files
-  const exportKey = getExportKey(entry.input)
+  const inputValue = entry.type === 'bundle' ? (entry.input ?? entry.entry ?? 'src/index.ts') : entry.input
+  const exportKey = getExportKey(inputValue)
   const exportEntry: ExportEntry = {
     key: exportKey,
-    import: `./${baseDir}/${getBasename(entry.input)}.mjs`,
+    import: `./${baseDir}/${getBasename(inputValue)}.mjs`,
   }
 
   if (includeTypes && entry.type === 'bundle' && entry.dts) {
