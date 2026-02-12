@@ -154,7 +154,7 @@ async function runBuild(entries: string[], flags: any): Promise<void> {
         const baseEntry: any = {
           type: 'bundle' as const,
           input: input.split(','),
-          outDir,
+          outDir: outDir || flags.outDir,
         }
 
         // Apply CLI options to bundle entries

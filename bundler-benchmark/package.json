@@ -1,0 +1,38 @@
+{
+  "name": "bundler-benchmark",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Benchmark some popular TS bundler",
+  "author": "Gugustinette",
+  "scripts": {
+    "install": "cd docs && npm install",
+    "updateBundlers": "npm install -D @rslib/core@latest tsdown@latest tsup@latest unbuild@latest bunup@latest",
+    "build": "tsdown",
+    "dev": "npm run build && node dist/benchmark.mjs",
+    "dev:bun": "npm run build && bun dist/benchmark.mjs --runtime bun",
+    "benchmark": "CONSOLA_LEVEL=0 node dist/benchmark.mjs && bun dist/benchmark.mjs --runtime bun",
+    "generate": "tsx src/generate.ts",
+    "docs:build": "cd docs && npm run build",
+    "docs:dev": "cd docs && npm run dev",
+    "docs:generate": "cd docs && npm run generate",
+    "docs:preview": "cd docs && npm run preview",
+    "docs:postinstall": "cd docs && npm run postinstall"
+  },
+  "devDependencies": {
+    "@nuxt/fonts": "^0.12.1",
+    "@nuxt/image": "^2.0.0",
+    "@rslib/core": "^0.18.2",
+    "@types/node": "^24.10.1",
+    "bunup": "^0.16.10",
+    "chart.js": "^4.5.1",
+    "mitata": "^1.0.34",
+    "nuxt": "^4.2.1",
+    "tsdown": "^0.17.0-beta.3",
+    "tsup": "^8.5.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "unbuild": "^3.6.1",
+    "vue": "^3.5.25",
+    "vue-router": "^4.6.3"
+  }
+}

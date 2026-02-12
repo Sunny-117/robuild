@@ -1,0 +1,116 @@
+{
+  "default": {
+    "unbuild": {
+      "executionTime": 717.72242025,
+      "heapUsage": 124.31220531463623
+    },
+    "tsup": {
+      "executionTime": 74.755757,
+      "heapUsage": 11.813771565755209
+    },
+    "tsdown": {
+      "executionTime": 35.9231118125,
+      "heapUsage": 6.622735864975873
+    },
+    "rslib": {
+      "executionTime": 240.0999445,
+      "heapUsage": 3.2006454467773438
+    },
+    "bunup": {
+      "executionTime": 23.398683518518517,
+      "heapUsage": 1.6265120967741935
+    }
+  },
+  "cjs": {
+    "unbuild": {
+      "executionTime": 749.8450380833334,
+      "heapUsage": 144.51992458767361
+    },
+    "tsup": {
+      "executionTime": 74.69061475,
+      "heapUsage": 11.665211147732204
+    },
+    "tsdown": {
+      "executionTime": 36.82413046666667,
+      "heapUsage": 6.619632720947266
+    },
+    "rslib": {
+      "executionTime": 231.74194124999937,
+      "heapUsage": 4.479310469193892
+    },
+    "bunup": {
+      "executionTime": 23.36374676923077,
+      "heapUsage": 0.4791666666666667
+    }
+  },
+  "minify": {
+    "unbuild": {
+      "executionTime": 743.8156113333333,
+      "heapUsage": 120.58306630452473
+    },
+    "tsup": {
+      "executionTime": 73.53076741666668,
+      "heapUsage": 11.521665785047743
+    },
+    "tsdown": {
+      "executionTime": 38.8441965,
+      "heapUsage": 6.51007080078125
+    },
+    "rslib": {
+      "executionTime": 258.534264,
+      "heapUsage": 2.9288101196289062
+    },
+    "bunup": {
+      "executionTime": 23.28419448148148,
+      "heapUsage": 0.3634072580645161
+    }
+  },
+  "sourcemap": {
+    "unbuild": {
+      "executionTime": 714.1756041666666,
+      "heapUsage": 140.39183383517795
+    },
+    "tsup": {
+      "executionTime": 82.37034733333333,
+      "heapUsage": 15.374785529242622
+    },
+    "tsdown": {
+      "executionTime": 39.25730064285714,
+      "heapUsage": 6.617115497589111
+    },
+    "rslib": {
+      "executionTime": 239.02557608333333,
+      "heapUsage": 3.19467509876598
+    },
+    "bunup": {
+      "executionTime": 38.50167486666667,
+      "heapUsage": 4.876644736842105
+    }
+  },
+  "dts": {
+    "unbuild": {
+      "executionTime": 2554.799117916666,
+      "heapUsage": 424.81669902801514
+    },
+    "tsup": {
+      "executionTime": 2453.28513525,
+      "heapUsage": 11.789594014485678
+    },
+    "tsdown (oxc)": {
+      "executionTime": 402.98607641666285,
+      "heapUsage": 81.00088570334695
+    },
+    "rslib": {
+      "executionTime": 1214.2036560833333,
+      "heapUsage": 9.32757568359375
+    },
+    "bunup": {
+      "executionTime": 302.7250625,
+      "heapUsage": 5.888020833333333
+    },
+    "tsdown (tsc)": {
+      "executionTime": 560.70100375,
+      "heapUsage": 93.00636800130208
+    }
+  }
+}

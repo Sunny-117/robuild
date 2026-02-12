@@ -11,3 +11,4 @@ docs/.vitepress/cache
 dist-transform
 temp
 .turbo
+dist-*

@@ -1,4 +1,11 @@
 packages:
   - .
   - playground
+  - benchmark
   - examples/**/*
+onlyBuiltDependencies:
+  - esbuild
+  - rolldown
+  - oxc-parser
+  - oxc-transform
+  - oxc-minify
