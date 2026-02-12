@@ -14,6 +14,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "robuild --watch",
+    "dev:watch": "robuild --config watch-mode.config.ts --watch",
     "build:transform": "robuild --config transform.config.ts",
     "build:tsup-style": "robuild --config tsup-style.config.ts",
     "dev:tsup-style": "robuild --config tsup-style.config.ts --watch",
