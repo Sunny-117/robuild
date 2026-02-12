@@ -2,6 +2,7 @@ import type { BundlerOptions } from './bundlers/BundlerOptions'
 import type { BenchmarkResults } from './util/MetricsUtil'
 import { bench, run } from 'mitata'
 import { build as buildBunup } from './bundlers/bunup'
+import { build as buildRobuild } from './bundlers/robuild'
 import { build as buildRslib } from './bundlers/rslib'
 import { build as buildTsdown } from './bundlers/tsdown'
 import { build as buildTsup } from './bundlers/tsup'
@@ -28,6 +29,11 @@ let bundlers = [
   {
     name: 'rslib',
     build: buildRslib,
+    bundlerOptions: {},
+  },
+  {
+    name: 'robuild',
+    build: buildRobuild,
     bundlerOptions: {},
   },
   {

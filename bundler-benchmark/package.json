@@ -6,7 +6,7 @@
   "author": "Gugustinette",
   "scripts": {
     "install": "cd docs && npm install",
-    "updateBundlers": "npm install -D @rslib/core@latest tsdown@latest tsup@latest unbuild@latest bunup@latest",
+    "updateBundlers": "npm install -D @rslib/core@latest tsdown@latest tsup@latest unbuild@latest bunup@latest robuild@latest",
     "build": "tsdown",
     "dev": "npm run build && node dist/benchmark.mjs",
     "dev:bun": "npm run build && bun dist/benchmark.mjs --runtime bun",
@@ -27,6 +27,7 @@
     "chart.js": "^4.5.1",
     "mitata": "^1.0.34",
     "nuxt": "^4.2.1",
+    "robuild": "workspace:*",
     "tsdown": "^0.17.0-beta.3",
     "tsup": "^8.5.1",
     "tsx": "^4.20.6",

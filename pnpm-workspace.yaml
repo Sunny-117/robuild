@@ -3,6 +3,7 @@ packages:
   - playground
   - benchmark
   - examples/**/*
+  - bundler-benchmark
 onlyBuiltDependencies:
   - esbuild
   - rolldown
