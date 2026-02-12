@@ -49,6 +49,7 @@ const SHARED_CONFIG_FIELDS = [
   'shims',
   'rolldown',
   'loaders',
+  'clean',
 ] as const
 
 /**
