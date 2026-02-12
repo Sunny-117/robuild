@@ -22,7 +22,7 @@ export type Platform = 'browser' | 'node' | 'neutral'
 /**
  * Target ES version
  */
-export type Target = 'es5' | 'es2015' | 'es2016' | 'es2017' | 'es2018' | 'es2019' | 'es2020' | 'es2021' | 'es2022' | 'esnext'
+export type Target = 'es2015' | 'es2016' | 'es2017' | 'es2018' | 'es2019' | 'es2020' | 'es2021' | 'es2022' | 'esnext'
 
 // Copy functionality types
 export interface CopyEntry {
