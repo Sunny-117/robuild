@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.1.0
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.20...v0.1.0)
+
+### 💅 Refactors
+
+- ⚠️  💡 replace inlineDynamicImports with codeSplitting op ([bc8f66f](https://github.com/Sunny-117/robuild/commit/bc8f66f))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  💡 replace inlineDynamicImports with codeSplitting op ([bc8f66f](https://github.com/Sunny-117/robuild/commit/bc8f66f))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.20
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.19...v0.0.20)
