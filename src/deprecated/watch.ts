@@ -236,8 +236,9 @@ async function getWatchPatterns(
       }
       else {
         const entryInput = (entry as BundleEntry).input || (entry as BundleEntry).entry
-        if (!entryInput) continue
-        
+        if (!entryInput)
+          continue
+
         // Handle different input formats
         let inputs: string[] = []
         if (typeof entryInput === 'object' && !Array.isArray(entryInput)) {
@@ -250,7 +251,7 @@ async function getWatchPatterns(
         else {
           inputs = [entryInput]
         }
-        
+
         for (const inputFile of inputs) {
           patterns.push(inputFile)
           // Also watch the directory containing the input file

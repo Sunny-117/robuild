@@ -6,9 +6,9 @@ import {
   normalizeEntryInput,
   parseEntryString,
 } from './config/entry-resolver'
-import { getFormatExtension } from './utils/extensions'
 import { resolveExternalConfig } from './config/external'
 import { logger } from './core/logger'
+import { getFormatExtension } from './utils/extensions'
 
 /**
  * Perform watch build using rolldown's built-in watch mode

@@ -19,9 +19,9 @@ import {
   normalizeEntryInput,
   parseEntryString,
 } from './config/entry-resolver'
+import { loadViteConfig } from './config/vite-config'
 import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from './core/logger'
 import { createBuildResult, executeOnSuccess } from './transforms/on-success'
-import { loadViteConfig } from './config/vite-config'
 
 import { analyzeDir, normalizePath } from './utils/index'
 import { performWatchBuild } from './watch'

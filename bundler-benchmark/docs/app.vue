@@ -4,9 +4,7 @@
     <footer>
       <p>
         Made with 💛 by
-        <a href="https://github.com/gugustinette/" target="_blank"
-          >Gugustinette</a
-        >.
+        <a href="https://github.com/gugustinette/" target="_blank">Gugustinette</a>.
       </p>
     </footer>
   </NuxtLayout>
