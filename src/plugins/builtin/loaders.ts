@@ -1,4 +1,4 @@
-import type { LoaderConfig, LoaderType, RobuildPlugin } from '../types'
+import type { LoaderConfig, LoaderType, RobuildPlugin } from '../../types'
 import { readFile } from 'node:fs/promises'
 import { extname } from 'node:path'
 

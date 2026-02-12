@@ -1,7 +1,7 @@
 import type { CopyOptions } from '../types'
 import { cp } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
-import { logger } from './logger'
+import { logger } from '../core/logger'
 
 /**
  * Copy files to output directory

@@ -5,10 +5,10 @@ import {
   getBundleEntryInput,
   normalizeEntryInput,
   parseEntryString,
-} from './features/entry-resolver'
-import { getFormatExtension } from './features/extensions'
-import { resolveExternalConfig } from './features/external'
-import { logger } from './features/logger'
+} from './config/entry-resolver'
+import { getFormatExtension } from './utils/extensions'
+import { resolveExternalConfig } from './config/external'
+import { logger } from './core/logger'
 
 /**
  * Perform watch build using rolldown's built-in watch mode
@@ -59,7 +59,7 @@ export async function startRolldownWatch(
   logger.info('Watching for changes...')
 
   // Import plugin manager
-  const { RobuildPluginManager } = await import('./features/plugin-manager')
+  const { RobuildPluginManager } = await import('./plugins/manager')
 
   // Create rolldown watch configurations for each bundle entry
   const watchConfigs: WatchOptions[] = []

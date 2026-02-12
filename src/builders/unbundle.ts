@@ -1,55 +1,8 @@
-import type { BuildContext, RobuildPlugin, TransformEntry } from '../types'
+import type { BuildContext, TransformEntry } from '../types'
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, extname, isAbsolute, join } from 'node:path'
-import { logger } from './logger'
-
-/**
- * Create skip node_modules plugin
- */
-export function createSkipNodeModulesPlugin(options?: {
-  noExternal?: (string | RegExp)[]
-}): RobuildPlugin {
-  const noExternalPatterns = options?.noExternal || []
-
-  // Helper function to check if a module should be inlined
-  const shouldInline = (id: string): boolean => {
-    for (const pattern of noExternalPatterns) {
-      if (typeof pattern === 'string') {
-        if (id === pattern || id.startsWith(`${pattern}/`)) {
-          return true
-        }
-      }
-      else if (pattern instanceof RegExp) {
-        if (pattern.test(id)) {
-          return true
-        }
-      }
-    }
-    return false
-  }
-
-  return {
-    name: 'skip-node-modules',
-    resolveId: async (id: string, importer?: string) => {
-      // Always inline modules matching noExternal patterns
-      if (shouldInline(id)) {
-        return null
-      }
-
-      // Don't externalize entry files (when importer is undefined)
-      if (!importer) {
-        return null
-      }
-
-      // Skip resolution for node_modules dependencies
-      if (id.includes('node_modules') || (!id.startsWith('.') && !id.startsWith('/') && !id.startsWith('\\'))) {
-        return { id, external: true } as any
-      }
-      return null
-    },
-  }
-}
+import { logger } from '../core/logger'
 
 /**
  * Check if a path is in node_modules

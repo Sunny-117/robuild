@@ -1,7 +1,7 @@
 import type { BuildResult, OnSuccessCallback } from '../types'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
-import { logger } from './logger'
+import { logger } from '../core/logger'
 
 const execAsync = promisify(exec)
 

@@ -2,8 +2,8 @@ import { existsSync } from 'node:fs'
 import { rm } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { colors as c } from 'consola/utils'
-import { logger } from './logger'
-import { fmtPath } from '../utils'
+import { logger } from '../core/logger'
+import { fmtPath } from '../utils/index'
 
 /**
  * Clean output directory or specific paths.

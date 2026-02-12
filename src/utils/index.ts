@@ -5,7 +5,12 @@ import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { minify } from 'oxc-minify'
 import { rolldown } from 'rolldown'
-import { logger } from './features/logger'
+import { logger } from '../core/logger'
+
+// Re-export utilities from submodules
+export * from './extensions'
+export * from './hash'
+export * from './node-protocol'
 
 /**
  * Normalize a path to an absolute path.

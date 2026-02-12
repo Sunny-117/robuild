@@ -1,5 +1,5 @@
 import type { BundleEntry, TransformEntry } from '../types'
-import { normalizePath } from '../utils'
+import { normalizePath } from '../utils/index'
 
 /**
  * Parse a string entry format like "src/index.ts:dist" or "src/:dist"

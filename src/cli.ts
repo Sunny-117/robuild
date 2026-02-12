@@ -6,7 +6,7 @@ import { loadConfig } from 'c12'
 import { cac } from 'cac'
 import { colors as c } from 'consola/utils'
 import { build } from './build'
-import { configureLogger, logger } from './features/logger'
+import { configureLogger, logger } from './core/logger'
 
 const pkg = await import('../package.json', { with: { type: 'json' } })
 

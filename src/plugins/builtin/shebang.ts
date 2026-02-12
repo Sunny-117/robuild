@@ -1,6 +1,6 @@
 // Ported from https://github.com/unjs/unbuild/blob/main/src/builders/rollup/plugins/shebang.ts
 
-import type { RobuildPlugin } from '../types'
+import type { RobuildPlugin } from '../../types'
 import { promises as fsp } from 'node:fs'
 import { resolve } from 'node:path'
 

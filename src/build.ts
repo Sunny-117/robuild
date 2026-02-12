@@ -18,12 +18,12 @@ import {
   hasValidInput,
   normalizeEntryInput,
   parseEntryString,
-} from './features/entry-resolver'
-import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from './features/logger'
-import { createBuildResult, executeOnSuccess } from './features/on-success'
-import { loadViteConfig } from './features/vite-config'
+} from './config/entry-resolver'
+import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from './core/logger'
+import { createBuildResult, executeOnSuccess } from './transforms/on-success'
+import { loadViteConfig } from './config/vite-config'
 
-import { analyzeDir, normalizePath } from './utils'
+import { analyzeDir, normalizePath } from './utils/index'
 import { performWatchBuild } from './watch'
 
 /**

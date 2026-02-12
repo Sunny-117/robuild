@@ -2,7 +2,7 @@ import type { ModuleFormat } from 'rolldown'
 import type { BuildConfig, BuildEntry } from '../types'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { logger } from './logger'
+import { logger } from '../core/logger'
 
 /**
  * Vite config interface (simplified)

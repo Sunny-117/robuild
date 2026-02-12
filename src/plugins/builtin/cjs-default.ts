@@ -1,4 +1,4 @@
-import type { RobuildPlugin } from '../types'
+import type { RobuildPlugin } from '../../types'
 
 /**
  * Detect if a file uses CommonJS exports

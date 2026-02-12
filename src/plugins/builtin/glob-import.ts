@@ -1,7 +1,7 @@
-import type { GlobImportOptions, RobuildPlugin } from '../types'
+import type { GlobImportOptions, RobuildPlugin } from '../../types'
 import { dirname, relative, resolve } from 'node:path'
 import { glob } from 'glob'
-import { logger } from './logger'
+import { logger } from '../../core/logger'
 
 /**
  * Create a glob import plugin for robuild

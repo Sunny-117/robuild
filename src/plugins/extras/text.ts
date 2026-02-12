@@ -1,5 +1,5 @@
-import type { RobuildPlugin } from '../types'
-import { logger } from '../features/logger'
+import type { RobuildPlugin } from '../../types'
+import { logger } from '../../core/logger'
 
 /**
  * Built-in plugin for text file imports

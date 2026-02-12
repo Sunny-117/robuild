@@ -5,8 +5,8 @@ import { join, relative } from 'node:path'
 import { watch as chokidarWatch } from 'chokidar'
 import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
-import { normalizeIgnorePatterns } from '../features/ignore-watch'
-import { fmtPath } from '../utils'
+import { normalizeIgnorePatterns } from '../config/ignore-watch'
+import { fmtPath } from '../utils/index'
 
 export interface WatchContext {
   config: BuildConfig

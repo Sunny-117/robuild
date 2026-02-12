@@ -1,4 +1,4 @@
-import type { RobuildPlugin, ShimsConfig } from '../types'
+import type { RobuildPlugin, ShimsConfig } from '../../types'
 
 /**
  * Default shims configuration
