@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v0.1.1
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.0...v0.1.1)
+
+### 🚀 Enhancements
+
+- 🎸 bundler-benchmark ([880965e](https://github.com/Sunny-117/robuild/commit/880965e))
+- 🎸 robuild bench ([0ca0960](https://github.com/Sunny-117/robuild/commit/0ca0960))
+- **bundler-benchmark:** Add robuild to benchmark suite and refactor eslint config ([ce6435b](https://github.com/Sunny-117/robuild/commit/ce6435b))
+
+### 🩹 Fixes
+
+- 🐛 add clean field to shared configuration ([850993f](https://github.com/Sunny-117/robuild/commit/850993f))
+- 🐛 types ([0c13e1d](https://github.com/Sunny-117/robuild/commit/0c13e1d))
+
+### 💅 Refactors
+
+- Reorganize source structure into logical modules ([6b3ef59](https://github.com/Sunny-117/robuild/commit/6b3ef59))
+
+### 📖 Documentation
+
+- ✏️ fix style ([6ab6eb9](https://github.com/Sunny-117/robuild/commit/6ab6eb9))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.0
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.20...v0.1.0)
