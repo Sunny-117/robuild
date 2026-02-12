@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.0.20
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.19...v0.0.20)
+
+### 💅 Refactors
+
+- Extract entry resolution and clean utilities to shared modules ([ed95c9a](https://github.com/Sunny-117/robuild/commit/ed95c9a))
+- Improve logging and output formatting ([1d704c5](https://github.com/Sunny-117/robuild/commit/1d704c5))
+
+### 🏡 Chore
+
+- 🤖 remove es5 target ([559ec1e](https://github.com/Sunny-117/robuild/commit/559ec1e))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.0.19
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.0.18...v0.0.19)
