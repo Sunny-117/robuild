@@ -1,0 +1,119 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "inputs": [
+        "src/**/*.ts",
+        "tsconfig.json",
+        "build.config.ts",
+        "package.json"
+      ],
+      "outputs": ["dist/**"],
+      "cache": true
+    },
+    "build:raw": {
+      "inputs": [
+        "src/**/*.ts",
+        "tsconfig.json",
+        "build.config.ts",
+        "package.json"
+      ],
+      "outputs": ["dist/**"],
+      "cache": true
+    },
+    "test:types": {
+      "inputs": ["src/**/*.ts", "tsconfig.json"],
+      "outputs": [],
+      "cache": true
+    },
+    "test": {
+      "dependsOn": ["build:raw"],
+      "inputs": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "vitest.config.ts",
+        "tsconfig.json",
+        "package.json"
+      ],
+      "outputs": [],
+      "cache": true
+    },
+    "test:raw": {
+      "dependsOn": ["build:raw"],
+      "inputs": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "vitest.config.ts",
+        "tsconfig.json",
+        "package.json"
+      ],
+      "outputs": [],
+      "cache": true
+    },
+    "test:coverage": {
+      "dependsOn": ["build:raw"],
+      "inputs": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "vitest.config.ts",
+        "tsconfig.json",
+        "package.json"
+      ],
+      "outputs": ["coverage/**"],
+      "cache": true
+    },
+    "test:coverage:raw": {
+      "dependsOn": ["build:raw"],
+      "inputs": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "vitest.config.ts",
+        "tsconfig.json",
+        "package.json"
+      ],
+      "outputs": ["coverage/**"],
+      "cache": true
+    },
+    "lint": {
+      "inputs": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "eslint.config.mjs",
+        "package.json"
+      ],
+      "outputs": [],
+      "cache": true
+    },
+    "lint:raw": {
+      "inputs": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "eslint.config.mjs",
+        "package.json"
+      ],
+      "outputs": [],
+      "cache": true
+    },
+    "lint:fix": {
+      "cache": false
+    },
+    "docs:build": {
+      "inputs": ["docs/**/*", "package.json"],
+      "outputs": ["docs/.vitepress/dist/**"],
+      "cache": true
+    },
+    "docs:build:raw": {
+      "inputs": ["docs/**/*", "package.json"],
+      "outputs": ["docs/.vitepress/dist/**"],
+      "cache": true
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

@@ -17,23 +17,29 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm test:types && pnpm robuild",
-    "dev": "pnpm test",
-    "lint": "eslint .",
+    "build": "turbo build:raw --filter=robuild",
+    "build:raw": "pnpm test:types && pnpm robuild",
+    "dev": "pnpm test:raw",
+    "lint": "turbo lint:raw --filter=robuild",
+    "lint:raw": "eslint .",
     "lint:fix": "automd && eslint . --fix",
     "robuild": "esno src/cli.ts",
     "prepack": "pnpm build",
     "release": "pnpm test && changelogen --release && npm publish && git push --follow-tags",
-    "test": "vitest run",
+    "test": "turbo test:raw --filter=robuild",
+    "test:raw": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "turbo test:coverage:raw --filter=robuild",
+    "test:coverage:raw": "vitest run --coverage",
     "test:coverage:watch": "vitest --coverage",
     "test:ui": "vitest --ui",
     "test:types": "tsc --noEmit --skipLibCheck src/**/*.ts",
     "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "docs:build": "turbo docs:build:raw --filter=robuild",
+    "docs:build:raw": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "clean": "rm -rf .turbo dist coverage"
   },
   "dependencies": {
     "c12": "^3.0.4",
@@ -65,6 +71,7 @@
     "esno": "^4.8.0",
     "git-cz": "^4.9.0",
     "prettier": "^3.5.3",
+    "turbo": "^2.8.7",
     "vitepress": "^1.6.3",
     "vitest": "^3.2.2"
   }

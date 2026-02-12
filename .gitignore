@@ -10,3 +10,4 @@ tsconfig.robuildinfo
 docs/.vitepress/cache
 dist-transform
 temp
+.turbo
