@@ -4,6 +4,58 @@ import { glob } from 'glob'
 import { logger } from '../../core/logger'
 
 /**
+ * Core transform logic for glob imports
+ */
+async function transformGlobImportCode(
+  code: string,
+  id: string,
+  options: { patterns: string[], asUrls: boolean, eager: boolean },
+): Promise<string | null> {
+  const { patterns, asUrls, eager } = options
+  const globImportRegex = /import\.meta\.glob\s*\(\s*(['"`])(.*?)\1\s*(?:,\s*(\{[^}]*\})\s*)?\)/g
+
+  let match
+  let hasGlobImports = false
+  let transformedCode = code
+
+  // eslint-disable-next-line no-cond-assign
+  while ((match = globImportRegex.exec(code)) !== null) {
+    hasGlobImports = true
+    const [fullMatch, , pattern, optionsStr] = match
+
+    // Parse options if provided
+    let globOptions: Record<string, unknown> = {}
+    if (optionsStr) {
+      try {
+        globOptions = parseGlobOptions(optionsStr)
+      }
+      catch {
+        logger.warn('Failed to parse glob options:', optionsStr)
+      }
+    }
+
+    const isEager = (globOptions.eager as boolean | undefined) ?? eager
+    const isAsUrls = globOptions.as === 'url' || asUrls
+
+    try {
+      const replacement = await generateGlobImport(
+        pattern,
+        id,
+        isEager,
+        isAsUrls,
+        patterns,
+      )
+      transformedCode = transformedCode.replace(fullMatch, replacement)
+    }
+    catch (error) {
+      logger.error(`Failed to process glob import ${pattern}:`, error)
+    }
+  }
+
+  return hasGlobImports ? transformedCode : null
+}
+
+/**
  * Create a glob import plugin for robuild
  */
 export function createGlobImportPlugin(options: GlobImportOptions = {}): RobuildPlugin {
@@ -22,50 +74,8 @@ export function createGlobImportPlugin(options: GlobImportOptions = {}): Robuild
 
   return {
     name: 'glob-import',
-    transform: async (code: string, id: string) => {
-      // Look for import.meta.glob() calls
-      const globImportRegex = /import\.meta\.glob\s*\(\s*(['"`])(.*?)\1\s*(?:,\s*(\{[^}]*\})\s*)?\)/g
-
-      let match
-      let hasGlobImports = false
-      let transformedCode = code
-
-      // eslint-disable-next-line no-cond-assign
-      while ((match = globImportRegex.exec(code)) !== null) {
-        hasGlobImports = true
-        const [fullMatch, , pattern, optionsStr] = match
-
-        // Parse options if provided
-        let globOptions: any = {}
-        if (optionsStr) {
-          try {
-            // Simple options parsing (in real implementation, use a proper parser)
-            globOptions = parseGlobOptions(optionsStr)
-          }
-          catch {
-            logger.warn('Failed to parse glob options:', optionsStr)
-          }
-        }
-
-        const isEager = globOptions.eager ?? eager
-        const isAsUrls = globOptions.as === 'url' || asUrls
-
-        try {
-          const replacement = await generateGlobImport(
-            pattern,
-            id,
-            isEager,
-            isAsUrls,
-            patterns,
-          )
-          transformedCode = transformedCode.replace(fullMatch, replacement)
-        }
-        catch (error) {
-          logger.error(`Failed to process glob import ${pattern}:`, error)
-        }
-      }
-
-      return hasGlobImports ? transformedCode : null
+    transform: async (code: string, id: string, _meta) => {
+      return transformGlobImportCode(code, id, { patterns, asUrls, eager })
     },
   }
 }
@@ -249,14 +259,18 @@ export async function transformGlobImports(
   id: string,
   options: GlobImportOptions = {},
 ): Promise<string | null> {
-  const plugin = createGlobImportPlugin(options)
-  if (plugin.transform) {
-    const result = typeof plugin.transform === 'function'
-      ? await (plugin.transform as any).call(null, code, id, {})
-      : await (plugin.transform as any).handler.call(null, code, id, {})
-    return typeof result === 'string' ? result : result?.code || null
+  const {
+    enabled = true,
+    patterns = ['**/*'],
+    asUrls = false,
+    eager = false,
+  } = options
+
+  if (!enabled) {
+    return null
   }
-  return null
+
+  return transformGlobImportCode(code, id, { patterns, asUrls, eager })
 }
 
 /**

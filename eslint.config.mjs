@@ -1,11 +1,21 @@
 import antfu from '@antfu/eslint-config'
 
-export default antfu({
-  rules: {
-    'no-lone-blocks': 'off', // 忽略“嵌套块是多余的”错误
-    'node/prefer-global/process': 'off',
-    'node/prefer-global/buffer': 'off',
-    'no-console': 'warn',
+export default antfu(
+  {
+    rules: {
+      'no-lone-blocks': 'off',
+      'node/prefer-global/process': 'off',
+      'node/prefer-global/buffer': 'off',
+      'no-console': 'off',
+    },
+    ignores: ['docs', 'dist/**', 'bundler-benchmark'],
   },
-  ignores: ['docs', 'dist/**'],
-})
+
+  // 👇 单独给 src 加规则
+  {
+    files: ['src/**/*.{js,ts,jsx,tsx}'],
+    rules: {
+      'no-console': 'warn',
+    },
+  },
+)
