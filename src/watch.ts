@@ -1,10 +1,10 @@
 import type { ModuleFormat, WatchOptions } from 'rolldown'
 import type { BuildConfig, BuildContext } from './types'
-import { builtinModules } from 'node:module'
 import { isAbsolute, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { consola } from 'consola'
 import { watch } from 'rolldown'
+import { resolveExternalConfig } from './features/external'
 import { logger } from './features/logger'
 
 // Utility function to normalize paths (copied from build.ts)
@@ -157,88 +157,11 @@ export async function startRolldownWatch(
       ...(entry.rolldown?.plugins || []),
     ]
 
-    // Build external dependencies list (same logic as bundle.ts)
-    let externalDeps: (string | RegExp)[] = [
-      ...builtinModules,
-      ...builtinModules.map(m => `node:${m}`),
-      ...[
-        ...Object.keys(ctx.pkg.dependencies || {}),
-        ...Object.keys(ctx.pkg.peerDependencies || {}),
-      ].flatMap(p => [p, new RegExp(`^${p}/`)]),
-    ]
-
-    // Handle noExternal configuration
-    if (entry.noExternal) {
-      const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
-      if (typeof entry.noExternal === 'function') {
-        const predicate = entry.noExternal
-        const depNames = [...Object.keys(ctx.pkg.dependencies || {}), ...Object.keys(ctx.pkg.peerDependencies || {})]
-        const excludedNames = new Set<string>()
-        for (const name of depNames) {
-          try {
-            if (predicate(name))
-              excludedNames.add(name)
-          }
-          catch {
-            // Ignore predicate errors
-          }
-        }
-
-        externalDeps = externalDeps.filter((dep) => {
-          if (typeof dep === 'string') {
-            return !excludedNames.has(dep)
-          }
-          if (dep instanceof RegExp) {
-            for (const name of Array.from(excludedNames)) {
-              if (dep.source.startsWith(`^${escapeRegExp(name)}/`))
-                return false
-            }
-            return true
-          }
-          return true
-        })
-      }
-      else if (Array.isArray(entry.noExternal)) {
-        const rules = entry.noExternal
-
-        externalDeps = externalDeps.filter((dep) => {
-          for (const rule of rules) {
-            if (typeof rule === 'string') {
-              if (typeof dep === 'string') {
-                if (dep === rule)
-                  return false
-              }
-              else if (dep instanceof RegExp) {
-                if (dep.source.startsWith(`^${escapeRegExp(rule)}/`))
-                  return false
-              }
-            }
-            else if (rule instanceof RegExp) {
-              if (typeof dep === 'string') {
-                if (rule.test(dep))
-                  return false
-              }
-              else if (dep instanceof RegExp) {
-                if (dep.source === rule.source && dep.flags === rule.flags)
-                  return false
-              }
-            }
-          }
-          return true
-        })
-      }
-    }
-
-    // Add custom external dependencies
-    if (entry.external && typeof entry.external !== 'function') {
-      externalDeps.push(...entry.external)
-    }
-
-    // Determine the external configuration
-    const externalConfig = typeof entry.external === 'function'
-      ? entry.external
-      : externalDeps
+    // Build external dependencies using shared logic
+    const externalConfig = resolveExternalConfig(ctx, {
+      external: entry.external,
+      noExternal: entry.noExternal,
+    })
 
     // Create rolldown config for this entry with proper transform options
     const watchConfig = {
