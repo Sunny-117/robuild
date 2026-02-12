@@ -30,7 +30,7 @@
     "test:raw": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "turbo test:coverage:raw --filter=robuild",
-    "test:coverage:raw": "vitest run --coverage",
+    "test:coverage:raw": "vitest run --coverage && node scripts/update-coverage.mjs",
     "test:coverage:watch": "vitest --coverage",
     "test:ui": "vitest --ui",
     "test:types": "tsc --noEmit --skipLibCheck src/**/*.ts",
