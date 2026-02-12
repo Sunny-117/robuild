@@ -1,20 +1,15 @@
 import type { ModuleFormat, WatchOptions } from 'rolldown'
 import type { BuildConfig, BuildContext } from './types'
-import { isAbsolute, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { consola } from 'consola'
 import { watch } from 'rolldown'
+import {
+  getBundleEntryInput,
+  normalizeEntryInput,
+  parseEntryString,
+} from './features/entry-resolver'
+import { getFormatExtension } from './features/extensions'
 import { resolveExternalConfig } from './features/external'
 import { logger } from './features/logger'
-
-// Utility function to normalize paths (copied from build.ts)
-function normalizePath(path: string | URL | undefined, resolveFrom?: string) {
-  return typeof path === 'string' && isAbsolute(path)
-    ? path
-    : path instanceof URL
-      ? fileURLToPath(path)
-      : resolve(resolveFrom || '.', path || '.')
-}
 
 /**
  * Perform watch build using rolldown's built-in watch mode
@@ -71,65 +66,30 @@ export async function startRolldownWatch(
   const watchConfigs: WatchOptions[] = []
 
   for (const rawEntry of bundleEntries) {
-    let entry
-    if (typeof rawEntry === 'string') {
-      const [input, outDir] = rawEntry.split(':') as [string, string | undefined]
-      entry = {
-        type: 'bundle' as const,
-        input,
-        outDir: outDir || 'dist',
-      }
-    }
-    else {
-      entry = rawEntry
-    }
+    // Parse string entries using shared logic
+    const entry = typeof rawEntry === 'string'
+      ? parseEntryString(rawEntry)
+      : rawEntry
 
-    // Get the actual input (support both 'input' and 'entry' for tsup compatibility)
-    const entryInput = entry.input || entry.entry
+    // Get the actual input using shared logic
+    const entryInput = getBundleEntryInput(entry)
     if (!entryInput) {
       logger.warn('Skipping entry without input:', entry)
       continue
     }
 
-    // Normalize input path
-    let normalizedInput: string | string[] | Record<string, string>
-    if (typeof entryInput === 'object' && !Array.isArray(entryInput)) {
-      // Handle object format (named entries)
-      const normalizedObj: Record<string, string> = {}
-      for (const [key, value] of Object.entries(entryInput)) {
-        normalizedObj[key] = normalizePath(value as string, ctx.pkgDir)
-      }
-      normalizedInput = normalizedObj
-    }
-    else if (Array.isArray(entryInput)) {
-      normalizedInput = entryInput.map((i: string) => normalizePath(i, ctx.pkgDir))
-    }
-    else {
-      normalizedInput = normalizePath(entryInput, ctx.pkgDir)
-    }
+    // Normalize input path using shared logic
+    const normalizedInput = normalizeEntryInput(entryInput, ctx.pkgDir)
 
     // Get target and other options from entry
     const target = entry.target || 'es2022'
     const platform = entry.platform || 'node'
     const format = entry.format || 'es'
 
-    // Determine the correct file extension based on format
-    const getExtension = (fmt: string) => {
-      switch (fmt) {
-        case 'es':
-          return '.mjs'
-        case 'cjs':
-          return '.cjs'
-        case 'iife':
-        case 'umd':
-          return '.js'
-        default:
-          return '.mjs'
-      }
-    }
-
-    const extension = getExtension(Array.isArray(format) ? format[0] : format)
+    // Determine the correct file extension using shared logic
     const rolldownFormat = Array.isArray(format) ? format[0] : format
+    const extension = getFormatExtension(rolldownFormat, platform)
+
     const formatMap: Record<string, ModuleFormat> = {
       esm: 'es',
       cjs: 'cjs',

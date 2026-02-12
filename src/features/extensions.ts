@@ -2,7 +2,42 @@ import type { ModuleFormat } from 'rolldown'
 import type { OutExtensionFactory, Platform } from '../types'
 
 /**
- * Resolve JavaScript output extension
+ * Get file extension for a given format (with leading dot).
+ * This is the unified function used by bundle, watch, and transform modes.
+ *
+ * @param format - The module format (es, cjs, iife, umd, etc.)
+ * @param platform - The target platform
+ * @param fixedExtension - Whether to force .cjs/.mjs extensions
+ * @returns The file extension with leading dot (e.g., '.mjs', '.cjs', '.js')
+ */
+export function getFormatExtension(
+  format: ModuleFormat | string,
+  platform: Platform = 'node',
+  fixedExtension = false,
+): string {
+  if (fixedExtension) {
+    return format === 'cjs' || format === 'commonjs' ? '.cjs' : '.mjs'
+  }
+
+  switch (format) {
+    case 'es':
+    case 'esm':
+    case 'module':
+      return '.mjs' // Always use .mjs for ESM to be explicit about module type
+    case 'cjs':
+    case 'commonjs':
+      return platform === 'node' ? '.cjs' : '.js'
+    case 'iife':
+    case 'umd':
+      return '.js'
+    default:
+      return '.js'
+  }
+}
+
+/**
+ * Resolve JavaScript output extension (without leading dot).
+ * @deprecated Use getFormatExtension() instead for consistency
  */
 export function resolveJsOutputExtension(
   format: ModuleFormat,

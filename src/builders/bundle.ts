@@ -7,9 +7,9 @@ import type {
   Plugin,
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
-import type { BuildConfig, BuildContext, BuildHooks, BundleEntry, Platform } from '../types'
-import { builtinModules } from 'node:module'
+import type { BuildConfig, BuildContext, BuildHooks, BundleEntry } from '../types'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { builtinModules } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
 import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
@@ -21,8 +21,10 @@ import { dts } from 'rolldown-plugin-dts'
 import { createSkipNodeModulesPlugin } from '../features/advanced-build'
 
 import { resolveChunkAddon } from '../features/banner'
-
+import { cleanOutputDir } from '../features/clean'
 import { copyFiles } from '../features/copy'
+import { getBundleEntryInput } from '../features/entry-resolver'
+import { getFormatExtension } from '../features/extensions'
 import { resolveExternalConfig } from '../features/external'
 import { createGlobImportPlugin } from '../features/glob-import'
 import { addHashToFilename, hasHash } from '../features/hash'
@@ -32,64 +34,6 @@ import { nodeProtocolPlugin } from '../plugins/node-protocol'
 import { makeExecutable, shebangPlugin } from '../plugins/shebang'
 import { distSize, fmtPath, sideEffectSize } from '../utils'
 
-/**
- * Get file extension for format
- */
-function getFormatExtension(
-  format: ModuleFormat,
-  platform: Platform,
-  fixedExtension = false,
-): string {
-  if (fixedExtension) {
-    // Force .cjs/.mjs extensions
-    return format === 'cjs' ? '.cjs' : '.mjs'
-  }
-
-  switch (format) {
-    case 'es':
-    case 'esm':
-    case 'module':
-      return '.mjs' // Always use .mjs for ESM to be explicit about module type
-    case 'cjs':
-    case 'commonjs':
-      return platform === 'node' ? '.cjs' : '.js'
-    case 'iife':
-    case 'umd':
-      return '.js'
-    default:
-      return '.js'
-  }
-}
-
-/**
- * Clean output directory
- */
-async function cleanOutputDir(projectRoot: string, outDir: string, cleanPaths?: boolean | string[]): Promise<void> {
-  if (!cleanPaths)
-    return
-
-  const { rm } = await import('node:fs/promises')
-  const { existsSync } = await import('node:fs')
-
-  if (cleanPaths === true) {
-    // Clean the entire output directory
-    if (existsSync(outDir)) {
-      consola.log(`🧻 Cleaning up ${fmtPath(outDir)}`)
-      await rm(outDir, { recursive: true, force: true })
-    }
-  }
-  else if (Array.isArray(cleanPaths)) {
-    // Clean specific paths relative to project root
-    for (const path of cleanPaths) {
-      const fullPath = resolve(projectRoot, path)
-      if (existsSync(fullPath)) {
-        consola.log(`🧻 Cleaning up ${fmtPath(fullPath)}`)
-        await rm(fullPath, { recursive: true, force: true })
-      }
-    }
-  }
-}
-
 export async function rolldownBuild(
   ctx: BuildContext,
   entry: BundleEntry,
@@ -97,7 +41,7 @@ export async function rolldownBuild(
   config?: BuildConfig,
 ): Promise<void> {
   // Support both 'input' and 'entry' (tsup compatibility)
-  const entryInput = entry.input || entry.entry
+  const entryInput = getBundleEntryInput(entry)
   if (!entryInput) {
     throw new Error('Entry input is required')
   }

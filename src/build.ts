@@ -6,19 +6,24 @@ import type {
   TransformEntry,
 } from './types'
 
-import { isAbsolute, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import { colors as c } from 'consola/utils'
 import prettyBytes from 'pretty-bytes'
 
 import { rolldownBuild } from './builders/bundle'
 import { transformDir } from './builders/transform'
 
+import {
+  getBundleEntryInput,
+  hasValidInput,
+  normalizeEntryInput,
+  parseEntryString,
+} from './features/entry-resolver'
 import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from './features/logger'
 import { createBuildResult, executeOnSuccess } from './features/on-success'
 import { loadViteConfig } from './features/vite-config'
 
-import { analyzeDir } from './utils'
+import { analyzeDir, normalizePath } from './utils'
 import { performWatchBuild } from './watch'
 
 /**
@@ -164,20 +169,10 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
   await hooks.start?.(ctx)
 
   const entries = (config.entries || []).map((rawEntry) => {
-    let entry: TransformEntry | BundleEntry
-
-    if (typeof rawEntry === 'string') {
-      const [input, outDir] = rawEntry.split(':') as [
-        string,
-        string | undefined,
-      ]
-      entry = input.endsWith('/')
-        ? ({ type: 'transform', input, outDir } as TransformEntry)
-        : ({ type: 'bundle', input: input.split(','), outDir } as BundleEntry)
-    }
-    else {
-      entry = rawEntry
-    }
+    // Parse string entries using shared logic
+    let entry: TransformEntry | BundleEntry = typeof rawEntry === 'string'
+      ? parseEntryString(rawEntry)
+      : rawEntry
 
     // Inherit top-level config fields if not specified in entry
     if (entry.type === 'bundle') {
@@ -187,44 +182,26 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
       entry = inheritConfig(entry as TransformEntry, config)
     }
 
-    // Check for input or entry (tsup compatibility)
-    const hasInput = entry.type === 'transform'
-      ? !!entry.input
-      : !!((entry as BundleEntry).input || (entry as BundleEntry).entry)
-
-    if (!hasInput) {
+    // Check for valid input using shared logic
+    if (!hasValidInput(entry)) {
       throw new Error(
         `Build entry missing \`input\` or \`entry\`: ${JSON.stringify(entry, null, 2)}`,
       )
     }
+
     entry = { ...entry }
     entry.outDir = normalizePath(entry.outDir || 'dist', ctx.pkgDir)
 
-    // Normalize input/entry paths
+    // Normalize input/entry paths using shared logic
     if (entry.type === 'transform') {
-      // Normalize transform entry input
       if ((entry as TransformEntry).input) {
         ;(entry as TransformEntry).input = normalizePath((entry as TransformEntry).input, ctx.pkgDir)
       }
     }
     else {
-      // Normalize bundle entry input/entry
-      const entryInput = (entry as BundleEntry).input || (entry as BundleEntry).entry
+      const entryInput = getBundleEntryInput(entry as BundleEntry)
       if (entryInput) {
-        if (typeof entryInput === 'object' && !Array.isArray(entryInput)) {
-          // Handle object format (named entries)
-          const normalizedInput: Record<string, string> = {}
-          for (const [key, value] of Object.entries(entryInput)) {
-            normalizedInput[key] = normalizePath(value, ctx.pkgDir)
-          }
-          ;(entry as BundleEntry).input = normalizedInput
-        }
-        else if (Array.isArray(entryInput)) {
-          ;(entry as BundleEntry).input = entryInput.map(p => normalizePath(p, ctx.pkgDir))
-        }
-        else {
-          ;(entry as BundleEntry).input = normalizePath(entryInput, ctx.pkgDir)
-        }
+        ;(entry as BundleEntry).input = normalizeEntryInput(entryInput, ctx.pkgDir)
       }
     }
 
@@ -272,14 +249,6 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
 }
 
 // --- utils ---
-
-function normalizePath(path: string | URL | undefined, resolveFrom?: string) {
-  return typeof path === 'string' && isAbsolute(path)
-    ? path
-    : path instanceof URL
-      ? fileURLToPath(path)
-      : resolve(resolveFrom || '.', path || '.')
-}
 
 async function readJSON(specifier: string) {
   const module = await import(specifier, {

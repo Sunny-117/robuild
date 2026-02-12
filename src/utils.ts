@@ -1,10 +1,26 @@
 import type { Plugin } from 'rolldown'
 import { readdirSync, statSync } from 'node:fs'
-
-import { join, resolve } from 'node:path'
+import { isAbsolute, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { minify } from 'oxc-minify'
 import { rolldown } from 'rolldown'
+
+/**
+ * Normalize a path to an absolute path.
+ * Handles string paths, URL objects, and undefined values.
+ *
+ * @param path - The path to normalize (string, URL, or undefined)
+ * @param resolveFrom - The base directory to resolve relative paths from
+ * @returns The normalized absolute path
+ */
+export function normalizePath(path: string | URL | undefined, resolveFrom?: string): string {
+  return typeof path === 'string' && isAbsolute(path)
+    ? path
+    : path instanceof URL
+      ? fileURLToPath(path)
+      : resolve(resolveFrom || '.', path || '.')
+}
 
 export function fmtPath(path: string): string {
   return resolve(path).replace(process.cwd(), '.')
