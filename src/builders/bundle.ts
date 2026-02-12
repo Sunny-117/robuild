@@ -11,7 +11,6 @@ import type { BuildConfig, BuildContext, BuildHooks, BundleEntry } from '../type
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { builtinModules } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
-import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
 import { resolveModulePath } from 'exsolve'
 import { parseSync } from 'oxc-parser'
@@ -28,6 +27,7 @@ import { getFormatExtension } from '../features/extensions'
 import { resolveExternalConfig } from '../features/external'
 import { createGlobImportPlugin } from '../features/glob-import'
 import { addHashToFilename, hasHash } from '../features/hash'
+import { logger } from '../features/logger'
 import { RobuildPluginManager } from '../features/plugin-manager'
 import { createShimsPlugin } from '../features/shims'
 import { nodeProtocolPlugin } from '../plugins/node-protocol'
@@ -74,7 +74,7 @@ export async function rolldownBuild(
 
   // Handle dtsOnly mode (only generate declaration files)
   if (entry.dtsOnly) {
-    consola.info('Running in dtsOnly mode - only generating declaration files')
+    logger.info('Running in dtsOnly mode - only generating declaration files')
     // Force dts to be enabled
     entry.dts = entry.dts === false ? true : (entry.dts || true)
     // We'll skip the normal build and only run DTS generation
@@ -85,8 +85,8 @@ export async function rolldownBuild(
     for (const [distName, srcPath] of Object.entries(inputs)) {
       const distPath = join(ctx.pkgDir, 'dist', `${distName}.mjs`)
       await mkdir(dirname(distPath), { recursive: true })
-      consola.log(
-        `${c.magenta('[stub bundle] ')} ${c.underline(fmtPath(distPath))}`,
+      logger.log(
+        `${c.cyan('Stub')}  ${c.green(fmtPath(distPath))}`,
       )
       const srcContents = await readFile(srcPath, 'utf8')
       const parsed = parseSync(srcPath, srcContents)
@@ -437,21 +437,21 @@ export async function rolldownBuild(
   await pluginManager.executeRobuildBuildEnd({ allOutputEntries })
 
   // Display build results
-  consola.log(
+  logger.log(
     `\n${allOutputEntries
       .map(o =>
         [
-          `${c.magenta(`[bundle] `)}${c.underline(fmtPath(filePathMap.get(o.name) || join(fullOutDir, o.name)))}`,
+          `${c.cyan('Bundle')}  ${c.green(fmtPath(filePathMap.get(o.name) || join(fullOutDir, o.name)))}`,
           c.dim(
-            `${c.bold('Size:')} ${prettyBytes(o.size)}, ${c.bold(prettyBytes(o.minSize))} minified, ${prettyBytes(o.minGzipSize)} min+gzipped (Side effects: ${prettyBytes(o.sideEffectSize)})`,
+            `         ${prettyBytes(o.size)} / minified: ${prettyBytes(o.minSize)} / gzip: ${prettyBytes(o.minGzipSize)}`,
           ),
           o.exports.some(e => e !== 'default')
             ? c.dim(
-                `${c.bold('Exports:')} ${o.exports.map(e => e).join(', ')}`,
+                `         Exports: ${o.exports.map(e => e).join(', ')}`,
               )
             : '',
           o.deps.length > 0
-            ? c.dim(`${c.bold('Dependencies:')} ${o.deps.join(', ')}`)
+            ? c.dim(`         Dependencies: ${o.deps.join(', ')}`)
             : '',
         ]
           .filter(Boolean)

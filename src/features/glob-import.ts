@@ -1,6 +1,7 @@
 import type { GlobImportOptions, RobuildPlugin } from '../types'
 import { dirname, relative, resolve } from 'node:path'
 import { glob } from 'glob'
+import { logger } from './logger'
 
 /**
  * Create a glob import plugin for robuild
@@ -42,7 +43,7 @@ export function createGlobImportPlugin(options: GlobImportOptions = {}): Robuild
             globOptions = parseGlobOptions(optionsStr)
           }
           catch {
-            console.warn('Failed to parse glob options:', optionsStr)
+            logger.warn('Failed to parse glob options:', optionsStr)
           }
         }
 
@@ -60,7 +61,7 @@ export function createGlobImportPlugin(options: GlobImportOptions = {}): Robuild
           transformedCode = transformedCode.replace(fullMatch, replacement)
         }
         catch (error) {
-          console.error(`Failed to process glob import ${pattern}:`, error)
+          logger.error(`Failed to process glob import ${pattern}:`, error)
         }
       }
 
@@ -232,7 +233,7 @@ export async function resolveGlobPatterns(
       result[pattern] = files
     }
     catch (error) {
-      console.error(`Failed to resolve glob pattern ${pattern}:`, error)
+      logger.error(`Failed to resolve glob pattern ${pattern}:`, error)
       result[pattern] = []
     }
   }

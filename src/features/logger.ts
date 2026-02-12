@@ -31,8 +31,8 @@ export class Logger {
   }
 
   silent(message: string, ...args: any[]): void {
-    // Always log silent messages
-    console.log(message, ...args)
+    // Always log silent messages (bypass log level)
+    consola.log(message, ...args)
   }
 
   error(message: string, ...args: any[]): void {
@@ -61,6 +61,15 @@ export class Logger {
 
   log(message: string, ...args: any[]): void {
     consola.log(message, ...args)
+  }
+
+  /**
+   * Debug output - only visible with INSPECT_BUILD env var
+   */
+  debug(message: string, ...args: any[]): void {
+    if (process.env.INSPECT_BUILD) {
+      consola.log(message, ...args)
+    }
   }
 
   getWarningCount(): number {

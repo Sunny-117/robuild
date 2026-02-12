@@ -1,7 +1,7 @@
 import type { CopyOptions } from '../types'
 import { cp } from 'node:fs/promises'
 import { basename, resolve } from 'node:path'
-import { consola } from 'consola'
+import { logger } from './logger'
 
 /**
  * Copy files to output directory
@@ -15,7 +15,7 @@ export async function copyFiles(
     return
   }
 
-  consola.debug('📁 Copying files...')
+  logger.verbose('Copying files...')
 
   await Promise.all(
     copyOptions.map(async (entry) => {
@@ -31,13 +31,13 @@ export async function copyFiles(
           recursive: true,
           force: true,
         })
-        consola.debug(`  ${from} → ${to}`)
+        logger.verbose(`  ${from} → ${to}`)
       }
       catch (error) {
-        consola.warn(`Failed to copy ${from} to ${to}:`, error)
+        logger.warn(`Failed to copy ${from} to ${to}:`, error)
       }
     }),
   )
 
-  consola.debug('✅ Files copied successfully')
+  logger.verbose('Files copied successfully')
 }

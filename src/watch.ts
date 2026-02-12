@@ -1,6 +1,5 @@
 import type { ModuleFormat, WatchOptions } from 'rolldown'
 import type { BuildConfig, BuildContext } from './types'
-import { consola } from 'consola'
 import { watch } from 'rolldown'
 import {
   getBundleEntryInput,
@@ -57,7 +56,7 @@ export async function startRolldownWatch(
   ctx: BuildContext,
   bundleEntries: any[],
 ): Promise<void> {
-  logger.info('🚧 Using rolldown built-in watch mode...')
+  logger.info('Watching for changes...')
 
   // Import plugin manager
   const { RobuildPluginManager } = await import('./features/plugin-manager')
@@ -149,26 +148,26 @@ export async function startRolldownWatch(
   watcher.on('event', (event) => {
     switch (event.code) {
       case 'START':
-        logger.info('🔄 Rebuilding...')
+        logger.info('Rebuilding...')
         break
       case 'BUNDLE_START':
-        logger.info('📦 Bundling...')
+        // Silent - no need to log bundling start
         break
       case 'BUNDLE_END':
-        logger.success('✅ Bundle complete')
+        // Silent - will log on END
         break
       case 'END':
-        logger.success('🎉 Watch rebuild complete')
+        logger.success('Rebuilt')
         break
       case 'ERROR':
-        logger.error('❌ Build error:', (event as any).error)
+        logger.error('Build error:', (event as any).error)
         break
     }
   })
 
   // Handle graceful shutdown
   const cleanup = async () => {
-    consola.info('🛑 Stopping watch mode...')
+    logger.info('Stopping watch mode...')
     await watcher.close()
     process.exit(0)
   }

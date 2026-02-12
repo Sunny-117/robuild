@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { minify } from 'oxc-minify'
 import { rolldown } from 'rolldown'
+import { logger } from './features/logger'
 
 /**
  * Normalize a path to an absolute path.
@@ -130,10 +131,10 @@ export async function sideEffectSize(
   })
 
   if (process.env.INSPECT_BUILD) {
-    console.log('---------[side effects]---------')
-    console.log(entry)
-    console.log(output[0].code)
-    console.log('-------------------------------')
+    logger.debug('---------[side effects]---------')
+    logger.debug(entry)
+    logger.debug(output[0].code)
+    logger.debug('-------------------------------')
   }
 
   return Buffer.byteLength(output[0].code.trim())

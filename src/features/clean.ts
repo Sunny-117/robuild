@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs'
 import { rm } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { consola } from 'consola'
+import { colors as c } from 'consola/utils'
+import { logger } from './logger'
 import { fmtPath } from '../utils'
 
 /**
@@ -23,7 +24,7 @@ export async function cleanOutputDir(
   if (cleanPaths === true) {
     // Clean the entire output directory
     if (existsSync(outDir)) {
-      consola.log(`🧻 Cleaning up ${fmtPath(outDir)}`)
+      logger.log(c.dim(`Cleaning ${fmtPath(outDir)}`))
       await rm(outDir, { recursive: true, force: true })
     }
   }
@@ -32,7 +33,7 @@ export async function cleanOutputDir(
     for (const path of cleanPaths) {
       const fullPath = resolve(projectRoot, path)
       if (existsSync(fullPath)) {
-        consola.log(`🧻 Cleaning up ${fmtPath(fullPath)}`)
+        logger.log(c.dim(`Cleaning ${fmtPath(fullPath)}`))
         await rm(fullPath, { recursive: true, force: true })
       }
     }

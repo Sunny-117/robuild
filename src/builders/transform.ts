@@ -4,7 +4,6 @@ import type { BuildContext, TransformEntry } from '../types'
 import { mkdir, readFile, symlink, writeFile } from 'node:fs/promises'
 import { dirname, extname, join, relative } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
 import { resolveModulePath } from 'exsolve'
 import MagicString from 'magic-string'
@@ -18,6 +17,7 @@ import { cleanOutputDir } from '../features/clean'
 import { copyFiles } from '../features/copy'
 import { createFilename } from '../features/extensions'
 import { addHashToFilename, hasHash } from '../features/hash'
+import { logger } from '../features/logger'
 import { transformNodeProtocol } from '../features/node-protocol'
 import { makeExecutable, SHEBANG_RE } from '../plugins/shebang'
 import { fmtPath, normalizePath } from '../utils'
@@ -30,8 +30,8 @@ export async function transformDir(
   entry: TransformEntry,
 ): Promise<void> {
   if (entry.stub) {
-    consola.log(
-      `${c.magenta('[stub transform]   ')} ${c.underline(`${fmtPath(entry.outDir!)}/`)}`,
+    logger.log(
+      `${c.cyan('Stub')}  ${c.green(`${fmtPath(entry.outDir!)}/`)}`,
     )
     await symlink(entry.input, entry.outDir!, 'junction')
     return
@@ -39,8 +39,8 @@ export async function transformDir(
 
   // Handle unbundle mode
   if (entry.unbundle) {
-    consola.log(
-      `${c.magenta('[unbundle]         ')} ${c.underline(`${fmtPath(entry.outDir!)}/`)}`,
+    logger.log(
+      `${c.cyan('Unbundle')}  ${c.green(`${fmtPath(entry.outDir!)}/`)}`,
     )
     await unbundleTransform(ctx, entry)
     return
@@ -57,7 +57,7 @@ export async function transformDir(
     const stats = statSync(inputDir)
     if (stats.isFile()) {
       inputDir = dirname(inputDir)
-      consola.warn(`Transform input should be a directory, not a file. Using directory: ${fmtPath(inputDir)}`)
+      logger.warn(`Transform input should be a directory, not a file. Using directory: ${fmtPath(inputDir)}`)
     }
   }
   catch (error: any) {
@@ -158,10 +158,8 @@ export async function transformDir(
     await copyFiles(ctx.pkgDir, fullOutDir, entry.copy)
   }
 
-  consola.log(
-    `\n${c.magenta('[transform] ')}${c.underline(`${fmtPath(entry.outDir!)}/`)}\n${writtenFiles
-      .map(f => c.dim(fmtPath(f)))
-      .join('\n\n')}`,
+  logger.log(
+    `\n${c.cyan('Transform')}  ${c.green(`${fmtPath(entry.outDir!)}/`)} ${c.dim(`(${writtenFiles.length} files)`)}`,
   )
 }
 

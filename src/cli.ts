@@ -4,9 +4,9 @@ import type { BuildConfig, BuildEntry } from './types'
 import process from 'node:process'
 import { loadConfig } from 'c12'
 import { cac } from 'cac'
-import { consola } from 'consola'
 import { colors as c } from 'consola/utils'
 import { build } from './build'
+import { configureLogger, logger } from './features/logger'
 
 const pkg = await import('../package.json', { with: { type: 'json' } })
 
@@ -60,7 +60,7 @@ cli
       await runBuild(entries, flags)
     }
     catch (error) {
-      consola.error(error)
+      logger.error(String(error))
       process.exit(1)
     }
   })
@@ -68,12 +68,11 @@ cli
 async function runBuild(entries: string[], flags: any): Promise<void> {
   // Set log level
   if (flags.logLevel) {
-    consola.level = flags.logLevel === 'silent' ? 0 : flags.logLevel === 'verbose' ? 5 : 3
+    configureLogger(flags.logLevel)
   }
 
   // Show version info
-  consola.info(`robuild ${c.dim(`v${pkg.default.version}`)}`)
-  consola.info('')
+  logger.info(`${c.cyan('robuild')} ${c.dim(`v${pkg.default.version}`)}`)
 
   // Load config file
   const configOptions: any = {
@@ -236,8 +235,8 @@ async function runBuild(entries: string[], flags: any): Promise<void> {
   }
 
   if (rawEntries.length === 0) {
-    consola.error('No build entries specified.')
-    consola.info('Run `robuild --help` for usage information.')
+    logger.error('No build entries specified.')
+    logger.info('Run `robuild --help` for usage information.')
     process.exit(1)
   }
 
@@ -273,6 +272,6 @@ try {
   await cli.runMatchedCommand()
 }
 catch (error) {
-  consola.error(error)
+  logger.error(String(error))
   process.exit(1)
 }

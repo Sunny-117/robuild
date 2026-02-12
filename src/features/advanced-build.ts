@@ -2,6 +2,7 @@ import type { BuildContext, RobuildPlugin, TransformEntry } from '../types'
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, extname, isAbsolute, join } from 'node:path'
+import { logger } from './logger'
 
 /**
  * Create skip node_modules plugin
@@ -168,7 +169,7 @@ async function processFileUnbundled(
     await writeFile(finalOutputPath, transformedContent, 'utf-8')
   }
   catch (error) {
-    console.warn(`Failed to process file ${inputPath}:`, error)
+    logger.warn(`Failed to process file ${inputPath}:`, error)
   }
 }
 

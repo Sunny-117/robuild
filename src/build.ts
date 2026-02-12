@@ -144,7 +144,7 @@ export async function build(config: BuildConfig): Promise<void> {
   // Check if watch mode is enabled
   if (finalConfig.watch?.enabled) {
     logger.info(
-      `👀 Starting watch mode for \`${ctx.pkg.name || '<no name>'}\` (\`${ctx.pkgDir}\`)`,
+      `Watching ${c.cyan(ctx.pkg.name || '<unnamed>')}`,
     )
 
     // Use rolldown's built-in watch mode
@@ -153,7 +153,7 @@ export async function build(config: BuildConfig): Promise<void> {
   }
 
   logger.info(
-    `📦 Building \`${ctx.pkg.name || '<no name>'}\` (\`${ctx.pkgDir}\`)`,
+    `Building ${c.cyan(ctx.pkg.name || '<unnamed>')}`,
   )
 
   await performBuild(finalConfig, ctx, startTime)
@@ -234,12 +234,12 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
   const dirSize = analyzeDir(outDirs)
   logger.info(
     c.dim(
-      `\nΣ Total dist byte size: ${c.underline(prettyBytes(dirSize.size))} (${c.underline(dirSize.files)} files)`,
+      `\nTotal: ${c.bold(prettyBytes(dirSize.size))} (${dirSize.files} files)`,
     ),
   )
 
   const duration = Date.now() - start
-  logger.success(`\n✅ robuild finished in ${duration}ms`)
+  logger.success(`\nBuild succeeded in ${c.bold(`${duration}ms`)}`)
 
   // Execute onSuccess callback
   if (config.onSuccess) {

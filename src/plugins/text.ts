@@ -1,4 +1,5 @@
 import type { RobuildPlugin } from '../types'
+import { logger } from '../features/logger'
 
 /**
  * Built-in plugin for text file imports
@@ -14,7 +15,7 @@ export function textPlugin(extensions: string[] = ['.txt', '.md']): RobuildPlugi
           return `export default ${JSON.stringify(content)}`
         }
         catch (error) {
-          console.error(`Failed to load text file ${id}:`, error)
+          logger.error(`Failed to load text file ${id}:`, error)
           return null
         }
       }
