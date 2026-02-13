@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.1.2
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.1...v0.1.2)
+
+### 📖 Documentation
+
+- Add test coverage section to README and automate coverage updates ([cc3faa6](https://github.com/Sunny-117/robuild/commit/cc3faa6))
+
+### 🏡 Chore
+
+- Remove shields ([b2e5191](https://github.com/Sunny-117/robuild/commit/b2e5191))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.1
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.0...v0.1.1)
