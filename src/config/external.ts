@@ -9,9 +9,15 @@ export type NoExternalConfig = (string | RegExp)[] | ((id: string, importer?: st
  * This is the shared logic used by both bundle and watch modes.
  */
 export function buildExternalDeps(ctx: BuildContext): (string | RegExp)[] {
+  // Note: We exclude 'module' and 'node:module' from the external list because
+  // rolldown 1.0.0-rc.4+ has a bug where marking 'node:module' as external
+  // causes it to be injected into the output even when not used by the code.
+  // See: https://github.com/rolldown/rolldown/issues/XXXX (TODO: file issue)
+  const excludedBuiltins = new Set(['module'])
+
   return [
-    ...builtinModules,
-    ...builtinModules.map(m => `node:${m}`),
+    ...builtinModules.filter(m => !excludedBuiltins.has(m)),
+    ...builtinModules.filter(m => !excludedBuiltins.has(m)).map(m => `node:${m}`),
     ...[
       ...Object.keys(ctx.pkg.dependencies || {}),
       ...Object.keys(ctx.pkg.peerDependencies || {}),
