@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm test:*)",
+      "Bash(pnpm vitest run:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh release view:*)",
+      "Bash(pnpm build)",
+      "Bash(timeout:*)",
+      "Bash(pnpm robuild:*)",
+      "Bash(DEBUG=1 pnpm robuild:*)",
+      "Bash(pnpm build:raw:*)",
+      "Bash(esno:*)",
+      "Bash(pnpm approve-builds:*)",
+      "Bash(pnpm install)",
+      "Bash(pnpm install:*)",
+      "Bash(node run.mjs)",
+      "Bash(npx robuild:*)",
+      "Bash(ls:*)",
+      "Bash(node:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm tsc:*)",
+      "Bash(pnpm run lint)",
+      "Bash(pnpm run typecheck:*)",
+      "Bash(npx tsc:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm test:coverage:raw:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm why:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(pnpm test:raw:*)",
+      "Bash(cat:*)"
+    ]
+  }
+}
