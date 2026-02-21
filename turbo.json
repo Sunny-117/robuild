@@ -78,7 +78,7 @@
       "inputs": [
         "src/**/*.ts",
         "test/**/*.ts",
-        "eslint.config.mjs",
+        "oxlint.json",
         "package.json"
       ],
       "outputs": [],
@@ -88,7 +88,7 @@
       "inputs": [
         "src/**/*.ts",
         "test/**/*.ts",
-        "eslint.config.mjs",
+        "oxlint.json",
         "package.json"
       ],
       "outputs": [],

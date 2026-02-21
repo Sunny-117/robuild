@@ -347,7 +347,7 @@ export async function rolldownBuild(
     // Merge with user's output config (user config has highest priority)
     const outConfig: OutputOptions = {
       ...robuildOutputConfig,
-      ...(userOutputConfig || {}),
+      ...userOutputConfig,
     }
 
     await hooks.rolldownOutput?.(outConfig, res, ctx)

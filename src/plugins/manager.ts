@@ -203,7 +203,7 @@ export class RobuildPluginManager {
   getRolldownPlugins(): RolldownPlugin[] {
     return this.plugins.map((plugin) => {
       // Remove robuild-specific properties for rolldown compatibility
-      const { robuildSetup, robuildBuildStart, robuildBuildEnd, ...rolldownPlugin } = plugin
+      const { robuildSetup: _setup, robuildBuildStart: _start, robuildBuildEnd: _end, ...rolldownPlugin } = plugin
       return rolldownPlugin
     })
   }

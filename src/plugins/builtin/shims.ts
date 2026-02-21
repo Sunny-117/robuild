@@ -197,7 +197,7 @@ export function createNodeShimsPlugin(): RobuildPlugin {
     name: 'node-shims',
     transform: async (code: string, id: string) => {
       // Only process ES modules for Node.js
-      if (!/\.mjs$/.test(id) && !/\.js$/.test(id)) {
+      if (!id.endsWith('.mjs') && !id.endsWith('.js')) {
         return null
       }
 

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "rules": {
+    "no-console": "warn",
+    "no-debugger": "error",
+    "no-unused-vars": "warn",
+    "eqeqeq": "warn",
+    "no-var": "error",
+    "prefer-const": "warn",
+    "unicorn/prefer-string-starts-ends-with": "warn",
+    "unicorn/no-useless-fallback-in-spread": "warn"
+  },
+  "ignorePatterns": [
+    "dist/**",
+    "node_modules/**",
+    "coverage/**",
+    "docs/**",
+    "bundler-benchmark/**",
+    "*.config.ts",
+    "*.config.mjs",
+    "scripts/**"
+  ],
+  "overrides": [
+    {
+      "files": ["src/**/*.ts"],
+      "rules": {
+        "no-console": "warn"
+      }
+    },
+    {
+      "files": ["test/**/*.ts", "playground/**/*.ts", "playground/**/*.tsx"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
+}
