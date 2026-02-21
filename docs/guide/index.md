@@ -1,95 +1,167 @@
 # 介绍
 
-robuild 是一个现代化的 TypeScript/ESM 包构建工具，专注于提供简单、快速、可靠的构建体验。
+**robuild** 是零配置的 TypeScript/ESM 包构建器。它以"零配置、极速、全能"为设计理念，让您专注于代码本身，而不是繁琐的构建配置。无论是简单的工具库还是复杂的组件库，robuild 都能以最简洁的方式完成构建。
 
-## 什么是 robuild？
+## 为什么选择 robuild？
 
-robuild 是一个零配置的 ESM/TypeScript 包构建器，它基于以下核心技术构建：
+robuild 基于 [Rolldown](https://rolldown.rs) 和 [Oxc](https://oxc.rs) 构建，这是 JavaScript 生态中最前沿的 Rust 工具链。与其他构建工具不同，robuild 深度整合了 Oxc 的完整能力——解析、转换、压缩一体化，带来真正的极速体验。
 
-- **[oxc](https://oxc.rs/)**: 用 Rust 编写的极速 JavaScript/TypeScript 解析器和转换器
-- **[rolldown](https://rolldown.rs/)**: 高性能的 JavaScript 打包器，替代 Rollup
-- **[rolldown-plugin-dts](https://github.com/sxzz/rolldown-plugin-dts)**: TypeScript 声明文件生成插件
+### robuild 的独特优势
+
+- **Oxc 全家桶深度集成**：robuild 是少数全面采用 Oxc 工具链的构建器。从 `oxc-parser` 解析、`oxc-transform` 转换到 `oxc-minify` 压缩，全链路 Rust 加速，构建速度遥遥领先。
+- **双配置风格兼容**：同时支持 unbuild 风格的 `entries` 数组配置和 tsup 风格的扁平配置，无论您从哪个工具迁移，都能无缝衔接。
+- **Transform 模式**：独有的 Transform 模式，基于 Oxc 逐文件转换，保留目录结构，适合需要保持模块边界的场景。
+- **自动 Exports 生成**：智能分析构建产物，自动生成符合规范的 `package.json` exports 字段，告别手动维护的烦恼。
+- **Stub 开发模式**：开发时直接链接源码，无需等待构建，配合 Watch 模式实现极致的开发体验。
+
+## 技术架构
+
+robuild 的技术选型追求极致性能：
+
+```
+源码 → oxc-parser 解析 → oxc-transform 转换 → rolldown 打包 → oxc-minify 压缩 → 产物
+         (Rust)           (Rust)              (Rust)           (Rust)
+```
+
+全链路 Rust 工具链，构建速度比传统 JavaScript 工具链快 10-100 倍。
+
+## 它能构建什么？
+
+robuild 专为现代库开发设计，覆盖所有常见场景：
+
+- **TypeScript & JavaScript**：原生支持 `.ts`、`.tsx`、`.js`、`.jsx`，自动处理最新语法特性
+- **类型声明文件**：基于 `rolldown-plugin-dts` 自动生成 `.d.ts`、`.d.mts` 声明文件
+- **多格式输出**：支持 `esm`、`cjs`、`iife` 格式，一次构建覆盖所有运行环境
+- **资源文件**：支持 JSON、WASM 等资源文件的处理和内联
 
 ## 核心特性
 
 ### ⚡ 极速构建
-- 基于 Rust 编写的 oxc 解析器，解析速度比 Babel 快 10-100 倍
-- rolldown 打包器性能优异，构建速度显著提升
-- 智能缓存机制，避免重复构建
 
-### 🎯 零配置
-- 开箱即用，无需复杂配置
-- 自动检测项目结构和依赖
-- 智能默认配置，满足大部分使用场景
+基于 Rust 的全链路工具链，构建速度比 Babel/Rollup 组合快一个数量级：
+
+- oxc-parser：解析速度比 Babel 快 20 倍以上
+- oxc-transform：转换速度比 SWC 更快
+- rolldown：打包速度比 Rollup 快 10 倍以上
+- oxc-minify：压缩速度比 Terser 快 50 倍以上
+
+### 🎯 真正的零配置
+
+```bash
+# 就这么简单，自动检测 src/index.ts
+npx robuild
+```
+
+- 自动检测项目入口和依赖
+- 智能推断输出格式和目标平台
+- 合理的默认配置覆盖 90% 场景
 
 ### 📦 双模式构建
-- **Bundle 模式**: 将多个文件打包成单个文件，适合库发布
-- **Transform 模式**: 转换目录中的所有文件，保持文件结构
 
-### 🔧 TypeScript 原生支持
-- 内置 TypeScript 支持，无需额外配置
-- 自动生成类型声明文件 (.d.ts)
-- 支持最新的 TypeScript 特性
-
-### 🚀 Stub 模式
-- 开发时快速链接源码，无需重新构建
-- 提升开发体验，支持热重载
-- 支持多种运行时环境
-
-### 👀 监听模式
-- 文件变化时自动重新构建
-- 智能文件检测和防抖机制
-- 错误恢复和清晰的状态反馈
-
-## 使用场景
-
-### 库开发
-```bash
-# 构建库文件
-npx robuild ./src/index.ts
+**Bundle 模式** - 打包成单文件：
+```ts
+{ type: 'bundle', input: './src/index.ts' }
 ```
 
-### 工具开发
-```bash
-# 构建 CLI 工具
-npx robuild ./src/cli.ts
+**Transform 模式** - 保留目录结构：
+```ts
+{ type: 'transform', input: './src' }
 ```
 
-### 运行时文件
-```bash
-# 转换运行时文件
-npx robuild ./src/runtime/:./dist/runtime
+### 🔄 双配置风格
+
+**unbuild 风格**（entries 数组）：
+```ts
+export default defineConfig({
+  entries: [
+    { type: 'bundle', input: './src/index.ts', format: ['esm', 'cjs'] }
+  ]
+})
 ```
 
-### 开发模式
-```bash
-# 使用 stub 模式快速开发
-npx robuild ./src/index.ts --stub
+**tsup 风格**（扁平配置）：
+```ts
+export default defineConfig({
+  entry: ['./src/index.ts'],
+  format: ['esm', 'cjs'],
+  dts: true
+})
+```
 
-# 使用监听模式自动重建
-npx robuild ./src/index.ts --watch
+### 📤 自动 Exports 生成
+
+```ts
+{
+  generateExports: true,
+  exports: { enabled: true, autoUpdate: true }
+}
+```
+
+自动生成规范的 package.json exports：
+```json
+{
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  }
+}
+```
+
+### 🚀 Stub 开发模式
+
+开发时直接链接源码，零等待：
+```bash
+npx robuild --stub
+```
+
+### 👀 Watch 模式
+
+文件变化自动重建，开发体验拉满：
+```bash
+npx robuild --watch
 ```
 
 ## 与其他工具对比
 
-| 特性 | robuild | unbuild | tsup | rollup |
-|------|---------|---------|------|--------|
-| 零配置 | ✅ | ✅ | ✅ | ❌ |
-| 极速构建 | ✅ | ❌ | ❌ | ❌ |
-| ESM 原生 | ✅ | ✅ | ✅ | ✅ |
-| TypeScript | ✅ | ✅ | ✅ | ❌ |
-| Stub 模式 | ✅ | ❌ | ❌ | ❌ |
-| 监听模式 | ✅ | ✅ | ✅ | ❌ |
+| 特性 | robuild | tsdown | unbuild | tsup |
+|------|---------|--------|---------|------|
+| 零配置 | ✅ | ✅ | ✅ | ✅ |
+| Oxc 全链路 | ✅ | ❌ | ❌ | ❌ |
+| Rust 打包器 | ✅ Rolldown | ✅ Rolldown | ❌ Rollup | ❌ esbuild |
+| Transform 模式 | ✅ | ❌ | ✅ | ❌ |
+| 双配置风格 | ✅ | ❌ | ❌ | ❌ |
+| Stub 模式 | ✅ | ❌ | ✅ | ❌ |
+| 自动 Exports | ✅ | ✅ | ❌ | ❌ |
+| 构建速度 | ⚡⚡⚡ | ⚡⚡⚡ | ⚡ | ⚡⚡ |
 
-## 技术栈
+## 快速上手
 
-robuild 的技术栈经过精心选择，确保性能和易用性：
+准备好了吗？三步开始：
 
-- **oxc**: 极速的 JavaScript/TypeScript 解析和转换
-- **rolldown**: 高性能的 JavaScript 打包器
-- **exsolve**: 智能的模块解析
-- **magic-string**: 高效的源码操作
-- **consola**: 美观的控制台输出
+```bash
+# 1. 安装
+pnpm add -D robuild
+
+# 2. 构建
+npx robuild
+
+# 3. 完成！
+```
+
+查阅 [快速开始](./getting-started.md) 了解更多。
+
+## 致谢
+
+robuild 的诞生离不开开源社区的贡献：
+
+- **[Rolldown](https://rolldown.rs)**：高性能 Rust 打包器，robuild 的核心引擎
+- **[Oxc](https://oxc.rs)**：极速 JavaScript 工具链，提供解析、转换、压缩能力
+- **[tsup](https://github.com/egoist/tsup)**：为零配置构建体验和 CLI 设计提供灵感
+- **[unbuild](https://github.com/unjs/unbuild)**：为 entries 配置风格和 Stub 模式提供启发
+- **[rolldown-plugin-dts](https://github.com/nicepkg/rolldown-plugin-dts)**：强大的类型声明生成插件
 
 ## 下一步
 
@@ -97,5 +169,4 @@ robuild 的技术栈经过精心选择，确保性能和易用性：
 - [CLI 使用](./cli.md) - 命令行工具详解
 - [配置](./configuration.md) - 配置文件选项
 - [构建模式](./build-modes.md) - Bundle 和 Transform 模式详解
-- [监听模式](./watch-mode.md) - 开发时自动重建
-- [Stub 模式](./stub-mode.md) - 快速开发链接
+- [Exports 生成](./exports-generation.md) - 自动生成 package.json exports
