@@ -31,7 +31,13 @@
       "Bash(pnpm test:raw:*)",
       "Bash(cat:*)",
       "Bash(pnpm build:exports)",
-      "Bash(pnpm lint)"
+      "Bash(pnpm lint)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm lint:raw:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)"
     ]
   }
 }
