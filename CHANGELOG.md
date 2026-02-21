@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.1.4
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.3...v0.1.4)
+
+### 🚀 Enhancements
+
+- **exports:** Implement generateExports feature for package.json exports field ([b69a057](https://github.com/Sunny-117/robuild/commit/b69a057))
+
+### 💅 Refactors
+
+- **lint:** Migrate from eslint to oxlint ([9521157](https://github.com/Sunny-117/robuild/commit/9521157))
+
+### 🏡 Chore
+
+- Update claude config ([513939d](https://github.com/Sunny-117/robuild/commit/513939d))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.3
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.2...v0.1.3)
