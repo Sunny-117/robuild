@@ -161,7 +161,7 @@ robuild 的诞生离不开开源社区的贡献：
 - **[Oxc](https://oxc.rs)**：极速 JavaScript 工具链，提供解析、转换、压缩能力
 - **[tsup](https://github.com/egoist/tsup)**：为零配置构建体验和 CLI 设计提供灵感
 - **[unbuild](https://github.com/unjs/unbuild)**：为 entries 配置风格和 Stub 模式提供启发
-- **[rolldown-plugin-dts](https://github.com/nicepkg/rolldown-plugin-dts)**：强大的类型声明生成插件
+- **[rolldown-plugin-dts](https://github.com/sxzz/rolldown-plugin-dts)**：强大的类型声明生成插件
 
 ## 下一步
 
