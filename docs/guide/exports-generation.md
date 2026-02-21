@@ -45,7 +45,7 @@ export default defineConfig({
     includeTypes: true,      // 包含类型定义
     autoUpdate: true,        // 自动更新 package.json
     baseDir: './dist',       // 基础目录
-    customMappings: {        // 自定义导出映射
+    custom: {                // 自定义导出映射
       './utils': './dist/utils/index.js',
       './helpers': './dist/helpers/index.js'
     }
@@ -61,7 +61,16 @@ export default defineConfig({
 | `includeTypes` | `boolean` | 包含类型定义 | `true` |
 | `autoUpdate` | `boolean` | 自动更新 package.json | `true` |
 | `baseDir` | `string` | 输出文件的基础目录 | `'./dist'` |
-| `customMappings` | `Record<string, string>` | 自定义导出映射 | `{}` |
+| `custom` | `Record<string, string>` | 自定义导出映射 | `{}` |
+
+### Entry 级别配置
+
+每个 bundle entry 还可以配置：
+
+| 选项 | 类型 | 描述 | 默认值 |
+|------|------|------|--------|
+| `generateExports` | `boolean` | 为此 entry 生成 exports | `false` |
+| `exportPath` | `string` | 自定义导出路径（如 `'.'` 或 `'./utils'`） | 自动推断 |
 
 ## 📦 生成示例
 
@@ -140,7 +149,7 @@ export default defineConfig({
 export default defineConfig({
   exports: {
     enabled: true,
-    customMappings: {
+    custom: {
       './core': './dist/core/index.js',
       './plugins/*': './dist/plugins/*.js',
       './types': './dist/types/index.d.ts'
@@ -246,7 +255,7 @@ export default defineConfig({
   ],
   exports: {
     enabled: true,
-    customMappings: {
+    custom: {
       './package.json': './package.json'
     }
   }

@@ -8,6 +8,7 @@ export type {
   BuildConfig,
   BuildEntry,
   BundleEntry,
+  ExportsConfig,
   RobuildPlugin,
   TransformEntry,
 } from './types'

@@ -1,0 +1,125 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`exports generation > basic exports > should generate exports for multiple entries 1`] = `
+"## utils.mjs
+
+\`\`\`js
+//#region utils.ts
+const util = "util";
+
+//#endregion
+export { util };
+\`\`\`
+"
+`;
+
+exports[`exports generation > basic exports > should generate exports for single entry 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const hello = "world";
+
+//#endregion
+exports.hello = hello;
+\`\`\`
+
+## index.d.mts
+
+\`\`\`ts
+//#region index.d.ts
+declare const hello = "world";
+//#endregion
+export { hello };
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`exports generation > basic exports > should use custom exportPath 1`] = `
+"## helpers/index.mjs
+
+\`\`\`js
+//#region src/helpers/index.ts
+const helper = "helper";
+
+//#endregion
+export { helper };
+\`\`\`
+"
+`;
+
+exports[`exports generation > cli flag > should respect --generate-exports flag 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const value = 1;
+
+//#endregion
+export { value };
+\`\`\`
+"
+`;
+
+exports[`exports generation > custom exports > should merge custom exports with generated ones 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const main = "main";
+
+//#endregion
+export { main };
+\`\`\`
+"
+`;
+
+exports[`exports generation > format handling > should generate correct extensions for multi-format builds 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const value = 42;
+
+//#endregion
+exports.value = value;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const value = 42;
+
+//#endregion
+export { value };
+\`\`\`
+"
+`;
+
+exports[`exports generation > format handling > should handle ESM-only builds 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const value = 42;
+
+//#endregion
+export { value };
+\`\`\`
+"
+`;

@@ -400,6 +400,31 @@ export type BundleEntry = _BuildEntry & {
    * @default false
    */
   dtsOnly?: boolean
+
+  /**
+   * Generate package.json exports entry for this entry.
+   *
+   * When enabled, this entry will be included in the generated exports field.
+   *
+   * @default false
+   */
+  generateExports?: boolean
+
+  /**
+   * Custom export path for this entry.
+   *
+   * If not specified, the export path will be derived from the input path.
+   * Use '.' for the main export, or './subpath' for subpath exports.
+   *
+   * @example
+   * ```ts
+   * {
+   *   input: './src/utils/index.ts',
+   *   exportPath: './utils'
+   * }
+   * ```
+   */
+  exportPath?: string
 }
 
 export type TransformEntry = _BuildEntry & {

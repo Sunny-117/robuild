@@ -21,6 +21,7 @@ import {
 } from './config/entry-resolver'
 import { loadViteConfig } from './config/vite-config'
 import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from './core/logger'
+import { generatePackageExports, updatePackageJsonExports } from './transforms/exports'
 import { createBuildResult, executeOnSuccess } from './transforms/on-success'
 
 import { analyzeDir, normalizePath } from './utils/index'
@@ -226,6 +227,20 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
   }
 
   await hooks.end?.(ctx)
+
+  // Generate package.json exports if enabled
+  if (config.exports?.enabled) {
+    const exportsCtx = {
+      pkgDir: ctx.pkgDir,
+      config,
+      entries,
+    }
+    const packageExports = generatePackageExports(exportsCtx, config.exports)
+
+    if (Object.keys(packageExports).length > 0 && config.exports.autoUpdate !== false) {
+      updatePackageJsonExports(ctx.pkgDir, packageExports)
+    }
+  }
 
   // Check for warnings and fail if requested
   if (shouldFailOnWarnings(config.failOnWarn || false)) {

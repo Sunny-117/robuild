@@ -29,7 +29,9 @@
       "Bash(pnpm why:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(pnpm test:raw:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(pnpm build:exports)",
+      "Bash(pnpm lint)"
     ]
   }
 }

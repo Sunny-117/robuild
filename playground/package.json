@@ -8,7 +8,14 @@
   "keywords": [],
   "exports": {
     ".": {
-      "import": "./dist/index.mjs"
+      "types": "./dist/exports-main/index.d.mts",
+      "import": "./dist/exports-main/index.mjs",
+      "require": "./dist/exports-main/index.cjs"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.mts",
+      "import": "./dist/utils/index.mjs",
+      "require": "./dist/utils/index.cjs"
     }
   },
   "main": "index.js",
@@ -23,6 +30,7 @@
     "dev:vue": "robuild --config vue-support-config.ts --watch",
     "build:vue": "robuild --config vue-support-config.ts",
     "build:assets": "robuild --config asset-loader-config.ts",
+    "build:exports": "robuild --config exports-generation.config.ts",
     "transform": "robuild --config transform.config.ts",
     "preview": "live-server"
   },
