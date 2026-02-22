@@ -38,6 +38,12 @@ export default defineConfig({
       input: ['./src/index.ts', './src/cli.ts', './src/config.ts'],
     },
   ],
+  // LightningCSS is an optional peer dependency, should not be bundled
+  external: [
+    'unplugin-lightningcss',
+    'unplugin-lightningcss/rolldown',
+    'lightningcss',
+  ],
   // Example watch configuration
   watch: {
     enabled: false, // Set to true to enable watch mode by default

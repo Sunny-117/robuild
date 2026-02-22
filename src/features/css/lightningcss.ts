@@ -29,7 +29,7 @@ export async function createLightningCSSPlugin(
   const LightningCSS = await import('unplugin-lightningcss/rolldown').catch(
     () => undefined,
   )
-  if (!LightningCSS) return
+  if (!LightningCSS) return undefined
 
   // Convert target to array format if it's a string
   const targetArray = options.target
@@ -39,11 +39,10 @@ export async function createLightningCSSPlugin(
     : undefined
 
   // Convert esbuild-format target to LightningCSS targets
+  // Note: Only browser targets like 'chrome90' are valid for LightningCSS
+  // ES targets like 'es2022' will be ignored (plugin still works without targets)
   const targets = targetArray && esbuildTargetToLightningCSS(targetArray)
-  if (!targets && targetArray) {
-    // Target was provided but couldn't be converted, return undefined
-    return
-  }
 
-  return LightningCSS.default({ options: targets ? { targets } : {} })
+  const plugin = LightningCSS.default({ options: targets ? { targets } : {} })
+  return plugin
 }

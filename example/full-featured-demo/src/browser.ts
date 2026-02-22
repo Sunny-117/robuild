@@ -2,6 +2,10 @@
  * Browser-specific entry point - demonstrates IIFE bundle for browsers
  */
 
+// Import CSS files - robuild will process and extract them
+import './styles/main.css'
+import './styles/components.css'
+
 import { generateId, formatBytes, camelCase, pascalCase, kebabCase, snakeCase } from '@utils'
 import type { UserConfig, BuildOptions } from '@types'
 

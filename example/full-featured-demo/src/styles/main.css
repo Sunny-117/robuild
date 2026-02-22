@@ -1,0 +1,149 @@
+/**
+ * Robuild Demo - Main Stylesheet
+ * Demonstrates CSS processing with robuild
+ */
+
+/* CSS Variables (Custom Properties) */
+:root {
+  --robuild-primary: #3b82f6;
+  --robuild-secondary: #10b981;
+  --robuild-text: #1f2937;
+  --robuild-bg: #f9fafb;
+  --robuild-border: #e5e7eb;
+  --robuild-radius: 8px;
+  --robuild-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Base Styles */
+.robuild-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  background: var(--robuild-bg);
+  border-radius: var(--robuild-radius);
+  box-shadow: var(--robuild-shadow);
+}
+
+/* Button Component */
+.robuild-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  background: var(--robuild-primary);
+  border: none;
+  border-radius: var(--robuild-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.robuild-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.robuild-btn:active {
+  transform: translateY(0);
+}
+
+.robuild-btn--secondary {
+  background: var(--robuild-secondary);
+}
+
+.robuild-btn--secondary:hover {
+  background: #059669;
+}
+
+/* Card Component */
+.robuild-card {
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid var(--robuild-border);
+  border-radius: var(--robuild-radius);
+  box-shadow: var(--robuild-shadow);
+}
+
+.robuild-card__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--robuild-text);
+}
+
+.robuild-card__content {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* Input Component */
+.robuild-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: var(--robuild-text);
+  background: white;
+  border: 1px solid var(--robuild-border);
+  border-radius: var(--robuild-radius);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.robuild-input:focus {
+  border-color: var(--robuild-primary);
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+}
+
+.robuild-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Grid Layout */
+.robuild-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Flexbox Utilities */
+.robuild-flex {
+  display: flex;
+}
+
+.robuild-flex--center {
+  align-items: center;
+  justify-content: center;
+}
+
+.robuild-flex--between {
+  justify-content: space-between;
+}
+
+/* Spacing Utilities */
+.robuild-mt-1 { margin-top: 0.25rem; }
+.robuild-mt-2 { margin-top: 0.5rem; }
+.robuild-mt-4 { margin-top: 1rem; }
+.robuild-mb-1 { margin-bottom: 0.25rem; }
+.robuild-mb-2 { margin-bottom: 0.5rem; }
+.robuild-mb-4 { margin-bottom: 1rem; }
+
+/* Animation */
+@keyframes robuild-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.robuild-animate-in {
+  animation: robuild-fade-in 0.3s ease-out;
+}

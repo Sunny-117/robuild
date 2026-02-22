@@ -23,7 +23,17 @@ export type Platform = 'browser' | 'node' | 'neutral'
 /**
  * Target ES version
  */
-export type Target = 'es2015' | 'es2016' | 'es2017' | 'es2018' | 'es2019' | 'es2020' | 'es2021' | 'es2022' | 'esnext'
+export type EsTarget = 'es2015' | 'es2016' | 'es2017' | 'es2018' | 'es2019' | 'es2020' | 'es2021' | 'es2022' | 'esnext'
+
+/**
+ * Browser target for CSS vendor prefixing (e.g., 'chrome60', 'firefox60', 'safari11')
+ */
+export type BrowserTarget = string
+
+/**
+ * Build target - ES version or browser targets for CSS processing
+ */
+export type Target = EsTarget | BrowserTarget[]
 
 // Copy functionality types
 export interface CopyEntry {
@@ -517,7 +527,7 @@ export interface RobuildPluginContext {
   outDir: string
   format: ModuleFormat | ModuleFormat[]
   platform: Platform
-  target: string
+  target: Target
 }
 
 /**

@@ -15,6 +15,7 @@ import { defineConfig } from 'robuild'
  * - Custom loaders (assets, text, json)
  * - Path aliases
  * - Banner/Footer injection
+ * - CSS processing and bundling
  * - File copying
  * - Content hash for cache busting
  * - Package.json exports generation
@@ -70,6 +71,8 @@ export default defineConfig({
       exportPath: './browser',
       // Add content hash for cache busting
       hash: true,
+      // Target older browsers to generate vendor prefixes with LightningCSS
+      target: ['chrome60', 'firefox60', 'safari11'],
     },
 
     // Utils sub-package
@@ -302,4 +305,17 @@ export default defineConfig({
   // Logging
   // ============================================
   logLevel: 'info',
+
+  // ============================================
+  // CSS Processing
+  // ============================================
+  css: {
+    // Disable CSS code splitting to merge all CSS into one file
+    splitting: false,
+    // Custom CSS output filename
+    fileName: 'robuild-demo.css',
+    // Enable LightningCSS for prefixing, minification, and modern CSS transforms
+    // Note: Requires `pnpm add -D unplugin-lightningcss lightningcss`
+    lightningcss: true,
+  },
 })

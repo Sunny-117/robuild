@@ -87,6 +87,9 @@ importers:
       husky:
         specifier: ^9.1.7
         version: 9.1.7
+      lightningcss:
+        specifier: ^1.31.1
+        version: 1.31.1
       lint-staged:
         specifier: ^16.2.7
         version: 16.2.7
@@ -99,6 +102,9 @@ importers:
       turbo:
         specifier: ^2.8.10
         version: 2.8.10
+      unplugin-lightningcss:
+        specifier: ^0.4.5
+        version: 0.4.5
       vitepress:
         specifier: ^1.6.4
         version: 1.6.4(@algolia/client-search@5.49.0)(@types/node@25.3.0)(@types/react@18.3.28)(fuse.js@7.1.0)(lightningcss@1.31.1)(postcss@8.5.6)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)(terser@5.46.0)(typescript@5.9.3)
@@ -140,7 +146,7 @@ importers:
         version: link:..
       tsdown:
         specifier: ^0.17.0-beta.3
-        version: 0.17.4(oxc-resolver@11.18.0)(typescript@5.9.3)(vue-tsc@3.2.5(typescript@5.9.3))
+        version: 0.17.4(oxc-resolver@11.18.0)(typescript@5.9.3)(unplugin-lightningcss@0.4.5)(vue-tsc@3.2.5(typescript@5.9.3))
       tsup:
         specifier: ^8.5.1
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
@@ -166,12 +172,18 @@ importers:
         specifier: ^5.4.1
         version: 5.6.2
     devDependencies:
+      lightningcss:
+        specifier: ^1.31.1
+        version: 1.31.1
       robuild:
         specifier: workspace:*
         version: link:../..
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
+      unplugin-lightningcss:
+        specifier: ^0.4.5
+        version: 0.4.5
 
   packages/create-robuild:
     dependencies:
@@ -6399,6 +6411,10 @@ packages:
   unplugin-lightningcss@0.3.3:
     resolution: {integrity: sha512-mMNRCNIcxc/3410w7sJdXcPxn0IGZdEpq42OBDyckdGkhOeWYZCG9RkHs72TFyBsS82a4agFDOFU8VrFKF2ZvA==}
     engines: {node: '>=18.12.0'}
+
+  unplugin-lightningcss@0.4.5:
+    resolution: {integrity: sha512-PMm6POv3gt1HNbxYFItantjcP6dPG/BiV/9IXcVLVBv3BZ+pf7Eo4yE+siIGKoVMXjs3BfVXeETTw2Gv3D8iOw==}
+    engines: {node: '>=20.19.0'}
 
   unplugin-utils@0.2.5:
     resolution: {integrity: sha512-gwXJnPRewT4rT7sBi/IvxKTjsms7jX7QIDLOClApuZwR49SXbrB1z2NLUZ+vDHyqCj/n58OzRRqaW+B8OZi8vg==}
@@ -12754,7 +12770,7 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  tsdown@0.17.4(oxc-resolver@11.18.0)(typescript@5.9.3)(vue-tsc@3.2.5(typescript@5.9.3)):
+  tsdown@0.17.4(oxc-resolver@11.18.0)(typescript@5.9.3)(unplugin-lightningcss@0.4.5)(vue-tsc@3.2.5(typescript@5.9.3)):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -12773,6 +12789,7 @@ snapshots:
       unrun: 0.2.27
     optionalDependencies:
       typescript: 5.9.3
+      unplugin-lightningcss: 0.4.5
     transitivePeerDependencies:
       - '@ts-macro/tsc'
       - '@typescript/native-preview'
@@ -12981,6 +12998,11 @@ snapshots:
       lightningcss: 1.31.1
       magic-string: 0.30.21
       unplugin: 2.3.11
+
+  unplugin-lightningcss@0.4.5:
+    dependencies:
+      lightningcss: 1.31.1
+      unplugin: 3.0.0
 
   unplugin-utils@0.2.5:
     dependencies:

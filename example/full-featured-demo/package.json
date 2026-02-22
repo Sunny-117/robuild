@@ -29,8 +29,10 @@
   "author": "robuild",
   "license": "MIT",
   "devDependencies": {
+    "lightningcss": "^1.31.1",
     "robuild": "workspace:*",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "unplugin-lightningcss": "^0.4.5"
   },
   "dependencies": {
     "chalk": "^5.4.1"
