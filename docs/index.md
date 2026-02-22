@@ -1,5 +1,7 @@
 ---
 layout: home
+title: robuild - 零配置 ESM/TS 包构建器
+titleTemplate: false
 hero:
   name: robuild
   text: 零配置 ESM/TS 包构建器

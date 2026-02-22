@@ -1,7 +1,17 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`exports generation > basic exports > should generate exports for multiple entries 1`] = `
-"## utils.mjs
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const main = "main";
+
+//#endregion
+export { main };
+\`\`\`
+
+## utils.mjs
 
 \`\`\`js
 //#region utils.ts

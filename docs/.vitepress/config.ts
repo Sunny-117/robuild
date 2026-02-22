@@ -4,11 +4,17 @@ import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-i
 export default defineConfig({
   base: '/robuild/',
   title: 'robuild',
+  titleTemplate: ':title - 零配置 ESM/TS 包构建器',
   description: '⚡️ Zero-config ESM/TS package builder. Powered by oxc, rolldown and rolldown-plugin-dts',
   lang: 'zh-CN',
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['link', { rel: 'icon', href: '/robuild/favicon.ico' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/robuild/logo.png' }],
     ['meta', { name: 'theme-color', content: '#ff7e17' }],
+    ['meta', { name: 'keywords', content: 'robuild, bundler, rolldown, oxc, typescript, esm, build tool' }],
+    ['meta', { property: 'og:title', content: 'robuild - Zero-config ESM/TS Package Builder' }],
+    ['meta', { property: 'og:description', content: 'Zero-config ESM/TS package builder powered by Rolldown and Oxc. Fast, modern, and easy to use.' }],
+    ['meta', { property: 'og:image', content: '/robuild/logo.png' }],
   ],
   ignoreDeadLinks: true,
   lastUpdated: true,

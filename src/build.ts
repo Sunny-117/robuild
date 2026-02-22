@@ -220,11 +220,14 @@ export async function performBuild(config: BuildConfig, ctx: BuildContext, start
     }
   }
 
-  for (const entry of entries) {
-    await (entry.type === 'bundle'
-      ? rolldownBuild(ctx, entry, hooks, config)
-      : transformDir(ctx, entry))
-  }
+  // Build all entries in parallel for better performance
+  await Promise.all(
+    entries.map(entry =>
+      entry.type === 'bundle'
+        ? rolldownBuild(ctx, entry, hooks, config)
+        : transformDir(ctx, entry),
+    ),
+  )
 
   await hooks.end?.(ctx)
 

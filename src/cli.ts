@@ -1,5 +1,14 @@
 #!/usr/bin/env node
 
+// Enable Node.js module compile cache for faster startup (Node.js 20.19+)
+import module from 'node:module'
+try {
+  module.enableCompileCache?.()
+}
+catch {
+  // Ignore if not supported
+}
+
 import type { BuildConfig, BuildEntry } from './types'
 import process from 'node:process'
 import { loadConfig } from 'c12'

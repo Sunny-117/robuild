@@ -258,8 +258,8 @@ export async function rolldownBuild(
 
   await hooks.rolldownConfig?.(baseRolldownConfig, ctx)
 
-  // Build for each format
-  const allOutputEntries: Array<{
+  // Build for each format - in parallel for better performance
+  type OutputEntryInfo = {
     format: ModuleFormat
     name: string
     exports: string[]
@@ -268,10 +268,12 @@ export async function rolldownBuild(
     minSize: number
     minGzipSize: number
     sideEffectSize: number
-  }> = []
+  }
+
   const filePathMap = new Map<string, string>() // Map filename to full path for logging
 
-  for (const format of formats) {
+  // Build all formats in parallel
+  const buildFormat = async (format: ModuleFormat): Promise<OutputEntryInfo[]> => {
     const extension = getFormatExtension(format, platform, entry.fixedExtension)
 
     // Create config for this format
@@ -309,10 +311,6 @@ export async function rolldownBuild(
         // IIFE/UMD use .js extension
         entryFileName = `[name].js`
       }
-    }
-    else {
-      // For single format builds, use the default extension
-      // No subdirectories needed since there's only one format
     }
 
     // Build base output config from robuild options
@@ -400,6 +398,8 @@ export async function rolldownBuild(
       return Array.from(deps).sort()
     }
 
+    const formatOutputEntries: OutputEntryInfo[] = []
+
     for (const chunk of output) {
       if (chunk.type !== 'chunk' || !chunk.isEntry)
         continue
@@ -436,7 +436,7 @@ export async function rolldownBuild(
       // Store full path for logging
       filePathMap.set(finalFileName, finalFilePath)
 
-      allOutputEntries.push({
+      formatOutputEntries.push({
         format,
         name: finalFileName,
         exports: chunk.exports,
@@ -445,7 +445,13 @@ export async function rolldownBuild(
         sideEffectSize: await sideEffectSize(formatOutDir, finalFileName),
       })
     }
+
+    return formatOutputEntries
   }
+
+  // Execute all format builds in parallel
+  const formatResults = await Promise.all(formats.map(buildFormat))
+  const allOutputEntries = formatResults.flat()
 
   // Handle dtsOnly mode: delete JS files, keep only .d.ts files
   if (entry.dtsOnly) {

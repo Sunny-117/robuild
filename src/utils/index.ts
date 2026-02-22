@@ -1,11 +1,8 @@
-import type { Plugin } from 'rolldown'
-import { readdirSync, statSync } from 'node:fs'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { minify } from 'oxc-minify'
-import { rolldown } from 'rolldown'
-import { logger } from '../core/logger'
 
 // Re-export utilities from submodules
 export * from './extensions'
@@ -71,6 +68,14 @@ export function analyzeDir(dir: string | string[]): {
   }
 }
 
+/**
+ * Calculate size metrics for a built file.
+ * Reads the file directly from disk instead of rebuilding with rolldown.
+ *
+ * @param dir - The output directory
+ * @param entry - The entry filename
+ * @returns Size metrics (raw, minified, gzipped)
+ */
 export async function distSize(
   dir: string,
   entry: string,
@@ -79,18 +84,9 @@ export async function distSize(
   minSize: number
   minGzipSize: number
 }> {
-  const build = await rolldown({
-    input: join(dir, entry),
-    plugins: [],
-    platform: 'neutral',
-    external: id => id[0] !== '.' && !id.startsWith(dir),
-  })
+  const filePath = join(dir, entry)
+  const code = readFileSync(filePath, 'utf-8')
 
-  const { output } = await build.generate({
-    codeSplitting: false,
-  })
-
-  const code = output[0].code
   const { code: minified } = await minify(entry, code)
 
   return {
@@ -100,47 +96,20 @@ export async function distSize(
   }
 }
 
+/**
+ * Calculate side effect size.
+ * For now, returns 0 as calculating true side effects requires complex analysis.
+ * This avoids the expensive rolldown rebuild that was causing performance issues.
+ *
+ * @param _dir - The output directory (unused)
+ * @param _entry - The entry filename (unused)
+ * @returns Side effect size (always 0 for now)
+ */
 export async function sideEffectSize(
-  dir: string,
-  entry: string,
+  _dir: string,
+  _entry: string,
 ): Promise<number> {
-  const virtualEntry: Plugin = {
-    name: 'virtual-entry',
-    async resolveId(id, importer, opts) {
-      if (id === '#entry') {
-        return { id }
-      }
-      const resolved = await this.resolve(id, importer, opts)
-      if (!resolved) {
-        return null
-      }
-      resolved.moduleSideEffects = null
-      return resolved
-    },
-    load(id) {
-      if (id === '#entry') {
-        return /* js */ `import * as _lib from "${join(dir, entry)}";`
-      }
-    },
-  }
-
-  const build = await rolldown({
-    input: '#entry',
-    platform: 'neutral',
-    external: id => id[0] !== '.' && !id.startsWith(dir),
-    plugins: [virtualEntry],
-  })
-
-  const { output } = await build.generate({
-    codeSplitting: false,
-  })
-
-  if (process.env.INSPECT_BUILD) {
-    logger.debug('---------[side effects]---------')
-    logger.debug(entry)
-    logger.debug(output[0].code)
-    logger.debug('-------------------------------')
-  }
-
-  return Buffer.byteLength(output[0].code.trim())
+  // Skip side effect calculation to improve performance
+  // The previous implementation was calling rolldown again which was very slow
+  return 0
 }
