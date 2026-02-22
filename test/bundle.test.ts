@@ -365,4 +365,71 @@ describe('bundle mode', () => {
       })
     })
   })
+
+  describe('dtsOnly mode', () => {
+    it('should only generate .d.ts files when dtsOnly is true', async (context) => {
+      await testBuild({
+        context,
+        files: {
+          'index.ts': `
+            export interface User {
+              name: string
+              age: number
+            }
+            export function greet(user: User): string {
+              return \`Hello, \${user.name}!\`
+            }
+          `,
+        },
+        config: {
+          entries: [
+            {
+              type: 'bundle',
+              input: 'index.ts',
+              dtsOnly: true,
+            },
+          ],
+        },
+        afterBuild: async (outputDir) => {
+          const { readdirSync } = await import('node:fs')
+          const files = readdirSync(outputDir)
+          // Should only have .d.ts files, no .mjs files
+          const jsFiles = files.filter(f => f.endsWith('.mjs') || f.endsWith('.js') || f.endsWith('.cjs'))
+          const dtsFiles = files.filter(f => f.endsWith('.d.ts') || f.endsWith('.d.mts'))
+          expect(jsFiles.length).toBe(0)
+          expect(dtsFiles.length).toBeGreaterThan(0)
+        },
+      })
+    })
+
+    it('should force ESM format in dtsOnly mode even if cjs is specified', async (context) => {
+      await testBuild({
+        context,
+        files: {
+          'index.ts': `
+            export const value = 42
+          `,
+        },
+        config: {
+          entries: [
+            {
+              type: 'bundle',
+              input: 'index.ts',
+              format: 'cjs',
+              dtsOnly: true,
+            },
+          ],
+        },
+        afterBuild: async (outputDir) => {
+          const { readdirSync } = await import('node:fs')
+          const files = readdirSync(outputDir)
+          // Should only have .d.ts files
+          const jsFiles = files.filter(f => f.endsWith('.mjs') || f.endsWith('.js') || f.endsWith('.cjs'))
+          const dtsFiles = files.filter(f => f.endsWith('.d.ts') || f.endsWith('.d.mts'))
+          expect(jsFiles.length).toBe(0)
+          expect(dtsFiles.length).toBeGreaterThan(0)
+        },
+      })
+    })
+  })
 })

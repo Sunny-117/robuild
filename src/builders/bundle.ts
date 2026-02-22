@@ -8,7 +8,7 @@ import type {
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
 import type { BuildConfig, BuildContext, BuildHooks, BundleEntry } from '../types'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises'
 import { builtinModules } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
 import { colors as c } from 'consola/utils'
@@ -77,8 +77,9 @@ export async function rolldownBuild(
     logger.info('Running in dtsOnly mode - only generating declaration files')
     // Force dts to be enabled
     entry.dts = entry.dts === false ? true : (entry.dts || true)
-    // We'll skip the normal build and only run DTS generation
-    // This will be handled in the format loop below
+    // Force ESM format since DTS plugin only works with ESM
+    formats.length = 0
+    formats.push('esm')
   }
 
   if (entry.stub) {
@@ -430,6 +431,40 @@ export async function rolldownBuild(
         sideEffectSize: await sideEffectSize(formatOutDir, finalFileName),
       })
     }
+  }
+
+  // Handle dtsOnly mode: delete JS files, keep only .d.ts files
+  if (entry.dtsOnly) {
+    const jsFilesToDelete: string[] = []
+    for (const outputEntry of allOutputEntries) {
+      const filePath = filePathMap.get(outputEntry.name)
+      if (filePath && !filePath.endsWith('.d.ts') && !filePath.endsWith('.d.mts') && !filePath.endsWith('.d.cts')) {
+        jsFilesToDelete.push(filePath)
+      }
+    }
+    // Delete JS files
+    for (const filePath of jsFilesToDelete) {
+      try {
+        await unlink(filePath)
+        // Also try to delete sourcemap if exists
+        try {
+          await unlink(`${filePath}.map`)
+        }
+        catch {
+          // ignore if no map file
+        }
+      }
+      catch {
+        // ignore if file doesn't exist
+      }
+    }
+    // Filter out JS entries from output display
+    const dtsEntries = allOutputEntries.filter(o =>
+      o.name.endsWith('.d.ts') || o.name.endsWith('.d.mts') || o.name.endsWith('.d.cts'),
+    )
+    // Clear and re-add only DTS entries
+    allOutputEntries.length = 0
+    allOutputEntries.push(...dtsEntries)
   }
 
   // Copy files if specified

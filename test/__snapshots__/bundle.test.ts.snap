@@ -124,6 +124,34 @@ return exports;
 "
 `;
 
+exports[`bundle mode > dtsOnly mode > should force ESM format in dtsOnly mode even if cjs is specified 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+//#region index.d.ts
+declare const value = 42;
+//#endregion
+export { value };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > dtsOnly mode > should only generate .d.ts files when dtsOnly is true 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+//#region index.d.ts
+interface User {
+  name: string;
+  age: number;
+}
+declare function greet(user: User): string;
+//#endregion
+export { User, greet };
+\`\`\`
+"
+`;
+
 exports[`bundle mode > external dependencies > should handle external dependencies 1`] = `
 "## index.mjs
 
