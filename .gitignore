@@ -12,3 +12,4 @@ dist-transform
 temp
 .turbo
 dist-*
+tsconfig.tsbuildinfo
