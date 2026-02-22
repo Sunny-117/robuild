@@ -97,21 +97,21 @@ Visit our documentation site for detailed guides, API reference, and examples.
 <!-- coverage-start -->
 | File | Stmts | Branch | Funcs | Lines |
 |------|-------|--------|-------|-------|
-| **All files** | **30.90%** | **64.07%** | **51.02%** | **30.90%** |
-| src/build.ts | 70.93% | 55.56% | 100.00% | 70.93% |
-| src/builders | 58.78% | 57.38% | 41.18% | 58.78% |
-| src/config | 19.62% | 65.00% | 46.67% | 19.62% |
-| src/config.ts | 0.00% | 100.00% | 100.00% | 0.00% |
-| src/core | 63.86% | 90.91% | 50.00% | 63.86% |
-| src/deprecated | 0.00% | 100.00% | 100.00% | 0.00% |
+| **All files** | **45.60%** | **40.43%** | **45.72%** | **45.78%** |
+| src/build.ts | 84.15% | 67.74% | 100.00% | 83.54% |
+| src/builders | 79.83% | 71.76% | 85.19% | 79.83% |
+| src/config | 42.31% | 26.21% | 56.67% | 42.06% |
+| src/config.ts | 0.00% | 0.00% | 0.00% | 0.00% |
+| src/core | 67.74% | 57.14% | 63.16% | 67.74% |
+| src/deprecated | 0.00% | 0.00% | 0.00% | 0.00% |
 | src/index.ts | 0.00% | 0.00% | 0.00% | 0.00% |
-| src/plugins | 13.62% | 68.75% | 47.37% | 13.62% |
-| src/plugins/builtin | 7.65% | 92.31% | 23.33% | 7.65% |
-| src/plugins/extras | 0.00% | 100.00% | 100.00% | 0.00% |
-| src/transforms | 16.94% | 78.95% | 66.67% | 16.94% |
-| src/types.ts | 0.00% | 100.00% | 100.00% | 0.00% |
-| src/utils | 75.87% | 62.50% | 77.27% | 75.87% |
-| src/watch.ts | 4.24% | 0.00% | 0.00% | 4.24% |
+| src/plugins | 7.50% | 8.33% | 18.42% | 7.63% |
+| src/plugins/builtin | 16.46% | 18.03% | 23.08% | 16.51% |
+| src/plugins/extras | 0.00% | 0.00% | 0.00% | 0.00% |
+| src/transforms | 71.43% | 63.77% | 81.82% | 71.27% |
+| src/types.ts | 0.00% | 0.00% | 0.00% | 0.00% |
+| src/utils | 73.87% | 61.17% | 95.65% | 73.87% |
+| src/watch.ts | 0.00% | 0.00% | 0.00% | 0.00% |
 <!-- coverage-end -->
 
 Run coverage locally:
@@ -132,5 +132,5 @@ pnpm test:coverage
 [bundle-href]: https://bundlephobia.com/result?p=robuild
 [license-src]: https://img.shields.io/github/license/Sunny-117/robuild.svg?style=flat&colorA=080f12&colorB=1fa669
 [license-href]: https://github.com/Sunny-117/robuild/blob/main/LICENSE
-[coverage-src]: https://img.shields.io/badge/coverage-30.9%25-orange?style=flat&colorA=080f12
+[coverage-src]: https://img.shields.io/badge/coverage-45.6%25-yellow?style=flat&colorA=080f12
 [coverage-href]: #test-coverage

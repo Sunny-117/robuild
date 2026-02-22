@@ -37,7 +37,10 @@
       "Bash(pnpm add:*)",
       "Bash(pnpm lint:raw:*)",
       "Bash(git add:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(../../node_modules/.bin/esno:*)",
+      "Bash(git restore:*)",
+      "Bash(pnpm test:coverage:*)"
     ]
   }
 }
