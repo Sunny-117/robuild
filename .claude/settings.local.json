@@ -44,7 +44,9 @@
       "Bash(pnpm docs:build:*)",
       "Bash(git checkout:*)",
       "Bash(pnpm test:types:*)",
-      "Bash(pnpm --filter wasm-support-example build:*)"
+      "Bash(pnpm --filter wasm-support-example build:*)",
+      "Bash(npx husky:*)",
+      "Bash(pnpm lint-staged:*)"
     ]
   }
 }
