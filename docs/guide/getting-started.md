@@ -9,6 +9,7 @@
 有多种方式可以开始使用 `robuild`：
 
 - [手动安装](#manual-installation)：将其作为开发依赖添加到您的项目中
+- 使用 [项目脚手架](#starter-templates)：快速创建新项目
 - 直接通过 [npx 运行](#npx)：无需安装即可体验
 
 ### 手动安装 {#manual-installation}
@@ -60,6 +61,41 @@ bun add -D typescript
 :::tip 兼容性说明
 `robuild` 需要 Node.js 18 或更高版本。请确保您的开发环境满足此要求后再进行安装。
 :::
+
+### 项目脚手架 {#starter-templates}
+
+为了更快速地开始，您可以使用 [create-robuild](https://github.com/Sunny-117/robuild/tree/main/packages/create-robuild) CLI，它提供了一系列用于构建纯 TypeScript 库的模板。
+
+::: code-group
+
+```sh [npm]
+npm create robuild@latest
+```
+
+```sh [pnpm]
+pnpm create robuild@latest
+```
+
+```sh [yarn]
+yarn create robuild@latest
+```
+
+```sh [bun]
+bun create robuild@latest
+```
+
+:::
+
+这些模板包含了开箱即用的配置和最佳实践，用于构建、测试和代码检查 TypeScript 项目。
+
+**可用模板：**
+
+| 模板 | 描述 |
+|------|------|
+| `default` | 标准 TypeScript 库 |
+| `minimal` | 最小化设置 |
+| `cli` | 命令行工具 |
+| `monorepo` | 多包工作区 |
 
 ### 使用 npx {#npx}
 

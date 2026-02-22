@@ -1,0 +1,22 @@
+{
+  "name": "my-cli",
+  "version": "0.0.0",
+  "type": "module",
+  "bin": {
+    "my-cli": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch",
+    "start": "node ./dist/cli.mjs"
+  },
+  "dependencies": {
+    "cac": "^6.7.14"
+  },
+  "devDependencies": {
+    "robuild": "^0.1.6"
+  }
+}

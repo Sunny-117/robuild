@@ -1,0 +1,13 @@
+{
+  "name": "my-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev"
+  },
+  "devDependencies": {
+    "robuild": "^0.1.6"
+  }
+}

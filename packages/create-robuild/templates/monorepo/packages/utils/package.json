@@ -1,0 +1,24 @@
+{
+  "name": "@my-monorepo/utils",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "devDependencies": {
+    "robuild": "^0.1.6"
+  }
+}
