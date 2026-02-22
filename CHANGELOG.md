@@ -1,6 +1,52 @@
 # Changelog
 
 
+## v0.1.5
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.4...v0.1.5)
+
+### 🚀 Enhancements
+
+- **bundle:** Add fileName option to customize output file name ([7370436](https://github.com/Sunny-117/robuild/commit/7370436))
+
+### 🩹 Fixes
+
+- 🐛 docs guide ([1b5bc8f](https://github.com/Sunny-117/robuild/commit/1b5bc8f))
+- **unbundle:** Use pre-normalized absolute paths for input/output dirs ([cbd85f1](https://github.com/Sunny-117/robuild/commit/cbd85f1))
+
+### 💅 Refactors
+
+- **playground:** Reorganize examples into modular structure ([0e807b0](https://github.com/Sunny-117/robuild/commit/0e807b0))
+
+### 📖 Documentation
+
+- Add CLAUDE.md and skills for AI agent integration ([ecee59e](https://github.com/Sunny-117/robuild/commit/ecee59e))
+- Rewrite introduction with robuild unique advantages ([8d7c06c](https://github.com/Sunny-117/robuild/commit/8d7c06c))
+- Rewrite plugins guide with practical examples ([741faa6](https://github.com/Sunny-117/robuild/commit/741faa6))
+- Simplify watch-mode and build-modes documentation ([0bd824d](https://github.com/Sunny-117/robuild/commit/0bd824d))
+- Simplify getting-started, cli, and configuration guides ([f3b6990](https://github.com/Sunny-117/robuild/commit/f3b6990))
+- Simplify performance guide, remove unimplemented features ([51e300a](https://github.com/Sunny-117/robuild/commit/51e300a))
+- Simplify API reference documentation ([58ae1b0](https://github.com/Sunny-117/robuild/commit/58ae1b0))
+- Improve getting-started guide with tsdown-style formatting ([18bbbd8](https://github.com/Sunny-117/robuild/commit/18bbbd8))
+- Add code block filename display with group-icons plugin ([8a8718f](https://github.com/Sunny-117/robuild/commit/8a8718f))
+- Restructure documentation following tsdown style ([0fabd73](https://github.com/Sunny-117/robuild/commit/0fabd73))
+
+### 🏡 Chore
+
+- Update config ([eda4a4b](https://github.com/Sunny-117/robuild/commit/eda4a4b))
+
+### ✅ Tests
+
+- **build-enhancements:** Add tests and playground for build enhancement features ([6f47d3d](https://github.com/Sunny-117/robuild/commit/6f47d3d))
+- **dev-experience:** Add tests and playground for developer experience features ([5aa50cc](https://github.com/Sunny-117/robuild/commit/5aa50cc))
+- **hooks:** Add tests and playground for build lifecycle hooks ([9b6f4ba](https://github.com/Sunny-117/robuild/commit/9b6f4ba))
+- **esm:** Add tests and playground for ESM compatibility features ([bde50e7](https://github.com/Sunny-117/robuild/commit/bde50e7))
+- **stub:** Add tests and playground for stub mode ([4e2c0db](https://github.com/Sunny-117/robuild/commit/4e2c0db))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.4
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.3...v0.1.4)
