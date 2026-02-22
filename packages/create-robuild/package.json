@@ -1,6 +1,6 @@
 {
   "name": "create-robuild",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Create a new robuild project",
   "type": "module",
   "author": "Sunny-117",
