@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Processing Demo</title>
+  <link rel="stylesheet" href="./dist/index.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import { Button, Card, Modal, cn } from './dist/index.mjs'
+
+    const app = document.getElementById('app')
+    app.innerHTML = `
+      <div class="container">
+        <h1>CSS Processing Demo</h1>
+
+        <section>
+          <h2>Buttons</h2>
+          <div class="row">
+            ${Button({ children: 'Primary', variant: 'primary' })}
+            ${Button({ children: 'Secondary', variant: 'secondary' })}
+            ${Button({ children: 'Outline', variant: 'outline' })}
+            ${Button({ children: 'Disabled', disabled: true })}
+          </div>
+        </section>
+
+        <section>
+          <h2>Cards</h2>
+          <div class="grid">
+            ${Card({ title: 'Card Title', children: '<p>Card content goes here.</p>' })}
+            ${Card({ title: 'With Footer', children: '<p>This card has a footer.</p>', footer: Button({ children: 'Action', variant: 'primary' }) })}
+            ${Card({ children: '<p>Simple card without header.</p>' })}
+          </div>
+        </section>
+
+        <section>
+          <h2>Inputs</h2>
+          <div class="inputs">
+            <input class="input" type="text" placeholder="Text input">
+            <input class="input" type="email" placeholder="Email input">
+          </div>
+        </section>
+
+        <section>
+          <h2>Modal</h2>
+          ${Button({ children: 'Open Modal', variant: 'primary', onClick: 'openModal()' })}
+        </section>
+      </div>
+
+      <div id="modal-root"></div>
+    `
+
+    window.openModal = () => {
+      document.getElementById('modal-root').innerHTML = Modal({
+        title: 'Modal Title',
+        children: '<p>Modal content here.</p>',
+        isOpen: true,
+        onClose: 'closeModal()'
+      })
+    }
+
+    window.closeModal = () => {
+      document.getElementById('modal-root').innerHTML = ''
+    }
+  </script>
+  <style>
+    .container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+    section { margin-bottom: 2rem; }
+    .row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+    .inputs { display: flex; flex-direction: column; gap: 0.5rem; max-width: 300px; }
+  </style>
+</body>
+</html>
