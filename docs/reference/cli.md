@@ -1,14 +1,14 @@
-# 命令行接口
+# 命令行接口 {#cli}
 
-## 基本用法
+## 基本用法 {#basic-usage}
 
-```bash
+```sh
 robuild [entries...] [options]
 ```
 
-## 选项
+## 选项 {#options}
 
-### 基础选项
+### 基础选项 {#basic-options}
 
 | 选项 | 简写 | 说明 |
 |------|------|------|
@@ -19,7 +19,7 @@ robuild [entries...] [options]
 | `--watch` | `-w` | 监听模式 |
 | `--stub` | | Stub 开发模式 |
 
-### 输出选项
+### 输出选项 {#output-options}
 
 | 选项 | 说明 |
 |------|------|
@@ -28,7 +28,7 @@ robuild [entries...] [options]
 | `--target <target>` | ES 版本: es2015, es2020, esnext |
 | `--global-name <name>` | IIFE/UMD 全局变量名 |
 
-### 优化选项
+### 优化选项 {#optimization-options}
 
 | 选项 | 说明 |
 |------|------|
@@ -37,14 +37,14 @@ robuild [entries...] [options]
 | `--splitting` | 代码分割 |
 | `--treeshake` | Tree shaking（默认开启） |
 
-### 类型声明
+### 类型声明 {#type-declarations}
 
 | 选项 | 说明 |
 |------|------|
 | `--dts` | 生成类型声明文件 |
 | `--dts-only` | 仅生成类型声明 |
 
-### 依赖处理
+### 依赖处理 {#dependency-handling}
 
 | 选项 | 说明 |
 |------|------|
@@ -52,7 +52,7 @@ robuild [entries...] [options]
 | `--no-external <module>` | 强制打包依赖 |
 | `--skip-node-modules` | 跳过 node_modules |
 
-### 其他选项
+### 其他选项 {#other-options}
 
 | 选项 | 说明 |
 |------|------|
@@ -68,60 +68,60 @@ robuild [entries...] [options]
 | `--from-vite` | 从 Vite 配置加载 |
 | `--cjs-default <mode>` | CJS 默认导出处理: true, false, auto |
 
-## 示例
+## 示例 {#examples}
 
-### 基本构建
+### 基本构建 {#basic-build}
 
-```bash
+```sh
 robuild ./src/index.ts
 ```
 
-### 多格式输出
+### 多格式输出 {#multiple-formats}
 
-```bash
+```sh
 robuild ./src/index.ts --format esm --format cjs
 ```
 
-### 浏览器库
+### 浏览器库 {#browser-library}
 
-```bash
+```sh
 robuild ./src/index.ts --format iife --global-name MyLib --platform browser
 ```
 
-### CLI 工具
+### CLI 工具 {#cli-tool}
 
-```bash
+```sh
 robuild ./src/cli.ts --platform node --minify
 ```
 
-### Transform 模式
+### Transform 模式 {#transform-mode}
 
-```bash
+```sh
 robuild ./src/runtime/:./dist/runtime
 ```
 
-### 监听模式
+### 监听模式 {#watch-mode}
 
-```bash
+```sh
 robuild ./src/index.ts -w
 ```
 
-### 开发模式
+### 开发模式 {#dev-mode}
 
-```bash
+```sh
 robuild ./src/index.ts --stub
 ```
 
-### 使用配置文件
+### 使用配置文件 {#with-config}
 
-```bash
+```sh
 robuild                           # 使用 build.config.ts
 robuild --config custom.config.ts # 指定配置文件
 ```
 
-## package.json 脚本
+## package.json 脚本 {#package-scripts}
 
-```json
+```json [package.json]
 {
   "scripts": {
     "build": "robuild ./src/index.ts",
@@ -131,8 +131,7 @@ robuild --config custom.config.ts # 指定配置文件
 }
 ```
 
-## 下一步
+## 下一步 {#next-steps}
 
 - [配置选项](./config.md) - 配置文件选项
 - [类型定义](./types.md) - 完整类型
-

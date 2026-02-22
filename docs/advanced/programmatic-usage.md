@@ -1,8 +1,8 @@
-# 程序化使用
+# 程序化使用 {#programmatic-usage}
 
 除了 CLI，`robuild` 还提供程序化 API，可以在 Node.js 脚本中调用。
 
-## 基本用法
+## 基本用法 {#basic-usage}
 
 ```ts [scripts/build.ts]
 import { build } from 'robuild'
@@ -19,13 +19,13 @@ await build({
 })
 ```
 
-## API
+## API {#api}
 
-### `build(config)`
+### `build(config)` {#build}
 
 执行构建：
 
-```ts
+```ts [scripts/build.ts]
 import { build } from 'robuild'
 
 await build({
@@ -43,11 +43,11 @@ await build({
 })
 ```
 
-### `defineConfig(config)`
+### `defineConfig(config)` {#define-config}
 
 配置辅助函数，提供类型提示：
 
-```ts
+```ts [build.config.ts]
 import { defineConfig } from 'robuild'
 
 const config = defineConfig({
@@ -60,9 +60,9 @@ const config = defineConfig({
 })
 ```
 
-## 完整示例
+## 完整示例 {#examples}
 
-### 条件构建
+### 条件构建 {#conditional-build}
 
 ```ts [scripts/build.ts]
 import { build } from 'robuild'
@@ -83,7 +83,7 @@ await build({
 })
 ```
 
-### 多包构建
+### 多包构建 {#multi-package-build}
 
 ```ts [scripts/build.ts]
 import { build } from 'robuild'
@@ -105,7 +105,7 @@ for (const pkg of packages) {
 }
 ```
 
-### 与其他工具集成
+### 与其他工具集成 {#integration}
 
 ```ts [scripts/build.ts]
 import { build } from 'robuild'
@@ -125,7 +125,7 @@ await build({
 execSync('pnpm test', { stdio: 'inherit' })
 ```
 
-## 类型导出
+## 类型导出 {#type-exports}
 
 ```ts
 import type {
@@ -138,5 +138,11 @@ import type {
 } from 'robuild'
 ```
 
-> [!TIP]
-> 程序化 API 适合复杂的构建场景，如 monorepo 批量构建、条件构建、与 CI/CD 集成等。
+:::tip
+程序化 API 适合复杂的构建场景，如 monorepo 批量构建、条件构建、与 CI/CD 集成等。
+:::
+
+## 下一步 {#next-steps}
+
+- [Hooks 钩子](./hooks.md) - 构建生命周期钩子
+- [CLI 参考](../reference/cli.md) - 命令行参考

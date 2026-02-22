@@ -1,8 +1,8 @@
-# 类型定义
+# 类型定义 {#types}
 
-## 导出的类型
+## 导出的类型 {#exported-types}
 
-```typescript
+```ts
 import type {
   BuildConfig,
   BuildEntry,
@@ -13,11 +13,11 @@ import type {
 } from 'robuild'
 ```
 
-## BuildConfig
+## BuildConfig {#build-config}
 
 主要的构建配置类型：
 
-```typescript
+```ts
 interface BuildConfig {
   cwd?: string | URL
   entries?: (BuildEntry | string)[]
@@ -33,17 +33,17 @@ interface BuildConfig {
 }
 ```
 
-## BuildEntry
+## BuildEntry {#build-entry}
 
-```typescript
+```ts
 type BuildEntry = BundleEntry | TransformEntry
 ```
 
-## BundleEntry
+## BundleEntry {#bundle-entry}
 
 Bundle 模式配置：
 
-```typescript
+```ts
 interface BundleEntry {
   type: 'bundle'
   input?: string | string[] | Record<string, string>
@@ -85,11 +85,11 @@ interface BundleEntry {
 }
 ```
 
-## TransformEntry
+## TransformEntry {#transform-entry}
 
 Transform 模式配置：
 
-```typescript
+```ts
 interface TransformEntry {
   type: 'transform'
   input: string
@@ -106,11 +106,11 @@ interface TransformEntry {
 }
 ```
 
-## BuildHooks
+## BuildHooks {#build-hooks}
 
 构建钩子：
 
-```typescript
+```ts
 interface BuildHooks {
   start?: (ctx: BuildContext) => void | Promise<void>
   entries?: (entries: BuildEntry[], ctx: BuildContext) => void | Promise<void>
@@ -120,18 +120,18 @@ interface BuildHooks {
 }
 ```
 
-## BuildContext
+## BuildContext {#build-context}
 
-```typescript
+```ts
 interface BuildContext {
   pkgDir: string
   pkg: { name: string } & Record<string, unknown>
 }
 ```
 
-## WatchOptions
+## WatchOptions {#watch-options}
 
-```typescript
+```ts
 interface WatchOptions {
   enabled?: boolean
   include?: string[]
@@ -142,9 +142,9 @@ interface WatchOptions {
 }
 ```
 
-## ExportsConfig
+## ExportsConfig {#exports-config}
 
-```typescript
+```ts
 interface ExportsConfig {
   enabled?: boolean
   includeTypes?: boolean
@@ -153,9 +153,9 @@ interface ExportsConfig {
 }
 ```
 
-## RobuildPlugin
+## RobuildPlugin {#robuild-plugin}
 
-```typescript
+```ts
 interface RobuildPlugin extends RolldownPlugin {
   robuildSetup?: (ctx: RobuildPluginContext) => void | Promise<void>
   robuildBuildStart?: (ctx: RobuildPluginContext) => void | Promise<void>
@@ -163,9 +163,9 @@ interface RobuildPlugin extends RolldownPlugin {
 }
 ```
 
-## 使用示例
+## 使用示例 {#usage-example}
 
-```typescript
+```ts [build.config.ts]
 import { defineConfig, type BuildConfig, type BundleEntry } from 'robuild'
 
 const entry: BundleEntry = {
@@ -182,8 +182,7 @@ const config: BuildConfig = {
 export default defineConfig(config)
 ```
 
-## 下一步
+## 下一步 {#next-steps}
 
 - [配置选项](./config.md) - 详细配置
 - [CLI 参数](./cli.md) - 命令行
-

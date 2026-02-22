@@ -41,7 +41,8 @@
       "Bash(../../node_modules/.bin/esno:*)",
       "Bash(git restore:*)",
       "Bash(pnpm test:coverage:*)",
-      "Bash(pnpm docs:build:*)"
+      "Bash(pnpm docs:build:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }

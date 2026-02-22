@@ -1,10 +1,10 @@
-# 配置选项
+# 配置选项 {#config}
 
-## BuildConfig
+## BuildConfig {#build-config}
 
 全局配置：
 
-```typescript
+```ts
 interface BuildConfig {
   cwd?: string                           // 工作目录
   entries?: (BuildEntry | string)[]      // 构建入口
@@ -18,11 +18,11 @@ interface BuildConfig {
 }
 ```
 
-## BundleEntry
+## BundleEntry {#bundle-entry}
 
 Bundle 模式配置：
 
-```typescript
+```ts
 interface BundleEntry {
   type: 'bundle'
   input: string | string[] | Record<string, string>
@@ -64,11 +64,11 @@ interface BundleEntry {
 }
 ```
 
-## TransformEntry
+## TransformEntry {#transform-entry}
 
 Transform 模式配置：
 
-```typescript
+```ts
 interface TransformEntry {
   type: 'transform'
   input: string                          // 输入目录
@@ -91,11 +91,11 @@ interface TransformEntry {
 }
 ```
 
-## WatchOptions
+## WatchOptions {#watch-options}
 
 监听配置：
 
-```typescript
+```ts
 interface WatchOptions {
   enabled?: boolean                      // 启用监听
   include?: string[]                     // 监听的文件
@@ -106,11 +106,11 @@ interface WatchOptions {
 }
 ```
 
-## ExportsConfig
+## ExportsConfig {#exports-config}
 
 导出配置：
 
-```typescript
+```ts
 interface ExportsConfig {
   enabled?: boolean                      // 启用导出生成
   includeTypes?: boolean                 // 包含类型
@@ -119,11 +119,11 @@ interface ExportsConfig {
 }
 ```
 
-## BuildHooks
+## BuildHooks {#build-hooks}
 
 构建钩子：
 
-```typescript
+```ts
 interface BuildHooks {
   start?: (ctx: BuildContext) => void | Promise<void>
   entries?: (entries: BuildEntry[], ctx: BuildContext) => void | Promise<void>
@@ -133,11 +133,13 @@ interface BuildHooks {
 }
 ```
 
-## 配置示例
+## 配置示例 {#examples}
 
-### 基本库
+### 基本库 {#basic-library}
 
-```typescript
+```ts [build.config.ts]
+import { defineConfig } from 'robuild'
+
 export default defineConfig({
   entries: [
     {
@@ -150,9 +152,11 @@ export default defineConfig({
 })
 ```
 
-### CLI 工具
+### CLI 工具 {#cli-tool}
 
-```typescript
+```ts [build.config.ts]
+import { defineConfig } from 'robuild'
+
 export default defineConfig({
   entries: [
     {
@@ -165,9 +169,11 @@ export default defineConfig({
 })
 ```
 
-### 混合模式
+### 混合模式 {#mixed-mode}
 
-```typescript
+```ts [build.config.ts]
+import { defineConfig } from 'robuild'
+
 export default defineConfig({
   entries: [
     {
@@ -184,7 +190,7 @@ export default defineConfig({
 })
 ```
 
-## 下一步
+## 下一步 {#next-steps}
 
 - [类型定义](./types.md) - 完整类型
 - [CLI 参数](./cli.md) - 命令行

@@ -1,8 +1,8 @@
-# Hooks 钩子
+# Hooks 钩子 {#hooks}
 
 `robuild` 提供构建生命周期钩子，允许在构建过程的不同阶段执行自定义逻辑。
 
-## 可用钩子
+## 可用钩子 {#available-hooks}
 
 ```ts [build.config.ts]
 import { defineConfig } from 'robuild'
@@ -34,9 +34,9 @@ export default defineConfig({
 })
 ```
 
-## 钩子说明
+## 钩子说明 {#hook-descriptions}
 
-### `start`
+### `start` {#start}
 
 构建开始时触发。
 
@@ -44,7 +44,7 @@ export default defineConfig({
 start?: (ctx: BuildContext) => void | Promise<void>
 ```
 
-### `entries`
+### `entries` {#entries}
 
 入口解析完成后触发，可以修改入口配置。
 
@@ -52,7 +52,7 @@ start?: (ctx: BuildContext) => void | Promise<void>
 entries?: (entries: BuildEntry[], ctx: BuildContext) => void | Promise<void>
 ```
 
-### `rolldownConfig`
+### `rolldownConfig` {#rolldown-config}
 
 Rolldown 配置生成后触发，可以修改配置。
 
@@ -60,7 +60,7 @@ Rolldown 配置生成后触发，可以修改配置。
 rolldownConfig?: (config: InputOptions, ctx: BuildContext) => void | Promise<void>
 ```
 
-### `rolldownOutput`
+### `rolldownOutput` {#rolldown-output}
 
 输出配置生成后触发。
 
@@ -68,7 +68,7 @@ rolldownConfig?: (config: InputOptions, ctx: BuildContext) => void | Promise<voi
 rolldownOutput?: (config: OutputOptions, result: RolldownBuild, ctx: BuildContext) => void | Promise<void>
 ```
 
-### `end`
+### `end` {#end}
 
 构建完成后触发。
 
@@ -76,7 +76,7 @@ rolldownOutput?: (config: OutputOptions, result: RolldownBuild, ctx: BuildContex
 end?: (ctx: BuildContext) => void | Promise<void>
 ```
 
-## BuildContext
+## BuildContext {#build-context}
 
 钩子函数接收的上下文对象：
 
@@ -87,14 +87,22 @@ interface BuildContext {
 }
 ```
 
-## 使用示例
+## 使用示例 {#examples}
 
-### 构建耗时统计
+### 构建耗时统计 {#build-timing}
 
 ```ts [build.config.ts]
+import { defineConfig } from 'robuild'
+
 let startTime: number
 
 export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+    },
+  ],
   hooks: {
     start: () => {
       startTime = Date.now()
@@ -106,10 +114,18 @@ export default defineConfig({
 })
 ```
 
-### 修改 Rolldown 配置
+### 修改 Rolldown 配置 {#modify-rolldown-config}
 
 ```ts [build.config.ts]
+import { defineConfig } from 'robuild'
+
 export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+    },
+  ],
   hooks: {
     rolldownConfig: (config) => {
       config.treeshake = false
@@ -118,5 +134,11 @@ export default defineConfig({
 })
 ```
 
-> [!TIP]
-> 钩子适用于简单的构建过程扩展。对于复杂的代码转换需求，推荐使用插件。
+:::tip
+钩子适用于简单的构建过程扩展。对于复杂的代码转换需求，推荐使用插件。
+:::
+
+## 下一步 {#next-steps}
+
+- [插件](./plugins.md) - 插件系统
+- [程序化使用](./programmatic-usage.md) - API 调用

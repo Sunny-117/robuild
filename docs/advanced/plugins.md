@@ -1,10 +1,10 @@
-# 插件
+# 插件 {#plugins}
 
 `robuild` 以 [Rolldown](https://rolldown.rs) 作为核心引擎，支持丰富的插件生态。
 
-## 支持的插件生态
+## 支持的插件生态 {#supported-ecosystems}
 
-### Rolldown 插件
+### Rolldown 插件 {#rolldown-plugins}
 
 由于 `robuild` 基于 Rolldown 构建，因此支持所有 Rolldown 插件：
 
@@ -23,7 +23,7 @@ export default defineConfig({
 })
 ```
 
-### Unplugin
+### Unplugin {#unplugin}
 
 [Unplugin](https://unplugin.unjs.io/) 是一个现代化的插件框架，支持多种打包器。大多数 Unplugin 插件都可以与 `robuild` 配合使用：
 
@@ -42,7 +42,7 @@ export default defineConfig({
 })
 ```
 
-### Rollup 插件
+### Rollup 插件 {#rollup-plugins}
 
 Rolldown 与 Rollup 的插件 API 高度兼容，大多数 Rollup 插件可以直接使用：
 
@@ -61,15 +61,27 @@ export default defineConfig({
 })
 ```
 
-> [!NOTE]
-> 由于 Rollup 和 Rolldown 的 API 并非 100% 兼容，某些插件可能有类型错误。可以使用 `as any` 忽略：
-> ```ts
-> plugins: [SomeRollupPlugin() as any]
-> ```
+:::warning
+由于 Rollup 和 Rolldown 的 API 并非 100% 兼容，某些插件可能有类型错误。可以使用 `as any` 忽略：
 
-## 全局插件 vs 入口插件
+```ts [build.config.ts]
+import { defineConfig } from 'robuild'
 
-### 全局插件
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      plugins: [SomeRollupPlugin() as any],
+    },
+  ],
+})
+```
+:::
+
+## 全局插件 vs 入口插件 {#global-vs-entry-plugins}
+
+### 全局插件 {#global-plugins}
 
 在顶层配置，对所有入口生效：
 
@@ -85,7 +97,7 @@ export default defineConfig({
 })
 ```
 
-### 入口插件
+### 入口插件 {#entry-plugins}
 
 在入口配置，只对该入口生效：
 
@@ -103,11 +115,13 @@ export default defineConfig({
 })
 ```
 
-## 编写自定义插件
+## 编写自定义插件 {#custom-plugins}
 
 可以使用 Rolldown 的插件 API 编写自定义插件：
 
 ```ts [build.config.ts]
+import { defineConfig } from 'robuild'
+
 const myPlugin = () => ({
   name: 'my-plugin',
   transform(code, id) {
@@ -129,3 +143,8 @@ export default defineConfig({
 ```
 
 详细信息请参阅 [Rolldown 插件开发指南](https://rolldown.rs/guide/plugin-development)。
+
+## 下一步 {#next-steps}
+
+- [Hooks 钩子](./hooks.md) - 构建生命周期钩子
+- [Rolldown 选项](./rolldown-options.md) - 直接传递 Rolldown 配置
