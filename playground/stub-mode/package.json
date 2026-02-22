@@ -1,0 +1,13 @@
+{
+  "name": "stub-mode-demo",
+  "version": "1.0.0",
+  "description": "Demo for robuild stub mode - fast development without bundling",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "build:stub": "NODE_ENV=development robuild",
+    "dev": "NODE_ENV=development robuild && node --experimental-strip-types ./dist/index.mjs"
+  },
+  "keywords": ["robuild", "stub", "development", "demo"],
+  "author": "robuild team"
+}

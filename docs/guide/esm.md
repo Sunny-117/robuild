@@ -195,7 +195,9 @@ export default defineConfig({
       format: 'iife',
       globalName: 'MyLibrary',
       platform: 'browser',
+      fileName: 'browser.min.js', // 自定义输出文件名
       minify: true,
+      clean: false, // 避免清理第一个入口的输出
     }
   ]
 })
