@@ -1,0 +1,244 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`advanced build features > CommonJS default export handling > should handle cjsDefault auto mode 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region \\0rolldown/runtime.js
+var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+
+//#endregion
+//#region index.js
+var require_should_handle_cjsDefault_auto_mode = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	module.exports = { hello: "world" };
+}));
+
+//#endregion
+export default require_should_handle_cjsDefault_auto_mode();
+
+export {  };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > CommonJS default export handling > should handle mixed CommonJS exports 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region \\0rolldown/runtime.js
+var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+
+//#endregion
+//#region index.js
+var require_should_handle_mixed_CommonJS_exports = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	exports.name = "robuild";
+	exports.version = "1.0.0";
+	module.exports.default = "main";
+}));
+
+//#endregion
+export default require_should_handle_mixed_CommonJS_exports();
+
+export {  };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > compatibility shims > should add Node.js shims for browser platform 1`] = `
+"## index.mjs
+
+\`\`\`js
+import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
+import { createRequire } from "node:module";
+
+//#region index.ts
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+createRequire(import.meta.url);
+const path = __dirname;
+const file = __filename;
+const env = process.env.NODE_ENV;
+
+//#endregion
+export { env, file, path };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > compatibility shims > should handle selective shims 1`] = `
+"## index.mjs
+
+\`\`\`js
+import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
+import { createRequire } from "node:module";
+
+//#region index.ts
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
+const dir = __dirname;
+const req = require;
+
+//#endregion
+export { dir, req };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > file loaders > should handle custom loader options 1`] = `
+"## assets/image-i-wPQXXQ.png
+
+\`\`\`png
+fake-image-data
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region styles.css
+var styles_default = ".test { background: red; }";
+
+//#endregion
+//#region image.png
+var image_default = "assets/image-i-wPQXXQ.png";
+
+//#endregion
+export { image_default as image, styles_default as styles };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > file loaders > should handle different file types with loaders 1`] = `
+"## assets/logo-C_uiUYIt.png
+
+\`\`\`png
+fake-png-data
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region config.json
+var config_default = {
+	version: "1.0.0",
+	name: "test"
+};
+
+//#endregion
+//#region styles.css
+var styles_default = ".button { color: blue; }";
+
+//#endregion
+//#region README.md
+var README_default = "# Hello World\\nThis is a test.";
+
+//#endregion
+//#region logo.png
+var logo_default = "assets/logo-C_uiUYIt.png";
+
+//#endregion
+//#region icon.svg
+var icon_default = "data:image/svg+xml,<svg><circle r=\\"10\\"/></svg>";
+
+//#endregion
+export { config_default as config, icon_default as icon, logo_default as logo, README_default as readme, styles_default as styles };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > rolldown config passthrough > should handle advanced tree shaking config 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region utils.ts
+const used = "used";
+
+//#endregion
+export { used };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > rolldown config passthrough > should handle output configuration 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+//# sourceMappingURL=index.mjs.map
+\`\`\`
+
+## index.mjs.map
+
+\`\`\`map
+{"version":3,"file":"index.mjs","names":[],"sources":["../index.ts"],"sourcesContent":["export const hello = 'world'"],"mappings":";AAAA,MAAa,QAAQ"}
+\`\`\`
+"
+`;
+
+exports[`advanced build features > rolldown config passthrough > should pass through rolldown config with highest priority 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region utils.ts
+const helper = () => "help";
+
+//#endregion
+export { helper };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > skip node modules > should bundle everything when skipNodeModules is false 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region utils.ts
+const helper = () => "help";
+
+//#endregion
+export { helper };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > skip node modules > should skip node_modules when enabled 1`] = `
+"## index.mjs
+
+\`\`\`js
+import "node:module";
+import lodash from "lodash";
+
+//#region utils.ts
+const helper = () => "help";
+
+//#endregion
+export { helper, lodash };
+\`\`\`
+"
+`;
+
+exports[`advanced build features > unbundle mode > should preserve file structure in unbundle mode 1`] = `
+"## components/Button.mjs
+
+\`\`\`js
+export const Button = () => <button>Click</button>
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export { helper } from './utils/helper.js'
+\`\`\`
+
+## utils/helper.mjs
+
+\`\`\`js
+export const helper = () => 'help'
+\`\`\`
+"
+`;

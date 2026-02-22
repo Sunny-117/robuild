@@ -1,7 +1,7 @@
 import type { BuildContext, TransformEntry } from '../types'
 import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
-import { dirname, extname, isAbsolute, join } from 'node:path'
+import { dirname, extname, join } from 'node:path'
 import { logger } from '../core/logger'
 
 /**
@@ -57,9 +57,9 @@ export async function unbundleTransform(
   ctx: BuildContext,
   entry: TransformEntry,
 ): Promise<void> {
-  // Handle both absolute and relative paths
-  const inputDir = isAbsolute(entry.input) ? entry.input : join(ctx.pkgDir, entry.input)
-  const outputDir = join(ctx.pkgDir, entry.outDir || 'dist')
+  // entry.input and entry.outDir are already normalized to absolute paths in build.ts
+  const inputDir = entry.input
+  const outputDir = entry.outDir || join(ctx.pkgDir, 'dist')
 
   await processDirectoryUnbundled(inputDir, outputDir, entry)
 }
