@@ -1,6 +1,6 @@
 <script lang="ts">
-  export let variant: 'primary' | 'secondary' = 'primary'
-  export let disabled: boolean = false
+  export const variant: 'primary' | 'secondary' = 'primary'
+  export const disabled: boolean = false
 </script>
 
 <button
