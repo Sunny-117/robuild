@@ -1,5 +1,6 @@
 import type { ResolveOptions } from 'exsolve'
 
+import type { CssOptions } from './features/css'
 import type { MinifyOptions as OXCMinifyOptions } from 'oxc-minify'
 import type { TransformOptions } from 'oxc-transform'
 import type {
@@ -959,6 +960,26 @@ export interface BuildConfig {
    * Package exports generation configuration.
    */
   exports?: ExportsConfig
+
+  /**
+   * CSS processing configuration.
+   *
+   * Controls how CSS files are bundled and processed.
+   *
+   * @example
+   * ```ts
+   * {
+   *   css: {
+   *     // Merge all CSS into a single file
+   *     splitting: false,
+   *     fileName: 'bundle.css',
+   *     // Enable LightningCSS for modern CSS processing
+   *     lightningcss: true,
+   *   }
+   * }
+   * ```
+   */
+  css?: CssOptions
 }
 
 // Exports generation types

@@ -1,0 +1,33 @@
+{
+  "name": "css-processing-example",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Example of CSS processing with robuild",
+  "main": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./styles": "./dist/index.css"
+  },
+  "scripts": {
+    "build": "robuild",
+    "build:no-split": "robuild --css.splitting=false"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*"
+  },
+  "peerDependencies": {
+    "unplugin-lightningcss": "^0.3.0",
+    "lightningcss": "^1.29.0"
+  },
+  "peerDependenciesMeta": {
+    "unplugin-lightningcss": {
+      "optional": true
+    },
+    "lightningcss": {
+      "optional": true
+    }
+  }
+}

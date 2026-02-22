@@ -1,0 +1,283 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`css processing > CSS code splitting > should merge all CSS into single file when splitting is disabled 1`] = `
+"## _chunks/component-DQDyBQ0T.mjs
+
+\`\`\`js
+//#region component.ts
+const Component = "async-component";
+
+//#endregion
+export { Component };
+\`\`\`
+
+## bundle.css
+
+\`\`\`css
+
+            .main { color: blue; }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+async function loadComponent() {
+	return import("./_chunks/component-DQDyBQ0T.mjs");
+}
+
+//#endregion
+export { loadComponent };
+\`\`\`
+"
+`;
+
+exports[`css processing > CSS code splitting > should preserve CSS splitting by default 1`] = `
+"## _chunks/component-DQDyBQ0T.mjs
+
+\`\`\`js
+//#region component.ts
+const Component = "async-component";
+
+//#endregion
+export { Component };
+\`\`\`
+
+## component-TZp2TfLA.css
+
+\`\`\`css
+
+            .component { color: green; }
+\`\`\`
+
+## index.css
+
+\`\`\`css
+
+            .main { color: blue; }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+async function loadComponent() {
+	return import("./_chunks/component-DQDyBQ0T.mjs");
+}
+
+//#endregion
+export { loadComponent };
+\`\`\`
+"
+`;
+
+exports[`css processing > CSS code splitting > should use custom CSS filename when splitting is disabled 1`] = `
+"## custom-styles.css
+
+\`\`\`css
+
+            .app { color: red; }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const app = "custom-css-name";
+
+//#endregion
+export { app };
+\`\`\`
+"
+`;
+
+exports[`css processing > CSS with different platforms > should handle CSS for browser platform 1`] = `
+"## index.css
+
+\`\`\`css
+
+            .browser-only {
+              display: flex;
+              gap: 1rem;
+            }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const platform = "browser";
+
+//#endregion
+export { platform };
+\`\`\`
+"
+`;
+
+exports[`css processing > CSS with different platforms > should handle CSS for node platform 1`] = `
+"## index.css
+
+\`\`\`css
+
+            /* Server-side CSS for SSR */
+            .ssr-component {
+              visibility: hidden;
+            }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const platform = "node";
+
+//#endregion
+export { platform };
+\`\`\`
+"
+`;
+
+exports[`css processing > CSS with minification > should minify CSS when minify is enabled 1`] = `
+"## index.css
+
+\`\`\`css
+
+            /* This is a comment that should be removed */
+            .container {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .button {
+              padding: 10px 20px;
+              background-color: #007bff;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+            }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+const e=\`minified\`;export{e as app};
+\`\`\`
+"
+`;
+
+exports[`css processing > CSS with multi-format output > should handle CSS with ESM and CJS formats 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const multi = "format";
+
+//#endregion
+exports.multi = multi;
+\`\`\`
+
+## index.css
+
+\`\`\`css
+
+            .multi-format {
+              color: purple;
+            }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const multi = "format";
+
+//#endregion
+export { multi };
+\`\`\`
+"
+`;
+
+exports[`css processing > basic CSS bundling > should bundle CSS imports 1`] = `
+"## index.css
+
+\`\`\`css
+
+            .container {
+              display: flex;
+              color: red;
+            }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const app = "hello";
+
+//#endregion
+export { app };
+\`\`\`
+"
+`;
+
+exports[`css processing > basic CSS bundling > should bundle multiple CSS files 1`] = `
+"## index.css
+
+\`\`\`css
+
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+          
+
+            :root {
+              --primary: #007bff;
+              --secondary: #6c757d;
+            }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const app = "styled";
+
+//#endregion
+export { app };
+\`\`\`
+"
+`;
+
+exports[`css processing > basic CSS bundling > should handle CSS with nested imports 1`] = `
+"## index.css
+
+\`\`\`css
+
+            :root {
+              --bg-color: #f5f5f5;
+            }
+          
+
+            
+            .app {
+              background: var(--bg-color);
+            }
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const app = "nested-css";
+
+//#endregion
+export { app };
+\`\`\`
+"
+`;

@@ -11,6 +11,7 @@ interface BuildConfig {
   hooks?: BuildHooks                     // 构建钩子
   watch?: WatchOptions                   // 监听配置
   exports?: ExportsConfig                // 导出配置
+  css?: CssOptions                       // CSS 处理配置
   wasm?: boolean | WasmOptions           // WASM 支持
   logLevel?: LogLevel                    // 日志级别
   failOnWarn?: boolean                   // 警告时失败
@@ -136,6 +137,57 @@ interface WasmOptions {
 ```
 
 详细使用说明请参考 [WASM 支持](/recipes/wasm-support)。
+
+## CssOptions {#css-options}
+
+CSS 处理配置：
+
+```ts
+interface CssOptions {
+  splitting?: boolean                    // 启用/禁用 CSS 代码分割（默认 true）
+  fileName?: string                      // 禁用分割时的输出文件名（默认 'style.css'）
+  lightningcss?: boolean                 // 启用 LightningCSS（默认 false）
+}
+```
+
+### 选项说明 {#css-options-description}
+
+| 选项           | 类型      | 默认值        | 说明                                                   |
+| -------------- | --------- | ------------- | ------------------------------------------------------ |
+| `splitting`    | `boolean` | `true`        | 启用/禁用 CSS 代码分割。禁用时所有 CSS 合并为单个文件  |
+| `fileName`     | `string`  | `'style.css'` | 禁用分割时，合并后的 CSS 文件名                        |
+| `lightningcss` | `boolean` | `false`       | 启用 LightningCSS 进行 CSS 转换、压缩和添加浏览器前缀  |
+
+### 示例 {#css-options-examples}
+
+```ts [build.config.ts]
+import { defineConfig } from 'robuild'
+
+// 默认配置（启用代码分割）
+export default defineConfig({
+  entry: ['./src/index.ts'],
+})
+
+// 禁用代码分割，合并到单个文件
+export default defineConfig({
+  entry: ['./src/index.ts'],
+  css: {
+    splitting: false,
+    fileName: 'bundle.css',
+  },
+})
+
+// 启用 LightningCSS（需要安装 unplugin-lightningcss）
+export default defineConfig({
+  entry: ['./src/index.ts'],
+  target: 'es2017', // 影响 CSS 浏览器前缀
+  css: {
+    lightningcss: true,
+  },
+})
+```
+
+详细使用说明请参考 [CSS 处理](/options/css)。
 
 ## BuildHooks {#build-hooks}
 

@@ -206,6 +206,19 @@ importers:
 
   playground/build-enhancements: {}
 
+  playground/css-processing:
+    dependencies:
+      lightningcss:
+        specifier: ^1.29.0
+        version: 1.31.1
+      unplugin-lightningcss:
+        specifier: ^0.3.0
+        version: 0.3.3
+    devDependencies:
+      robuild:
+        specifier: workspace:*
+        version: link:../..
+
   playground/dev-experience: {}
 
   playground/es2015-target:
@@ -6382,6 +6395,10 @@ packages:
 
   unist-util-visit@5.1.0:
     resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
+
+  unplugin-lightningcss@0.3.3:
+    resolution: {integrity: sha512-mMNRCNIcxc/3410w7sJdXcPxn0IGZdEpq42OBDyckdGkhOeWYZCG9RkHs72TFyBsS82a4agFDOFU8VrFKF2ZvA==}
+    engines: {node: '>=18.12.0'}
 
   unplugin-utils@0.2.5:
     resolution: {integrity: sha512-gwXJnPRewT4rT7sBi/IvxKTjsms7jX7QIDLOClApuZwR49SXbrB1z2NLUZ+vDHyqCj/n58OzRRqaW+B8OZi8vg==}
@@ -12958,6 +12975,12 @@ snapshots:
       '@types/unist': 3.0.3
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
+
+  unplugin-lightningcss@0.3.3:
+    dependencies:
+      lightningcss: 1.31.1
+      magic-string: 0.30.21
+      unplugin: 2.3.11
 
   unplugin-utils@0.2.5:
     dependencies:

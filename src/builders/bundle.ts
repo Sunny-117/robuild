@@ -20,6 +20,9 @@ import { dts } from 'rolldown-plugin-dts'
 import { getBundleEntryInput } from '../config/entry-resolver'
 
 import { resolveExternalConfig } from '../config/external'
+import { resolveCssOptions } from '../features/css'
+import { createLightningCSSPlugin } from '../features/css/lightningcss'
+import { createCssCodeSplitPlugin } from '../features/css/splitting'
 import { logger } from '../core/logger'
 import { createGlobImportPlugin } from '../plugins/builtin/glob-import'
 import { nodeProtocolPlugin } from '../plugins/builtin/node-protocol'
@@ -200,6 +203,27 @@ export async function rolldownBuild(
       logger.warn('WASM support is enabled but rolldown-plugin-wasm is not installed.')
       logger.warn('Install it with: pnpm add -D rolldown-plugin-wasm')
     }
+  }
+
+  // Add CSS plugins if configured
+  const cssOptions = resolveCssOptions(config?.css)
+
+  // Add LightningCSS plugin for CSS transformation/minification
+  if (cssOptions.lightningcss) {
+    const lightningPlugin = await createLightningCSSPlugin({ target })
+    if (lightningPlugin) {
+      rolldownPlugins.push(lightningPlugin)
+    }
+    else {
+      logger.warn('LightningCSS is enabled but unplugin-lightningcss is not installed.')
+      logger.warn('Install it with: pnpm add -D unplugin-lightningcss lightningcss')
+    }
+  }
+
+  // Add CSS code splitting plugin
+  const cssSplitPlugin = createCssCodeSplitPlugin(cssOptions)
+  if (cssSplitPlugin) {
+    rolldownPlugins.push(cssSplitPlugin)
   }
 
   // Add user plugins from plugin manager

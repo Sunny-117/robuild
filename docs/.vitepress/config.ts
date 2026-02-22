@@ -25,6 +25,7 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '指南', link: '/guide/' },
       { text: 'API 参考', link: '/reference/cli' },
+      { text: '博客', link: '/blog/bundler-revolution' },
       { text: 'GitHub', link: 'https://github.com/Sunny-117/robuild' },
     ],
     sidebar: {
@@ -54,6 +55,7 @@ export default defineConfig({
             { text: 'Tree Shaking', link: '/options/tree-shaking' },
             { text: '源码映射', link: '/options/sourcemap' },
             { text: '代码压缩', link: '/options/minification' },
+            { text: 'CSS 处理', link: '/options/css' },
             { text: '日志级别', link: '/options/log-level' },
             { text: '兼容性垫片', link: '/options/shims' },
             { text: '包导出生成', link: '/options/package-exports' },
@@ -85,6 +87,12 @@ export default defineConfig({
             { text: '命令行接口', link: '/reference/cli' },
             { text: '配置选项', link: '/reference/config' },
             { text: '类型定义', link: '/reference/types' },
+          ],
+        },
+        {
+          text: '博客',
+          items: [
+            { text: '构建工具的第三次革命', link: '/blog/bundler-revolution' },
           ],
         },
       ],

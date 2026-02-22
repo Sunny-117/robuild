@@ -24,6 +24,7 @@
     "playground/asset-handling",
     "playground/plugin-examples",
     "playground/unbuild-style",
-    "playground/watch-mode"
+    "playground/watch-mode",
+    "playground/css-processing"
   ]
 }
