@@ -1,18 +1,40 @@
 # 插件系统
 
-robuild 提供了强大的插件系统，支持 Rollup、Vite、Unplugin 等多种插件格式，让你能够轻松扩展构建功能。
+robuild 基于 rolldown 的插件系统，提供了强大的扩展能力。rolldown 原生支持 JSON、CommonJS、模块解析和 React/JSX 转换，无需额外插件。
 
 ## 🔌 插件兼容性
 
-### Rollup 插件支持
+### Rolldown 原生支持
 
-robuild 完全兼容 Rollup 插件生态系统：
+rolldown 内置了许多常用功能，无需额外插件：
 
 ```typescript
 import { defineConfig } from 'robuild'
-import json from '@rollup/plugin-json'
-import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
+
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      // 以下功能原生支持，无需插件：
+      // - JSON 文件导入
+      // - CommonJS 模块
+      // - Node.js 模块解析
+      // - React/JSX 转换
+      // - TypeScript 编译
+    }
+  ]
+})
+```
+
+### Rollup 插件支持
+
+robuild 兼容大部分 Rollup 插件：
+
+```typescript
+import { defineConfig } from 'robuild'
+import { visualizer } from 'rollup-plugin-visualizer'
+import { terser } from 'rollup-plugin-terser'
 
 export default defineConfig({
   entries: [
@@ -20,30 +42,17 @@ export default defineConfig({
       type: 'bundle',
       input: './src/index.ts',
       plugins: [
-        resolve(),
-        commonjs(),
-        json()
-      ]
-    }
-  ]
-})
-```
-
-### Vite 插件支持
-
-部分支持 Vite 插件（自动适配）：
-
-```typescript
-import { defineConfig } from 'robuild'
-import react from '@vitejs/plugin-react'
-
-export default defineConfig({
-  entries: [
-    {
-      type: 'bundle',
-      input: './src/index.tsx',
-      plugins: [
-        react() // 自动适配 Vite 插件
+        // 打包分析插件
+        visualizer({
+          filename: 'dist/stats.html',
+          open: true
+        }),
+        // 代码压缩插件
+        terser({
+          compress: {
+            drop_console: true
+          }
+        })
       ]
     }
   ]
@@ -56,7 +65,8 @@ Universal 插件支持，跨平台兼容：
 
 ```typescript
 import { defineConfig } from 'robuild'
-import { unpluginExample } from 'unplugin-example'
+import { unpluginAutoImport } from 'unplugin-auto-import/rollup'
+import { unpluginIcons } from 'unplugin-icons/rollup'
 
 export default defineConfig({
   entries: [
@@ -64,89 +74,77 @@ export default defineConfig({
       type: 'bundle',
       input: './src/index.ts',
       plugins: [
-        unpluginExample() // 自动适配 Unplugin
+        // 自动导入插件
+        unpluginAutoImport({
+          imports: ['vue', 'vue-router'],
+          dts: true
+        }),
+        // 图标插件
+        unpluginIcons({
+          compiler: 'vue3'
+        })
       ]
     }
   ]
 })
-    {
-      type: 'transform',
-      input: './src/runtime',
-      oxc: {
-        plugins: [
-          // oxc 插件配置
-          {
-            name: 'transform-plugin',
-            transform(code, id) {
-              // 转换逻辑
-              return code
-            }
-          }
-        ]
-      }
-    }
-  ]
-})
 ```
 
-## 内置插件
+## 原生功能
 
-### 1. Shebang 插件
+### 1. JSON 文件支持
 
-自动处理 shebang 行：
-
-```typescript
-import { shebangPlugin } from 'robuild/plugins'
-
-export default defineConfig({
-  entries: [
-    {
-      type: 'bundle',
-      input: './src/cli.ts',
-      rolldown: {
-        plugins: [shebangPlugin()]
-      }
-    }
-  ]
-})
-```
-
-**功能：**
-- 自动添加 shebang 行到 CLI 文件
-- 支持自定义 shebang 内容
-- 保持可执行权限
-
-**配置选项：**
-```typescript
-shebangPlugin({
-  shebang: '#!/usr/bin/env node',
-  preserve: true
-})
-```
-
-### 2. JSON 支持
-
-JSON 文件导入由 rolldown 原生支持，无需额外插件：
+rolldown 原生支持 JSON 文件导入，无需额外插件：
 
 ```typescript
-// 直接导入 JSON 文件
+// src/config.json
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "features": ["auth", "dashboard"]
+}
+
+// src/index.ts
 import config from './config.json'
 
+console.log(config.name) // "my-app"
+console.log(config.features) // ["auth", "dashboard"]
+```
+
+### 2. React/JSX 支持
+
+rolldown 原生支持 React 和 JSX 转换：
+
+```typescript
+// src/App.tsx
+import React from 'react'
+
+export function App() {
+  return <div>Hello React!</div>
+}
+
+// build.config.ts
 export default defineConfig({
   entries: [
     {
       type: 'bundle',
-      input: './src/index.ts',
-      // JSON 导入自动支持，无需配置
+      input: './src/App.tsx',
+      // JSX 自动转换，无需配置
     }
   ]
 })
 ```
 
-**功能：**
-- 原生支持 JSON 文件导入
-- 自动类型推断
-- 零配置使用
+### 3. CommonJS 支持
+
+rolldown 原生支持 CommonJS 模块：
+
+```typescript
+// 可以直接导入 CommonJS 模块
+import lodash from 'lodash'
+import express from 'express'
+
+// 无需 @rollup/plugin-commonjs
+```
 
 ## 创建自定义插件
 
@@ -255,91 +253,106 @@ export default defineConfig({
 
 ## 实际插件示例
 
-### 1. 环境变量替换插件
+### 1. 版本注入插件
 
 ```typescript
-// env-replace-plugin.ts
-interface EnvReplaceOptions {
-  env?: Record<string, string>
-  prefix?: string
+// version-inject-plugin.ts
+import { readFileSync } from 'fs'
+
+interface VersionInjectOptions {
+  packagePath?: string
+  placeholder?: string
 }
 
-export function envReplacePlugin(options: EnvReplaceOptions = {}) {
-  const { env = process.env, prefix = 'process.env.' } = options
+export function versionInjectPlugin(options: VersionInjectOptions = {}) {
+  const { packagePath = './package.json', placeholder = '__VERSION__' } = options
 
   return {
-    name: 'env-replace',
-    transform(code, id) {
-      // 替换 process.env.VARIABLE 为实际值
-      return code.replace(
-        new RegExp(`${prefix}(\\w+)`, 'g'),
-        (match, key) => {
-          const value = env[key]
-          return value ? JSON.stringify(value) : 'undefined'
+    name: 'version-inject',
+    transform(code: string, id: string) {
+      if (code.includes(placeholder)) {
+        try {
+          const pkg = JSON.parse(readFileSync(packagePath, 'utf-8'))
+          return code.replace(
+            new RegExp(placeholder, 'g'),
+            JSON.stringify(pkg.version)
+          )
+        } catch (error) {
+          console.warn('Failed to read package.json:', error)
         }
-      )
+      }
+      return code
     }
   }
 }
 ```
 
-### 2. 文件大小分析插件
+### 2. 文件头注释插件
 
 ```typescript
-// size-analyzer-plugin.ts
-import { readFileSync } from 'fs'
-import { join } from 'path'
+// banner-plugin.ts
+interface BannerOptions {
+  banner?: string
+  include?: RegExp
+  exclude?: RegExp
+}
 
-export function sizeAnalyzerPlugin() {
+export function bannerPlugin(options: BannerOptions = {}) {
+  const {
+    banner = '/* Generated by robuild */',
+    include = /\.(js|mjs|ts)$/,
+    exclude
+  } = options
+
   return {
-    name: 'size-analyzer',
-    setup(build) {
-      build.onEnd((result) => {
-        console.log('\n文件大小分析:')
+    name: 'banner',
+    generateBundle(options: any, bundle: any) {
+      Object.keys(bundle).forEach(fileName => {
+        const chunk = bundle[fileName]
 
-        result.outputFiles?.forEach(file => {
-          const stats = readFileSync(file).length
-          const sizeKB = (stats / 1024).toFixed(2)
-          console.log(`  ${file}: ${sizeKB} KB`)
-        })
+        if (chunk.type === 'chunk') {
+          const shouldInclude = include.test(fileName)
+          const shouldExclude = exclude && exclude.test(fileName)
+
+          if (shouldInclude && !shouldExclude) {
+            chunk.code = `${banner}\n${chunk.code}`
+          }
+        }
       })
     }
   }
 }
 ```
 
-### 3. 自动导入插件
+### 3. 条件编译插件
 
 ```typescript
-// auto-import-plugin.ts
-interface AutoImportOptions {
-  imports: Record<string, string[]>
+// conditional-compile-plugin.ts
+interface ConditionalCompileOptions {
+  conditions: Record<string, boolean>
 }
 
-export function autoImportPlugin(options: AutoImportOptions) {
-  const { imports } = options
+export function conditionalCompilePlugin(options: ConditionalCompileOptions) {
+  const { conditions } = options
 
   return {
-    name: 'auto-import',
-    transform(code, id) {
-      if (!id.endsWith('.ts') && !id.endsWith('.js')) {
-        return code
-      }
+    name: 'conditional-compile',
+    transform(code: string, id: string) {
+      let result = code
 
-      let importStatements = ''
-
-      // 检查代码中使用的导入
-      Object.entries(imports).forEach(([module, exports]) => {
-        const used = exports.filter(exp =>
-          new RegExp(`\\b${exp}\\b`).test(code)
+      // 处理 #ifdef 条件编译
+      Object.entries(conditions).forEach(([condition, enabled]) => {
+        const ifdefRegex = new RegExp(
+          `\\/\\*\\s*#ifdef\\s+${condition}\\s*\\*\\/([\\s\\S]*?)\\/\\*\\s*#endif\\s*\\*\\/`,
+          'g'
         )
 
-        if (used.length > 0) {
-          importStatements += `import { ${used.join(', ')} } from '${module}'\n`
-        }
+        result = result.replace(ifdefRegex, (match, content) => {
+          return enabled ? content.trim() : ''
+        })
       })
 
-      return importStatements + code
+      return result
     }
   }
 }
@@ -431,14 +444,33 @@ import {
 
 ### 2. 社区插件
 
-社区维护的插件：
+推荐的社区插件：
 
 ```typescript
-import {
-  vuePlugin,
-  reactPlugin,
-  // 更多社区插件...
-} from '@robuild/plugins'
+import { defineConfig } from 'robuild'
+import { visualizer } from 'rollup-plugin-visualizer'
+import { analyzer } from 'rollup-plugin-analyzer'
+import { copy } from 'rollup-plugin-copy'
+
+export default defineConfig({
+  entries: [
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      plugins: [
+        // 打包分析
+        visualizer({ filename: 'dist/stats.html' }),
+        analyzer({ summaryOnly: true }),
+        // 文件复制
+        copy({
+          targets: [
+            { src: 'assets/*', dest: 'dist/assets' }
+          ]
+        })
+      ]
+    }
+  ]
+})
 ```
 
 ### 3. 插件开发

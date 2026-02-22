@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`plugin examples from docs > banner plugin > should add banner to generated files 1`] = `
+"## index.mjs
+
+\`\`\`js
+/* Custom Banner */
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`plugin examples from docs > conditional compile plugin > should handle conditional compilation 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const features = {
+	debug: true,
+	base: true
+};
+
+//#endregion
+export { features };
+\`\`\`
+"
+`;
+
+exports[`plugin examples from docs > version inject plugin > should inject version from package.json 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const version = "1.2.3";
+const message = "Version: 1.2.3";
+
+//#endregion
+export { message, version };
+\`\`\`
+"
+`;

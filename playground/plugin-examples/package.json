@@ -1,0 +1,13 @@
+{
+  "name": "plugin-examples-demo",
+  "version": "2.1.0",
+  "description": "Demo for robuild plugin examples",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "dev": "NODE_ENV=development robuild",
+    "prod": "NODE_ENV=production robuild"
+  },
+  "keywords": ["robuild", "plugins", "demo"],
+  "author": "robuild team"
+}
