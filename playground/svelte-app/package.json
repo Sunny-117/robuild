@@ -1,0 +1,18 @@
+{
+  "name": "svelte-app-example",
+  "version": "1.0.0",
+  "description": "Svelte app example with robuild",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "dependencies": {
+    "svelte": "^4.0.0"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*",
+    "rollup-plugin-svelte": "^7.0.0",
+    "svelte-preprocess": "^5.0.0"
+  }
+}

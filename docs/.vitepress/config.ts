@@ -29,6 +29,7 @@ export default defineConfig({
             { text: '介绍', link: '/guide/' },
             { text: '快速上手', link: '/guide/getting-started' },
             { text: '构建模式', link: '/guide/build-modes' },
+            { text: '与 AI 协作', link: '/guide/skills' },
           ],
         },
         {
@@ -65,6 +66,10 @@ export default defineConfig({
         {
           text: '实践指南',
           items: [
+            { text: 'Vue 支持', link: '/recipes/vue-support' },
+            { text: 'React 支持', link: '/recipes/react-support' },
+            { text: 'Solid 支持', link: '/recipes/solid-support' },
+            { text: 'Svelte 支持', link: '/recipes/svelte-support' },
             { text: 'WASM 支持', link: '/recipes/wasm-support' },
           ],
         },

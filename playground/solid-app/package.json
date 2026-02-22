@@ -1,0 +1,17 @@
+{
+  "name": "solid-app-example",
+  "version": "1.0.0",
+  "description": "Solid app example with robuild",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "dependencies": {
+    "solid-js": "^1.8.0"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*",
+    "rolldown-plugin-solid": "^0.1.0"
+  }
+}

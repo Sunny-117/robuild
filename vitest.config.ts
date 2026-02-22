@@ -29,6 +29,11 @@ export default defineConfig({
         'vitest.config.ts',
         'build.config.ts',
         'src/cli.ts', // CLI entry point
+        'src/types.ts', // Pure type definitions
+        'src/index.ts', // Re-export entry
+        'src/config.ts', // Simple re-export (actual logic in src/config/)
+        'src/plugins/index.ts', // Re-export entry
+        'src/deprecated/**', // Deprecated code
       ],
       all: true,
     },
