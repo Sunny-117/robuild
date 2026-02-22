@@ -54,7 +54,7 @@ export interface User {
 
 ### dts 配置选项
 
-`dts` 选项支持传入 [rolldown-plugin-dts](https://github.com/nicepkg/rolldown-plugin-dts) 的配置：
+`dts` 选项支持传入 [rolldown-plugin-dts](https://github.com/sxzz/rolldown-plugin-dts) 的配置：
 
 ```typescript
 {

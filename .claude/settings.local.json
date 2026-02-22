@@ -43,7 +43,8 @@
       "Bash(pnpm test:coverage:*)",
       "Bash(pnpm docs:build:*)",
       "Bash(git checkout:*)",
-      "Bash(pnpm test:types:*)"
+      "Bash(pnpm test:types:*)",
+      "Bash(pnpm --filter wasm-support-example build:*)"
     ]
   }
 }
