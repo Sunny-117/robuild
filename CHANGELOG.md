@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v0.1.6
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.5...v0.1.6)
+
+### 🚀 Enhancements
+
+- 🎸 dtsOnly mode ([a6c3d50](https://github.com/Sunny-117/robuild/commit/a6c3d50))
+- Add WASM support via rolldown-plugin-wasm ([5ca2e07](https://github.com/Sunny-117/robuild/commit/5ca2e07))
+- 🎸 lint staged ([0938730](https://github.com/Sunny-117/robuild/commit/0938730))
+
+### 🩹 Fixes
+
+- Resolve TypeScript type check errors ([2b87a0e](https://github.com/Sunny-117/robuild/commit/2b87a0e))
+
+### 📖 Documentation
+
+- Standardize documentation style with anchor IDs and VitePress containers ([8b9c6ba](https://github.com/Sunny-117/robuild/commit/8b9c6ba))
+- Add Vue, React, Solid, and Svelte framework support guides ([eb65b54](https://github.com/Sunny-117/robuild/commit/eb65b54))
+
+### 🏡 Chore
+
+- Update config ([d2336b0](https://github.com/Sunny-117/robuild/commit/d2336b0))
+- Lint ([8e6bd9a](https://github.com/Sunny-117/robuild/commit/8e6bd9a))
+- 🤖 update deps ([1e220ef](https://github.com/Sunny-117/robuild/commit/1e220ef))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.5
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.4...v0.1.5)
