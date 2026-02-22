@@ -1,6 +1,6 @@
 # Hooks
 
-robuild 提供了强大的 Hooks 系统，允许你在构建过程的不同阶段执行自定义逻辑。
+robuild 提供了构建生命周期 Hooks，允许你在构建过程的不同阶段执行自定义逻辑。
 
 ## 什么是 Hooks？
 
@@ -9,13 +9,13 @@ Hooks 是构建过程中的生命周期钩子，让你可以：
 - **自定义构建流程**: 在特定阶段执行自定义代码
 - **环境准备**: 设置构建环境，清理临时文件
 - **后处理**: 构建完成后的自定义操作
-- **集成外部工具**: 与 CI/CD、测试工具等集成
+- **修改配置**: 动态调整 Rolldown 配置
 
 ## 可用的 Hooks
 
 ### 1. `start` - 构建开始
 
-在构建开始前执行：
+在构建开始时执行，是最早执行的 hook：
 
 ```typescript
 import { defineConfig } from 'robuild'
@@ -24,14 +24,75 @@ export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     start: (ctx) => {
-      console.log(`开始构建 ${ctx.pkg.name} v${ctx.pkg.version}`)
+      console.log(`开始构建 ${ctx.pkg.name}`)
       console.log(`工作目录: ${ctx.pkgDir}`)
     }
   }
 })
 ```
 
-### 2. `end` - 构建结束
+### 2. `entries` - 入口处理后
+
+在构建入口被规范化后执行，可以用来修改入口配置：
+
+```typescript
+export default defineConfig({
+  entries: [{ type: 'bundle', input: './src/index.ts', minify: false }],
+  hooks: {
+    entries: (entries, ctx) => {
+      console.log(`处理 ${entries.length} 个入口`)
+
+      // 可以修改入口配置
+      for (const entry of entries) {
+        if (entry.type === 'bundle') {
+          entry.minify = true
+        }
+      }
+    }
+  }
+})
+```
+
+### 3. `rolldownConfig` - Rolldown 配置前
+
+在 Rolldown 配置最终确定前执行，可以修改输入配置：
+
+```typescript
+export default defineConfig({
+  entries: ['./src/index.ts'],
+  hooks: {
+    rolldownConfig: (cfg, ctx) => {
+      console.log('Rolldown 输入配置:', cfg.input)
+
+      // 可以修改 Rolldown 配置
+      cfg.treeshake = {
+        moduleSideEffects: false
+      }
+    }
+  }
+})
+```
+
+### 4. `rolldownOutput` - Rolldown 输出配置前
+
+在 Rolldown 输出配置最终确定前执行：
+
+```typescript
+export default defineConfig({
+  entries: ['./src/index.ts'],
+  hooks: {
+    rolldownOutput: (cfg, res, ctx) => {
+      console.log('输出格式:', cfg.format)
+      console.log('输出目录:', cfg.dir)
+
+      // 可以修改输出配置
+      cfg.banner = '/* 自定义 banner */'
+    }
+  }
+})
+```
+
+### 5. `end` - 构建结束
 
 在构建完成后执行：
 
@@ -41,87 +102,59 @@ export default defineConfig({
   hooks: {
     end: (ctx) => {
       console.log('构建完成!')
-      console.log(`输出目录: ${ctx.pkgDir}/dist`)
     }
   }
 })
 ```
 
-### 3. `beforeBuild` - 构建前
+## Hook 执行顺序
 
-在每个构建入口开始前执行：
+Hooks 按以下顺序执行：
 
-```typescript
-export default defineConfig({
-  entries: ['./src/index.ts'],
-  hooks: {
-    beforeBuild: (ctx, entry) => {
-      console.log(`准备构建: ${entry.input}`)
-
-      // 可以修改构建配置
-      if (entry.type === 'bundle') {
-        entry.minify = true
-      }
-    }
-  }
-})
+```
+start → entries → rolldownConfig → rolldownOutput → end
 ```
 
-### 4. `afterBuild` - 构建后
-
-在每个构建入口完成后执行：
+完整示例：
 
 ```typescript
 export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
-    afterBuild: (ctx, entry, result) => {
-      console.log(`构建完成: ${entry.input}`)
-      console.log(`输出文件: ${result.outputFiles}`)
-    }
+    start: () => console.log('1. start'),
+    entries: () => console.log('2. entries'),
+    rolldownConfig: () => console.log('3. rolldownConfig'),
+    rolldownOutput: () => console.log('4. rolldownOutput'),
+    end: () => console.log('5. end'),
   }
 })
 ```
 
 ## Hook 上下文
 
-每个 Hook 都接收一个上下文对象，包含有用的信息：
-
-### `BuildContext`
+每个 Hook 都接收一个 `BuildContext` 对象：
 
 ```typescript
 interface BuildContext {
-  pkgDir: string        // 项目根目录
-  pkg: {                // package.json 信息
+  pkgDir: string  // 项目根目录的绝对路径
+  pkg: {          // package.json 的内容
     name: string
-    version: string
-    [key: string]: any
+    [key: string]: unknown
   }
-  entries: BuildEntry[] // 构建入口列表
-  config: BuildConfig   // 完整配置
 }
 ```
 
-### `BuildEntry`
+## 类型定义
+
+完整的 Hooks 类型定义：
 
 ```typescript
-interface BuildEntry {
-  type: 'bundle' | 'transform'
-  input: string
-  outDir?: string
-  minify?: boolean
-  stub?: boolean
-  // ... 其他配置
-}
-```
-
-### `BuildResult`
-
-```typescript
-interface BuildResult {
-  outputFiles: string[]  // 输出文件列表
-  duration: number       // 构建耗时
-  errors: Error[]        // 错误信息
+interface BuildHooks {
+  start?: (ctx: BuildContext) => void | Promise<void>
+  end?: (ctx: BuildContext) => void | Promise<void>
+  entries?: (entries: BuildEntry[], ctx: BuildContext) => void | Promise<void>
+  rolldownConfig?: (cfg: InputOptions, ctx: BuildContext) => void | Promise<void>
+  rolldownOutput?: (cfg: OutputOptions, res: RolldownBuild, ctx: BuildContext) => void | Promise<void>
 }
 ```
 
@@ -131,8 +164,8 @@ interface BuildResult {
 
 ```typescript
 import { defineConfig } from 'robuild'
-import { existsSync, mkdirSync } from 'fs'
-import { join } from 'path'
+import { existsSync, mkdirSync } from 'node:fs'
+import { join } from 'node:path'
 
 export default defineConfig({
   entries: ['./src/index.ts'],
@@ -145,7 +178,7 @@ export default defineConfig({
         console.log('创建输出目录:', distDir)
       }
 
-      // 检查环境变量
+      // 设置环境变量
       if (!process.env.NODE_ENV) {
         process.env.NODE_ENV = 'production'
       }
@@ -158,8 +191,8 @@ export default defineConfig({
 
 ```typescript
 import { defineConfig } from 'robuild'
-import { copyFileSync, readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
+import { copyFileSync, existsSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 export default defineConfig({
   entries: ['./src/index.ts'],
@@ -196,24 +229,19 @@ export default defineConfig({
 import { defineConfig } from 'robuild'
 
 export default defineConfig({
-  entries: ['./src/index.ts'],
+  entries: [{ type: 'bundle', input: './src/index.ts' }],
   hooks: {
-    beforeBuild: (ctx, entry) => {
-      // 根据环境变量调整构建配置
-      if (process.env.NODE_ENV === 'development') {
-        entry.minify = false
-        entry.sourcemap = true
-      } else {
-        entry.minify = true
-        entry.sourcemap = false
-      }
+    entries: (entries, ctx) => {
+      for (const entry of entries) {
+        if (entry.type !== 'bundle') continue
 
-      // 根据平台调整配置
-      if (process.platform === 'win32') {
-        // Windows 特定配置
-        entry.rolldown = {
-          ...entry.rolldown,
-          target: 'node18'
+        // 根据环境变量调整构建配置
+        if (process.env.NODE_ENV === 'development') {
+          entry.minify = false
+          entry.sourcemap = true
+        } else {
+          entry.minify = true
+          entry.sourcemap = false
         }
       }
     }
@@ -221,64 +249,28 @@ export default defineConfig({
 })
 ```
 
-### 4. 集成测试
+### 4. 自定义 Rolldown 配置
 
 ```typescript
 import { defineConfig } from 'robuild'
-import { execSync } from 'child_process'
 
 export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
-    afterBuild: async (ctx, entry, result) => {
-      if (result.errors.length === 0) {
-        console.log('构建成功，运行测试...')
-
-        try {
-          execSync('npm test', {
-            cwd: ctx.pkgDir,
-            stdio: 'inherit'
-          })
-          console.log('测试通过!')
-        } catch (error) {
-          console.error('测试失败:', error.message)
-          process.exit(1)
-        }
-      }
-    }
-  }
-})
-```
-
-### 5. 多阶段构建
-
-```typescript
-import { defineConfig } from 'robuild'
-
-export default defineConfig({
-  entries: [
-    './src/index.ts',
-    './src/runtime/:./dist/runtime'
-  ],
-  hooks: {
-    start: (ctx) => {
-      console.log('开始多阶段构建...')
+    rolldownConfig: (cfg, ctx) => {
+      // 添加自定义 external
+      cfg.external = [
+        ...(Array.isArray(cfg.external) ? cfg.external : []),
+        /^@internal\//
+      ]
     },
 
-    beforeBuild: (ctx, entry) => {
-      if (entry.type === 'bundle') {
-        console.log('阶段 1: 打包主文件')
-      } else if (entry.type === 'transform') {
-        console.log('阶段 2: 转换运行时文件')
-      }
-    },
-
-    afterBuild: (ctx, entry, result) => {
-      console.log(`阶段完成: ${entry.input}`)
-    },
-
-    end: (ctx) => {
-      console.log('所有阶段构建完成!')
+    rolldownOutput: (cfg, res, ctx) => {
+      // 添加自定义 banner
+      cfg.banner = `/**
+ * ${ctx.pkg.name}
+ * Built at: ${new Date().toISOString()}
+ */`
     }
   }
 })
@@ -286,7 +278,7 @@ export default defineConfig({
 
 ## 异步 Hooks
 
-Hooks 支持异步操作：
+所有 Hooks 都支持异步操作：
 
 ```typescript
 import { defineConfig } from 'robuild'
@@ -296,7 +288,7 @@ export default defineConfig({
   hooks: {
     start: async (ctx) => {
       // 异步操作
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await prepareEnvironment()
       console.log('环境准备完成')
     },
 
@@ -311,102 +303,36 @@ export default defineConfig({
 
 ## 错误处理
 
-### 1. Hook 错误处理
+在 Hook 中抛出错误会中断构建：
 
 ```typescript
 export default defineConfig({
   entries: ['./src/index.ts'],
   hooks: {
     start: (ctx) => {
-      try {
-        // 可能出错的操作
-        validateEnvironment()
-      } catch (error) {
-        console.error('环境检查失败:', error.message)
-        process.exit(1)
+      // 检查必要条件
+      if (!process.env.API_KEY) {
+        throw new Error('缺少 API_KEY 环境变量')
       }
     }
   }
 })
 ```
 
-### 2. 构建错误处理
+## Hooks vs Plugins
 
-```typescript
-export default defineConfig({
-  entries: ['./src/index.ts'],
-  hooks: {
-    afterBuild: (ctx, entry, result) => {
-      if (result.errors.length > 0) {
-        console.error('构建失败:')
-        result.errors.forEach(error => {
-          console.error(`- ${error.message}`)
-        })
+robuild 同时支持 Hooks 和 Plugins，它们有不同的用途：
 
-        // 发送错误通知
-        sendErrorNotification(result.errors)
-      }
-    }
-  }
-})
-```
+| 特性 | Hooks | Plugins |
+|------|-------|---------|
+| 用途 | 简单的构建生命周期操作 | 复杂的代码转换和处理 |
+| 配置位置 | `config.hooks` | `config.plugins` |
+| 能力 | 修改配置、执行副作用 | Rolldown 完整插件能力 |
+| 复杂度 | 简单 | 较复杂 |
 
-## 最佳实践
-
-### 1. 保持 Hooks 简洁
-
-```typescript
-// ✅ 好的做法
-hooks: {
-  start: (ctx) => {
-    console.log(`构建 ${ctx.pkg.name}`)
-  }
-}
-
-// ❌ 避免的做法
-hooks: {
-  start: (ctx) => {
-    // 避免在 Hook 中放置过多逻辑
-    // 复杂的逻辑应该提取到单独的函数中
-  }
-}
-```
-
-### 2. 使用类型安全
-
-```typescript
-import { defineConfig, type BuildContext } from 'robuild'
-
-export default defineConfig({
-  entries: ['./src/index.ts'],
-  hooks: {
-    start: (ctx: BuildContext) => {
-      // 享受完整的类型提示
-      console.log(ctx.pkg.name)
-    }
-  }
-})
-```
-
-### 3. 错误处理
-
-```typescript
-hooks: {
-  start: (ctx) => {
-    try {
-      // 关键操作
-      prepareEnvironment()
-    } catch (error) {
-      console.error('启动失败:', error)
-      process.exit(1)
-    }
-  }
-}
-```
+对于简单的生命周期操作，使用 Hooks；对于需要访问 Rolldown 插件系统的复杂操作，使用 Plugins。
 
 ## 下一步
 
-- [插件系统](./plugins.md) - 扩展构建功能
-- [性能优化](./performance.md) - 优化构建性能
+- [插件系统](./plugins.md) - 使用插件扩展构建功能
 - [配置](./configuration.md) - 详细配置选项
-- [API 文档](../api/) - 程序化 API 使用

@@ -1,0 +1,11 @@
+{
+  "name": "hooks-demo",
+  "version": "1.0.0",
+  "description": "Demo for robuild build lifecycle hooks",
+  "type": "module",
+  "scripts": {
+    "build": "robuild"
+  },
+  "keywords": ["robuild", "hooks", "demo"],
+  "author": "robuild team"
+}
