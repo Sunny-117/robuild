@@ -1,3 +1,1 @@
-filepath = robuild/api+config+types+cli
-
-检查{filepath}里面介绍的功能，保证文档介绍和真实行为的一致性，可以创建/找到对应的单元测试和playground案例完成验证
+参考tsdown/docs/zh-CN/guide/getting-started.md文档的风格和文档功能，也优化下我的robuild/guide/getting-started文档
