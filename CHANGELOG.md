@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v0.1.7
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.6...v0.1.7)
+
+### 🚀 Enhancements
+
+- Add full-featured demo example showcasing robuild capabilities ([e82ef56](https://github.com/Sunny-117/robuild/commit/e82ef56))
+- Add create-robuild scaffold CLI for quick project setup ([8ecf593](https://github.com/Sunny-117/robuild/commit/8ecf593))
+- **example:** Add HTML injection and auto-update features for a full functional demo ([f6d1a83](https://github.com/Sunny-117/robuild/commit/f6d1a83))
+
+### 🔥 Performance
+
+- Optimize build performance with parallel execution and remove redundant rolldown calls ([50ddf43](https://github.com/Sunny-117/robuild/commit/50ddf43))
+- ⚡️ use oxc isolated declarations for faster DTS generation ([5feea7e](https://github.com/Sunny-117/robuild/commit/5feea7e))
+
+### 🏡 Chore
+
+- 🤖 update benchmark ([d9c618c](https://github.com/Sunny-117/robuild/commit/d9c618c))
+- Release ([d0243db](https://github.com/Sunny-117/robuild/commit/d0243db))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.6
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.5...v0.1.6)
