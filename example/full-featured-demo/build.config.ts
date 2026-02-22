@@ -1,3 +1,5 @@
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { defineConfig } from 'robuild'
 
 /**
@@ -17,8 +19,12 @@ import { defineConfig } from 'robuild'
  * - Content hash for cache busting
  * - Package.json exports generation
  * - Build hooks
- * - Custom plugins (virtual modules)
+ * - Custom plugins (virtual modules, HTML injection)
  */
+
+// Store browser bundle filename for HTML injection
+let browserBundleFileName = ''
+
 export default defineConfig({
   // ============================================
   // Entry Configuration (unbuild-style)
@@ -194,10 +200,10 @@ export default defineConfig({
   },
 
   // ============================================
-  // Plugins - Virtual Modules Example
+  // Plugins
   // ============================================
   plugins: [
-    // Virtual module plugin example
+    // Virtual module plugin - inject build-time information
     {
       name: 'virtual-build-info',
       resolveId(id: string) {
@@ -215,6 +221,21 @@ export default defineConfig({
           `
         }
         return null
+      },
+    },
+
+    // HTML injection plugin - auto-update browser bundle reference
+    {
+      name: 'html-bundle-injector',
+      writeBundle(_options: unknown, bundle: Record<string, { type: string; fileName?: string }>) {
+        // Find the browser bundle file (browser-*.js with hash)
+        for (const [fileName, chunk] of Object.entries(bundle)) {
+          if (chunk.type === 'chunk' && fileName.startsWith('browser-') && fileName.endsWith('.js')) {
+            browserBundleFileName = fileName
+            console.log(`   📄 Browser bundle: ${fileName}`)
+            break
+          }
+        }
       },
     },
   ],
@@ -242,9 +263,38 @@ export default defineConfig({
   },
 
   // ============================================
-  // Post-build Callback
+  // Post-build Callback - Update HTML
   // ============================================
   onSuccess: async () => {
+    // Find browser bundle if not captured by plugin
+    if (!browserBundleFileName) {
+      const distFiles = readdirSync('./dist')
+      const browserFile = distFiles.find(f => f.startsWith('browser-') && f.endsWith('.js') && !f.endsWith('.map'))
+      if (browserFile) {
+        browserBundleFileName = browserFile
+      }
+    }
+
+    // Update index.html with correct browser bundle path
+    if (browserBundleFileName) {
+      const htmlPath = join(process.cwd(), 'index.html')
+      try {
+        let html = readFileSync(htmlPath, 'utf-8')
+        // Replace any browser-*.js reference with the actual filename
+        const updated = html.replace(
+          /src="\.\/dist\/browser-[^"]*\.js"/g,
+          `src="./dist/${browserBundleFileName}"`,
+        )
+        if (updated !== html) {
+          writeFileSync(htmlPath, updated)
+          console.log(`📝 Updated index.html with browser bundle: ${browserBundleFileName}`)
+        }
+      }
+      catch {
+        // index.html might not exist, that's ok
+      }
+    }
+
     console.log('📋 Post-build tasks completed')
   },
 

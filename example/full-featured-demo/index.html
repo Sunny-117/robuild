@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>robuild / full-featured demo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #242424;
+      --bg-card: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #888;
+      --text-muted: #555;
+      --accent: #ff6b35;
+      --accent-dim: #cc5429;
+      --accent-glow: rgba(255, 107, 53, 0.15);
+      --border: #333;
+      --success: #4ade80;
+      --error: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      /* Noise texture overlay */
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"),
+        linear-gradient(180deg, #1a1a1a 0%, #151515 100%);
+    }
+
+    /* Rough, hand-drawn border effect */
+    .sketch-border {
+      border: 2px solid var(--border);
+      border-radius: 2px;
+      box-shadow:
+        3px 3px 0 var(--bg-secondary),
+        inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+    }
+
+    /* Header - deliberately off-center */
+    header {
+      margin-bottom: 4rem;
+      padding-left: 0.5rem;
+    }
+
+    header h1 {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    header h1 span {
+      color: var(--accent);
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 400px;
+    }
+
+    /* Grid - asymmetric */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: 1.2fr 0.8fr;
+      }
+      .grid > .card:first-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      padding: 1.75rem;
+      position: relative;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .card:hover {
+      transform: translate(-2px, -2px);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .card-header h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-primary);
+    }
+
+    .card-header .tag {
+      font-size: 0.7rem;
+      color: var(--accent);
+      background: var(--accent-glow);
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* Info grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+
+    .info-item {
+      padding: 0.75rem;
+      background: var(--bg-secondary);
+      border-left: 2px solid var(--border);
+      transition: border-color 0.2s;
+    }
+
+    .info-item:hover {
+      border-left-color: var(--accent);
+    }
+
+    .info-item label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .info-item .value {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      position: relative;
+      transition:
+        color 0.15s,
+        border-color 0.15s,
+        transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .btn:hover::after {
+      width: 100%;
+    }
+
+    /* Output terminal */
+    .output {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 1rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      min-height: 100px;
+      max-height: 280px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      position: relative;
+    }
+
+    .output::before {
+      content: '>';
+      position: absolute;
+      top: 1rem;
+      left: 0.5rem;
+      color: var(--accent);
+      opacity: 0.5;
+    }
+
+    .output::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .output::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    .output::-webkit-scrollbar-thumb {
+      background: var(--border);
+    }
+
+    /* Console specific */
+    #console-output {
+      min-height: 120px;
+      padding-left: 1.5rem;
+    }
+
+    .log-success { color: var(--success); }
+    .log-error { color: var(--error); }
+    .log-accent { color: var(--accent); }
+
+    /* Footer marker */
+    .marker {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .marker a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .marker a:hover {
+      color: var(--accent);
+    }
+
+    /* Decorative elements */
+    .deco-line {
+      width: 40px;
+      height: 2px;
+      background: var(--accent);
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
+    /* Status indicator */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .status::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container {
+        padding: 2rem 1rem;
+      }
+      .card {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>robuild<span>/</span>demo</h1>
+      <p>A full-featured example. Testing bundled outputs in the browser.</p>
+    </header>
+
+    <div class="grid">
+      <!-- Build Info -->
+      <div class="card sketch-border">
+        <div class="card-header">
+          <h2>Build Info</h2>
+          <span class="tag">runtime</span>
+          <span class="status">loaded</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>version</label>
+            <div class="value" id="version">—</div>
+          </div>
+          <div class="info-item">
+            <label>build time</label>
+            <div class="value" id="buildTime">—</div>
+          </div>
+          <div class="info-item">
+            <label>node</label>
+            <div class="value" id="nodeVersion">—</div>
+          </div>
+          <div class="info-item">
+            <label>platform</label>
+            <div class="value" id="platform">—</div>
+          </div>
+          <div class="info-item">
+            <label>dev mode</label>
+            <div class="value" id="isDev">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Utils -->
+      <div class="card sketch-border">
+        <div class="card-header">
+          <h2>Utils</h2>
+          <span class="tag">esm</span>
+        </div>
+        <div class="btn-group">
+          <button class="btn" onclick="testGenerateId()">id</button>
+          <button class="btn" onclick="testStringUtils()">strings</button>
+          <button class="btn" onclick="testFormatBytes()">bytes</button>
+          <button class="btn" onclick="testDeepMerge()">merge</button>
+        </div>
+        <div class="output" id="utils-output">// click to test</div>
+      </div>
+
+      <!-- Core -->
+      <div class="card sketch-border">
+        <div class="card-header">
+          <h2>Core</h2>
+          <span class="tag">plugin system</span>
+        </div>
+        <div class="btn-group">
+          <button class="btn" onclick="testRobuild()">create</button>
+          <button class="btn" onclick="testBuild()">build</button>
+        </div>
+        <div class="output" id="core-output">// click to test</div>
+      </div>
+
+      <!-- Console -->
+      <div class="card sketch-border" style="grid-column: 1 / -1;">
+        <div class="card-header">
+          <h2>Console</h2>
+          <span class="tag">live</span>
+        </div>
+        <div class="output" id="console-output"></div>
+      </div>
+    </div>
+
+    <div class="marker">
+      <span>built with robuild</span>
+      <a href="https://github.com/Sunny-117/robuild" target="_blank">github.com/Sunny-117/robuild</a>
+    </div>
+  </div>
+
+  <!-- Load the IIFE bundle (auto-updated by build) -->
+  <script src="./dist/browser-d93c833d.js"></script>
+
+  <script type="module">
+    import * as lib from './dist/index.mjs';
+    import * as utils from './dist/utils/index.mjs';
+    import * as services from './dist/services/index.mjs';
+
+    window.lib = lib;
+    window.utils = utils;
+    window.services = services;
+
+    const consoleOutput = document.getElementById('console-output');
+    const originalLog = console.log;
+
+    console.log = (...args) => {
+      originalLog.apply(console, args);
+      const text = args.map(a =>
+        typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)
+      ).join(' ');
+      consoleOutput.textContent += text + '\n';
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    };
+
+    function init() {
+      console.log('robuild demo initialized');
+      console.log('modules: lib, utils, services, RobuildDemo');
+
+      document.getElementById('version').textContent = lib.VERSION || '—';
+      document.getElementById('buildTime').textContent = lib.BUILD_TIME?.slice(0, 19) || '—';
+      document.getElementById('nodeVersion').textContent = lib.buildInfo?.nodeVersion || '—';
+      document.getElementById('platform').textContent = lib.buildInfo?.platform || '—';
+      document.getElementById('isDev').textContent = lib.IS_DEV ? 'true' : 'false';
+
+      if (lib.buildInfo) {
+        console.log('build:', lib.buildInfo);
+      }
+    }
+
+    window.testGenerateId = () => {
+      const output = document.getElementById('utils-output');
+      const ids = [
+        utils.generateId(),
+        utils.generateId('user'),
+        utils.generateId('task'),
+      ];
+      output.textContent = ids.join('\n');
+      console.log('generated:', ids.length, 'ids');
+    };
+
+    window.testStringUtils = () => {
+      const output = document.getElementById('utils-output');
+      const str = 'hello world';
+      output.textContent = [
+        `input: "${str}"`,
+        `camel: ${utils.camelCase(str)}`,
+        `pascal: ${utils.pascalCase(str)}`,
+        `kebab: ${utils.kebabCase(str)}`,
+        `snake: ${utils.snakeCase(str)}`,
+      ].join('\n');
+      console.log('string utils tested');
+    };
+
+    window.testFormatBytes = () => {
+      const output = document.getElementById('utils-output');
+      const sizes = [0, 1024, 1024 * 1024, 1024 * 1024 * 1024];
+      output.textContent = sizes.map(s =>
+        `${s.toLocaleString().padStart(15)} → ${utils.formatBytes(s)}`
+      ).join('\n');
+      console.log('format bytes tested');
+    };
+
+    window.testDeepMerge = () => {
+      const output = document.getElementById('utils-output');
+      const a = { x: 1, nested: { a: 1 } };
+      const b = { y: 2, nested: { b: 2 } };
+      const merged = utils.deepMerge(a, b);
+      output.textContent = `a: ${JSON.stringify(a)}\nb: ${JSON.stringify(b)}\n→ ${JSON.stringify(merged)}`;
+      console.log('deep merge:', merged);
+    };
+
+    window.testRobuild = () => {
+      const output = document.getElementById('core-output');
+      const instance = new lib.Robuild({ name: 'demo' });
+      instance.use((ctx) => {
+        ctx.on('build:start', () => console.log('build:start'));
+        ctx.on('build:end', () => console.log('build:end'));
+      });
+      output.textContent = `instance: ${instance.name}\nstatus: ready`;
+      window.robuildInstance = instance;
+      console.log('robuild instance created');
+    };
+
+    window.testBuild = async () => {
+      const output = document.getElementById('core-output');
+      if (!window.robuildInstance) window.testRobuild();
+
+      output.textContent = 'building...';
+      const result = await window.robuildInstance.build();
+      output.textContent = `result:\n${JSON.stringify(result, null, 2)}`;
+      console.log('build complete');
+    };
+
+    init();
+
+    setTimeout(() => {
+      const iife = typeof window.RobuildDemo !== 'undefined';
+      console.log('iife bundle:', iife ? 'ok' : 'missing');
+      if (iife) {
+        console.log('RobuildDemo.version:', window.RobuildDemo.RobuildBrowser.version());
+      }
+    }, 100);
+  </script>
+</body>
+</html>

@@ -16,6 +16,7 @@
     "build": "robuild",
     "build:watch": "robuild --watch",
     "dev": "robuild --stub",
+    "serve": "npx serve .",
     "test": "node dist/index.mjs"
   },
   "keywords": [

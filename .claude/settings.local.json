@@ -48,7 +48,8 @@
       "Bash(npx husky:*)",
       "Bash(pnpm lint-staged:*)",
       "Bash(xargs cat:*)",
-      "Bash(pnpm benchmark:*)"
+      "Bash(pnpm benchmark:*)",
+      "Bash(pnpm exec tsc:*)"
     ]
   }
 }
