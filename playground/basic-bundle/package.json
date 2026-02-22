@@ -1,0 +1,16 @@
+{
+  "name": "basic-bundle-example",
+  "version": "1.0.0",
+  "description": "Basic bundle example with robuild",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*"
+  }
+}

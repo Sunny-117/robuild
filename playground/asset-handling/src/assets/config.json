@@ -1,0 +1,13 @@
+{
+  "appName": "Asset Handling Demo",
+  "version": "1.0.0",
+  "theme": {
+    "primary": "#007acc",
+    "secondary": "#f0f0f0"
+  },
+  "features": {
+    "imageOptimization": true,
+    "svgInlining": true,
+    "jsonImport": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "react-app-example",
+  "version": "1.0.0",
+  "description": "React app example with robuild",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "robuild": "workspace:*"
+  }
+}

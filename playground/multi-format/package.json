@@ -1,0 +1,17 @@
+{
+  "name": "multi-format-example",
+  "version": "1.0.0",
+  "description": "Multi-format output example with robuild",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "browser": "./dist/index.iife.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*"
+  }
+}

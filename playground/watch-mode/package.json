@@ -1,0 +1,13 @@
+{
+  "name": "watch-mode-example",
+  "version": "1.0.0",
+  "description": "Watch mode example with robuild",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*"
+  }
+}

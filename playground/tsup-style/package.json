@@ -1,0 +1,20 @@
+{
+  "name": "tsup-style-example",
+  "version": "1.0.0",
+  "description": "tsup-compatible configuration example with robuild",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  }
+}

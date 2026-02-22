@@ -1,0 +1,19 @@
+{
+  "name": "unbuild-style-example",
+  "version": "1.0.0",
+  "description": "unbuild-compatible configuration example with robuild",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  }
+}

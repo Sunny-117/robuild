@@ -1,0 +1,13 @@
+{
+  "name": "asset-handling-example",
+  "version": "1.0.0",
+  "description": "Asset handling example with robuild",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*"
+  }
+}

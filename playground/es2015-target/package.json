@@ -1,0 +1,16 @@
+{
+  "name": "es2015-target-example",
+  "version": "1.0.0",
+  "description": "ES2015 target with @oxc-project/runtime helpers",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*"
+  }
+}
