@@ -70,6 +70,7 @@
     "esno": "^4.8.0",
     "git-cz": "^4.9.0",
     "oxlint": "^1.49.0",
+    "rolldown-plugin-wasm": "^0.2.1",
     "turbo": "^2.8.7",
     "vitepress": "^1.6.4",
     "vitepress-plugin-group-icons": "^1.7.1",

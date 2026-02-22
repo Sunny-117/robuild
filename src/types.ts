@@ -306,6 +306,16 @@ export interface _BuildEntry {
    * @default false
    */
   unbundle?: boolean
+
+  /**
+   * WASM support configuration for this entry.
+   *
+   * When enabled, you can import .wasm files directly.
+   * Overrides the global `wasm` config if set.
+   *
+   * @default false
+   */
+  wasm?: boolean | WasmOptions
 }
 
 export type BundleEntry = _BuildEntry & {
@@ -548,6 +558,65 @@ export interface GlobImportOptions {
    * @default false
    */
   eager?: boolean
+}
+
+/**
+ * WASM support configuration options.
+ *
+ * When enabled, robuild will use rolldown-plugin-wasm to handle .wasm file imports.
+ *
+ * @see https://github.com/sxzz/rolldown-plugin-wasm
+ */
+export interface WasmOptions {
+  /**
+   * Enable WASM support.
+   *
+   * @default false
+   */
+  enabled?: boolean
+
+  /**
+   * Maximum file size (in bytes) for inlining WASM modules.
+   *
+   * Files larger than this will be emitted as separate files.
+   * Set to 0 to always emit as separate files.
+   *
+   * @default 14336 (14KB)
+   */
+  maxFileSize?: number
+
+  /**
+   * Output filename pattern for WASM files.
+   *
+   * Supports placeholders:
+   * - `[hash]` - Content hash
+   * - `[name]` - Original filename without extension
+   * - `[extname]` - File extension (e.g., `.wasm`)
+   *
+   * @default '[hash][extname]'
+   */
+  fileName?: string
+
+  /**
+   * Public path prefix for WASM files.
+   *
+   * Used when WASM files need to be loaded from a specific URL path.
+   *
+   * @example '/assets/'
+   */
+  publicPath?: string
+
+  /**
+   * Target environment for WASM instantiation.
+   *
+   * - `'auto'` - Detect environment at runtime (works in both Node.js and browser)
+   * - `'auto-inline'` - Always inline, decode based on environment
+   * - `'browser'` - Browser-only (omits Node.js built-in modules)
+   * - `'node'` - Node.js-only (requires Node.js 20.16.0+)
+   *
+   * @default 'auto'
+   */
+  targetEnv?: 'auto' | 'auto-inline' | 'browser' | 'node'
 }
 
 export interface BuildHooks {
@@ -831,6 +900,29 @@ export interface BuildConfig {
    * Glob import configuration
    */
   globImport?: GlobImportOptions
+
+  /**
+   * WASM support configuration.
+   *
+   * When enabled, you can import .wasm files directly in your code.
+   *
+   * @example
+   * ```ts
+   * // Direct import (sync)
+   * import { add } from './math.wasm'
+   *
+   * // Async initialization
+   * import init from './math.wasm?init'
+   * const instance = await init()
+   *
+   * // Sync initialization
+   * import initSync from './math.wasm?init&sync'
+   * const instance = initSync()
+   * ```
+   *
+   * @default false
+   */
+  wasm?: boolean | WasmOptions
 
   /**
    * Log level for build output.

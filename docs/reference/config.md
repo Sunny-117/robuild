@@ -11,6 +11,7 @@ interface BuildConfig {
   hooks?: BuildHooks                     // 构建钩子
   watch?: WatchOptions                   // 监听配置
   exports?: ExportsConfig                // 导出配置
+  wasm?: boolean | WasmOptions           // WASM 支持
   logLevel?: LogLevel                    // 日志级别
   failOnWarn?: boolean                   // 警告时失败
   onSuccess?: string | Function          // 成功回调
@@ -59,6 +60,7 @@ interface BundleEntry {
   clean?: boolean | string[]
   stub?: boolean
   shims?: boolean | ShimsConfig
+  wasm?: boolean | WasmOptions           // WASM 支持
   plugins?: RolldownPlugin[]
   rolldown?: InputOptions                // rolldown 原生配置
 }
@@ -118,6 +120,22 @@ interface ExportsConfig {
   custom?: Record<string, string>        // 自定义映射
 }
 ```
+
+## WasmOptions {#wasm-options}
+
+WASM 支持配置：
+
+```ts
+interface WasmOptions {
+  enabled?: boolean                      // 启用 WASM 支持
+  maxFileSize?: number                   // 内联最大文件大小（字节，默认 14KB）
+  fileName?: string                      // 输出文件名模式
+  publicPath?: string                    // 非内联文件的 URL 前缀
+  targetEnv?: 'auto' | 'auto-inline' | 'browser' | 'node'  // 目标环境
+}
+```
+
+详细使用说明请参考 [WASM 支持](/recipes/wasm-support)。
 
 ## BuildHooks {#build-hooks}
 

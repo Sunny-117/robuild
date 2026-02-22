@@ -51,7 +51,7 @@ export async function cleanTestDir(testName: RunnerTask | string): Promise<void>
  */
 export async function writeFixtures(
   context: TestContext,
-  files?: Record<string, string>,
+  files?: Record<string, string | Buffer>,
   fixtureName?: string,
 ): Promise<{ testName: string, testDir: string }> {
   const testName = getTestFilename(context.task)
@@ -83,7 +83,13 @@ export async function writeFixtures(
   for (const [filename, content] of Object.entries(files)) {
     const filepath = path.resolve(testDir, filename)
     await mkdir(path.dirname(filepath), { recursive: true })
-    await writeFile(filepath, content, 'utf8')
+    // Support both string and Buffer content
+    if (Buffer.isBuffer(content)) {
+      await writeFile(filepath, content)
+    }
+    else {
+      await writeFile(filepath, content, 'utf8')
+    }
   }
 
   return { testName, testDir }

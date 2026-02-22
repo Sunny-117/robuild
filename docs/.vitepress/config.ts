@@ -63,6 +63,12 @@ export default defineConfig({
           ],
         },
         {
+          text: '实践指南',
+          items: [
+            { text: 'WASM 支持', link: '/recipes/wasm-support' },
+          ],
+        },
+        {
           text: 'API 参考',
           items: [
             { text: '命令行接口', link: '/reference/cli' },

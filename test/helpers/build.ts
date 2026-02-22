@@ -21,8 +21,9 @@ export interface TestBuildOptions {
   /**
    * The files to write to the test directory.
    * One of `files` or `fixture` must be provided.
+   * Supports both string content and Buffer for binary files.
    */
-  files?: Record<string, string>
+  files?: Record<string, string | Buffer>
 
   /**
    * The directory name under `test/fixtures` to use as a fixture.

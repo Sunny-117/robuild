@@ -1,0 +1,16 @@
+{
+  "name": "wasm-support-example",
+  "version": "1.0.0",
+  "description": "WASM support example with robuild",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "scripts": {
+    "build": "robuild",
+    "dev": "robuild --watch"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*",
+    "rolldown-plugin-wasm": "^0.2.1"
+  }
+}

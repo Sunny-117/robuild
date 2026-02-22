@@ -26,6 +26,7 @@ import { nodeProtocolPlugin } from '../plugins/builtin/node-protocol'
 import { makeExecutable, shebangPlugin } from '../plugins/builtin/shebang'
 import { createShimsPlugin } from '../plugins/builtin/shims'
 import { createSkipNodeModulesPlugin } from '../plugins/builtin/skip-node-modules'
+import { createWasmPlugin, normalizeWasmConfig } from '../plugins/builtin/wasm'
 import { RobuildPluginManager } from '../plugins/manager'
 import { resolveChunkAddon } from '../transforms/banner'
 import { cleanOutputDir } from '../transforms/clean'
@@ -185,6 +186,19 @@ export async function rolldownBuild(
         name: 'skip-node-modules',
         resolveId: skipPlugin.resolveId,
       } as Plugin)
+    }
+  }
+
+  // Add WASM plugin if enabled (entry config overrides global config)
+  const wasmConfig = normalizeWasmConfig(entry.wasm ?? config?.wasm)
+  if (wasmConfig) {
+    const wasmPlugin = await createWasmPlugin(wasmConfig)
+    if (wasmPlugin) {
+      rolldownPlugins.push(wasmPlugin)
+    }
+    else {
+      logger.warn('WASM support is enabled but rolldown-plugin-wasm is not installed.')
+      logger.warn('Install it with: pnpm add -D rolldown-plugin-wasm')
     }
   }
 
