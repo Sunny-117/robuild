@@ -1,10 +1,19 @@
 # 类型定义
 
-robuild 提供完整的 TypeScript 类型定义，确保类型安全和开发体验。
+## 导出的类型
 
-## 核心类型
+```typescript
+import type {
+  BuildConfig,
+  BuildEntry,
+  BundleEntry,
+  TransformEntry,
+  ExportsConfig,
+  RobuildPlugin,
+} from 'robuild'
+```
 
-### `BuildConfig`
+## BuildConfig
 
 主要的构建配置类型：
 
@@ -13,611 +22,168 @@ interface BuildConfig {
   cwd?: string | URL
   entries?: (BuildEntry | string)[]
   hooks?: BuildHooks
-  clean?: CleanOptions
-  cache?: CacheOptions
   watch?: WatchOptions
+  exports?: ExportsConfig
+  logLevel?: 'silent' | 'error' | 'warn' | 'info' | 'verbose'
+  failOnWarn?: boolean
+  onSuccess?: string | ((result: BuildResult) => void)
+  ignoreWatch?: string[]
+  clean?: boolean | string[]
+  plugins?: RobuildPlugin[]
 }
 ```
 
-### `BuildEntry`
-
-构建入口类型，支持 Bundle 和 Transform 两种模式：
+## BuildEntry
 
 ```typescript
 type BuildEntry = BundleEntry | TransformEntry
 ```
 
-### `BuildContext`
+## BundleEntry
 
-构建上下文，包含项目信息：
-
-```typescript
-interface BuildContext {
-  pkgDir: string
-  pkg: {
-    name: string
-    version: string
-    [key: string]: any
-  }
-  entries: BuildEntry[]
-  config: BuildConfig
-}
-```
-
-## Bundle 类型
-
-### `BundleEntry`
-
-Bundle 模式的构建入口：
+Bundle 模式配置：
 
 ```typescript
 interface BundleEntry {
   type: 'bundle'
-  input: string | string[]
+  input?: string | string[] | Record<string, string>
   outDir?: string
-  minify?: boolean | MinifyOptions
-  stub?: boolean
-  sourcemap?: boolean | SourcemapOptions
-  dts?: boolean | DtsOptions
-  rolldown?: RolldownOptions
-}
-```
-
-### `RolldownOptions`
-
-Rolldown 打包器配置：
-
-```typescript
-interface RolldownOptions {
-  platform?: 'neutral' | 'node' | 'browser'
+  fileName?: string
+  format?: ModuleFormat | ModuleFormat[]
+  platform?: 'browser' | 'node' | 'neutral'
   target?: string
-  external?: (string | RegExp | ((id: string) => boolean))[]
-  plugins?: Plugin[]
+  globalName?: string
+
+  // 优化
+  minify?: boolean | 'dce-only'
+  sourcemap?: boolean | 'inline' | 'hidden'
+  splitting?: boolean
+  treeshake?: boolean
+
+  // 类型声明
+  dts?: boolean | DtsOptions
+  dtsOnly?: boolean
+
+  // 依赖
+  external?: (string | RegExp)[]
+  noExternal?: (string | RegExp)[]
+  skipNodeModules?: boolean
+
+  // 代码注入
+  banner?: string
+  footer?: string
+  env?: Record<string, string>
   define?: Record<string, string>
-  output?: OutputOptions
+
+  // 其他
+  alias?: Record<string, string>
+  clean?: boolean | string[]
+  stub?: boolean
+  shims?: boolean | ShimsConfig
+  plugins?: RolldownPlugin[]
+  rolldown?: InputOptions
 }
 ```
 
-### `OutputOptions`
+## TransformEntry
 
-输出配置选项：
-
-```typescript
-interface OutputOptions {
-  format?: 'esm' | 'cjs' | 'iife' | ('esm' | 'cjs' | 'iife')[]
-  name?: string
-  dir?: string
-  file?: string
-  manualChunks?: Record<string, string[]>
-  entryFileNames?: string
-  chunkFileNames?: string
-  assetFileNames?: string
-}
-```
-
-## Transform 类型
-
-### `TransformEntry`
-
-Transform 模式的构建入口：
+Transform 模式配置：
 
 ```typescript
 interface TransformEntry {
   type: 'transform'
   input: string
-  outDir: string
-  minify?: boolean | MinifyOptions
-  stub?: boolean
-  sourcemap?: boolean | SourcemapOptions
-  oxc?: OxcOptions
-  resolve?: ResolveOptions
-}
-```
-
-### `OxcOptions`
-
-Oxc 转换器配置：
-
-```typescript
-interface OxcOptions {
-  typescript?: TypeScriptOptions
-  javascript?: JavaScriptOptions
-  cwd?: string
-}
-```
-
-### `TypeScriptOptions`
-
-TypeScript 编译选项：
-
-```typescript
-interface TypeScriptOptions {
-  target?: string
-  module?: string
-  moduleResolution?: string
-  declaration?: boolean | DeclarationOptions
-  stripInternal?: boolean
-  removeComments?: boolean
-  [key: string]: any
-}
-```
-
-### `JavaScriptOptions`
-
-JavaScript 编译选项：
-
-```typescript
-interface JavaScriptOptions {
-  target?: string
-  [key: string]: any
-}
-```
-
-## 压缩类型
-
-### `MinifyOptions`
-
-压缩配置选项：
-
-```typescript
-interface MinifyOptions {
-  enabled?: boolean
-  mangle?: boolean
-  compress?: boolean | CompressOptions
-  comments?: boolean | string
-}
-```
-
-### `CompressOptions`
-
-压缩选项：
-
-```typescript
-interface CompressOptions {
-  drop_console?: boolean
-  drop_debugger?: boolean
-  pure_funcs?: string[]
-  [key: string]: any
-}
-```
-
-## 源码映射类型
-
-### `SourcemapOptions`
-
-源码映射配置：
-
-```typescript
-interface SourcemapOptions {
-  enabled?: boolean
-  inline?: boolean
-  external?: boolean
-  sourcesContent?: boolean
-}
-```
-
-## TypeScript 声明文件类型
-
-### `DtsOptions`
-
-TypeScript 声明文件配置：
-
-```typescript
-interface DtsOptions {
-  enabled?: boolean
-  compilerOptions?: CompilerOptions
-  include?: string[]
-  exclude?: string[]
-  emitDeclarationOnly?: boolean
-}
-```
-
-### `CompilerOptions`
-
-TypeScript 编译器选项：
-
-```typescript
-interface CompilerOptions {
-  target?: string
-  module?: string
-  moduleResolution?: string
-  declaration?: boolean
-  emitDeclarationOnly?: boolean
-  stripInternal?: boolean
-  removeComments?: boolean
   outDir?: string
-  rootDir?: string
-  [key: string]: any
-}
-```
-
-## 解析类型
-
-### `ResolveOptions`
-
-模块解析配置：
-
-```typescript
-interface ResolveOptions {
-  extensions?: string[]
-  suffixes?: string[]
+  minify?: boolean
+  sourcemap?: boolean
+  target?: string
   alias?: Record<string, string>
-  modules?: string[]
+  nodeProtocol?: boolean
+  clean?: boolean
+  stub?: boolean
+  banner?: string
+  footer?: string
 }
 ```
 
-## Hooks 类型
+## BuildHooks
 
-### `BuildHooks`
-
-构建生命周期钩子：
+构建钩子：
 
 ```typescript
 interface BuildHooks {
   start?: (ctx: BuildContext) => void | Promise<void>
+  entries?: (entries: BuildEntry[], ctx: BuildContext) => void | Promise<void>
+  rolldownConfig?: (cfg: InputOptions, ctx: BuildContext) => void | Promise<void>
+  rolldownOutput?: (cfg: OutputOptions, res: RolldownBuild, ctx: BuildContext) => void | Promise<void>
   end?: (ctx: BuildContext) => void | Promise<void>
-  beforeBuild?: (ctx: BuildContext, entry: BuildEntry) => void | Promise<void>
-  afterBuild?: (ctx: BuildContext, entry: BuildEntry, result: BuildResult) => void | Promise<void>
 }
 ```
 
-### `BuildResult`
-
-构建结果：
+## BuildContext
 
 ```typescript
-interface BuildResult {
-  outputFiles: string[]
-  duration: number
-  errors: Error[]
+interface BuildContext {
+  pkgDir: string
+  pkg: { name: string } & Record<string, unknown>
 }
 ```
 
-## 清理类型
-
-### `CleanOptions`
-
-清理配置：
-
-```typescript
-interface CleanOptions {
-  enabled?: boolean
-  dirs?: string[]
-  files?: string[]
-  cache?: boolean
-}
-```
-
-## 缓存类型
-
-### `CacheOptions`
-
-缓存配置：
-
-```typescript
-interface CacheOptions {
-  enabled?: boolean
-  dir?: string
-  ttl?: number
-  strategy?: 'content-hash' | 'timestamp'
-}
-```
-
-## 监听类型
-
-### `WatchOptions`
-
-文件监听配置：
+## WatchOptions
 
 ```typescript
 interface WatchOptions {
   enabled?: boolean
   include?: string[]
   exclude?: string[]
-  ignoreInitial?: boolean
   delay?: number
+  ignoreInitial?: boolean
+  watchNewFiles?: boolean
 }
 ```
 
-## 插件类型
-
-### `Plugin`
-
-插件接口：
+## ExportsConfig
 
 ```typescript
-interface Plugin {
-  name: string
-  setup?: (build: BuildContext) => void | Promise<void>
-  transform?: (code: string, id: string) => string | Promise<string>
-  [key: string]: any
+interface ExportsConfig {
+  enabled?: boolean
+  includeTypes?: boolean
+  autoUpdate?: boolean
+  custom?: Record<string, string>
 }
 ```
 
-## 工具类型
-
-### `DeepPartial`
-
-深度部分类型：
+## RobuildPlugin
 
 ```typescript
-type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
+interface RobuildPlugin extends RolldownPlugin {
+  robuildSetup?: (ctx: RobuildPluginContext) => void | Promise<void>
+  robuildBuildStart?: (ctx: RobuildPluginContext) => void | Promise<void>
+  robuildBuildEnd?: (ctx: RobuildPluginContext) => void | Promise<void>
 }
 ```
 
-### `RequiredKeys`
-
-必需键类型：
+## 使用示例
 
 ```typescript
-type RequiredKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? never : K
-}[keyof T]
-```
+import { defineConfig, type BuildConfig, type BundleEntry } from 'robuild'
 
-### `OptionalKeys`
-
-可选键类型：
-
-```typescript
-type OptionalKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? K : never
-}[keyof T]
-```
-
-## 类型守卫
-
-### `isBundleEntry`
-
-检查是否为 Bundle 入口：
-
-```typescript
-function isBundleEntry(entry: BuildEntry): entry is BundleEntry {
-  return entry.type === 'bundle'
-}
-```
-
-### `isTransformEntry`
-
-检查是否为 Transform 入口：
-
-```typescript
-function isTransformEntry(entry: BuildEntry): entry is TransformEntry {
-  return entry.type === 'transform'
-}
-```
-
-### `isStringEntry`
-
-检查是否为字符串入口：
-
-```typescript
-function isStringEntry(entry: BuildEntry | string): entry is string {
-  return typeof entry === 'string'
-}
-```
-
-## 类型导出
-
-### 主要导出
-
-```typescript
-// 核心类型
-export type {
-  BuildConfig,
-  BuildEntry,
-  BundleEntry,
-  TransformEntry,
-  BuildContext,
-  BuildResult,
-  BuildHooks
-}
-
-// 配置类型
-export type {
-  RolldownOptions,
-  OxcOptions,
-  MinifyOptions,
-  SourcemapOptions,
-  DtsOptions,
-  ResolveOptions,
-  CleanOptions,
-  CacheOptions,
-  WatchOptions
-}
-
-// 插件类型
-export type {
-  Plugin
-}
-
-// 工具类型
-export type {
-  DeepPartial,
-  RequiredKeys,
-  OptionalKeys
-}
-```
-
-### 类型守卫导出
-
-```typescript
-export {
-  isBundleEntry,
-  isTransformEntry,
-  isStringEntry
-}
-```
-
-## 类型使用示例
-
-### 1. 基本配置类型
-
-```typescript
-import { defineConfig, type BuildConfig } from 'robuild'
-
-const config: BuildConfig = {
-  entries: [
-    {
-      type: 'bundle',
-      input: './src/index.ts',
-      outDir: './dist'
-    }
-  ]
-}
-
-export default defineConfig(config)
-```
-
-### 2. 类型安全配置
-
-```typescript
-import { defineConfig, type BundleEntry } from 'robuild'
-
-const bundleEntry: BundleEntry = {
+const entry: BundleEntry = {
   type: 'bundle',
   input: './src/index.ts',
-  rolldown: {
-    platform: 'neutral',
-    external: ['lodash']
-  }
+  format: ['esm', 'cjs'],
+  dts: true,
 }
 
-export default defineConfig({
-  entries: [bundleEntry]
-})
-```
-
-### 3. 条件类型配置
-
-```typescript
-import { defineConfig, type BuildEntry } from 'robuild'
-
-function createEntry(type: 'bundle' | 'transform'): BuildEntry {
-  if (type === 'bundle') {
-    return {
-      type: 'bundle',
-      input: './src/index.ts',
-      outDir: './dist'
-    }
-  } else {
-    return {
-      type: 'transform',
-      input: './src/runtime',
-      outDir: './dist/runtime'
-    }
-  }
-}
-
-export default defineConfig({
-  entries: [createEntry('bundle')]
-})
-```
-
-### 4. 类型守卫使用
-
-```typescript
-import { defineConfig, isBundleEntry } from 'robuild'
-
-export default defineConfig({
-  entries: [
-    {
-      type: 'bundle',
-      input: './src/index.ts'
-    }
-  ],
-  hooks: {
-    beforeBuild: (ctx, entry) => {
-      if (isBundleEntry(entry)) {
-        // TypeScript 知道这是 BundleEntry
-        console.log('Bundle 入口:', entry.input)
-      }
-    }
-  }
-})
-```
-
-### 5. 深度部分类型
-
-```typescript
-import { defineConfig, type DeepPartial } from 'robuild'
-
-const baseConfig = {
-  entries: [
-    {
-      type: 'bundle' as const,
-      input: './src/index.ts',
-      rolldown: {
-        platform: 'neutral' as const,
-        external: ['lodash']
-      }
-    }
-  ]
-}
-
-// 可以部分覆盖配置
-const overrideConfig: DeepPartial<typeof baseConfig> = {
-  entries: [
-    {
-      rolldown: {
-        external: ['lodash', 'chalk']
-      }
-    }
-  ]
-}
-
-export default defineConfig({
-  ...baseConfig,
-  ...overrideConfig
-})
-```
-
-## 类型扩展
-
-### 1. 扩展配置类型
-
-```typescript
-import { defineConfig, type BuildConfig } from 'robuild'
-
-// 扩展配置类型
-interface ExtendedBuildConfig extends BuildConfig {
-  customOption?: string
-}
-
-const config: ExtendedBuildConfig = {
-  entries: ['./src/index.ts'],
-  customOption: 'value'
+const config: BuildConfig = {
+  entries: [entry],
 }
 
 export default defineConfig(config)
-```
-
-### 2. 自定义插件类型
-
-```typescript
-import { type Plugin } from 'robuild'
-
-interface MyPlugin extends Plugin {
-  customMethod?: () => void
-}
-
-function myPlugin(): MyPlugin {
-  return {
-    name: 'my-plugin',
-    setup(build) {
-      console.log('插件初始化')
-    },
-    customMethod() {
-      console.log('自定义方法')
-    }
-  }
-}
 ```
 
 ## 下一步
 
-- [配置选项](./config.md) - 详细配置选项
-- [CLI 参数](./cli.md) - 命令行参数详解
-- [API 文档](./) - 程序化 API 使用
-- [配置示例](../guide/configuration.md) - 实际配置示例
+- [配置选项](./config.md) - 详细配置
+- [CLI 参数](./cli.md) - 命令行
+

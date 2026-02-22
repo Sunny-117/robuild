@@ -1,459 +1,138 @@
 # CLI 参数
 
-robuild 提供了丰富的命令行参数，支持灵活的使用方式。
-
 ## 基本用法
 
-### 命令格式
-
 ```bash
-robuild [选项] <入口文件...>
+robuild [entries...] [options]
 ```
 
-### 基本示例
+## 选项
+
+### 基础选项
+
+| 选项 | 简写 | 说明 |
+|------|------|------|
+| `--config <file>` | `-c` | 指定配置文件 |
+| `--no-config` | | 禁用配置文件 |
+| `--dir <dir>` | | 工作目录（默认: `.`） |
+| `--out-dir <dir>` | `-d` | 输出目录（默认: `dist`） |
+| `--watch` | `-w` | 监听模式 |
+| `--stub` | | Stub 开发模式 |
+
+### 输出选项
+
+| 选项 | 说明 |
+|------|------|
+| `--format <format>` | `-f` | 输出格式: esm, cjs, iife, umd |
+| `--platform <platform>` | 目标平台: browser, node, neutral |
+| `--target <target>` | ES 版本: es2015, es2020, esnext |
+| `--global-name <name>` | IIFE/UMD 全局变量名 |
+
+### 优化选项
+
+| 选项 | 说明 |
+|------|------|
+| `--minify` | 压缩代码 |
+| `--sourcemap` | 生成 source map |
+| `--splitting` | 代码分割 |
+| `--treeshake` | Tree shaking（默认开启） |
+
+### 类型声明
+
+| 选项 | 说明 |
+|------|------|
+| `--dts` | 生成类型声明文件 |
+| `--dts-only` | 仅生成类型声明 |
+
+### 依赖处理
+
+| 选项 | 说明 |
+|------|------|
+| `--external <module>` | 外部化依赖 |
+| `--no-external <module>` | 强制打包依赖 |
+| `--skip-node-modules` | 跳过 node_modules |
+
+### 其他选项
+
+| 选项 | 说明 |
+|------|------|
+| `--clean` | 清理输出目录 |
+| `--no-clean` | 禁用清理 |
+| `--shims` | 启用兼容性垫片 |
+| `--unbundle` | 保留文件结构不打包 |
+| `--generate-exports` | 生成 package.json exports |
+| `--on-success <cmd>` | 构建成功后执行命令 |
+| `--log-level <level>` | `-l` | 日志级别: silent, error, warn, info, verbose |
+| `--fail-on-warn` | 警告时失败 |
+| `--ignore-watch <pattern>` | 监听模式忽略文件 |
+| `--from-vite` | 从 Vite 配置加载 |
+| `--cjs-default <mode>` | CJS 默认导出处理: true, false, auto |
+
+## 示例
+
+### 基本构建
 
 ```bash
-# 构建单个文件
-npx robuild ./src/index.ts
-
-# 构建多个文件
-npx robuild ./src/index.ts ./src/cli.ts
-
-# Transform 模式
-npx robuild ./src/runtime/:./dist/runtime
+robuild ./src/index.ts
 ```
 
-## 命令行选项
-
-### `--dir, -d`
-
-指定工作目录：
+### 多格式输出
 
 ```bash
-# 指定工作目录
-npx robuild --dir ./packages/core ./src/index.ts
-
-# 简写形式
-npx robuild -d ./packages/core ./src/index.ts
+robuild ./src/index.ts --format esm --format cjs
 ```
 
-### `--stub, -s`
-
-启用 stub 模式：
+### 浏览器库
 
 ```bash
-# 启用 stub 模式
-npx robuild --stub ./src/index.ts
-
-# 简写形式
-npx robuild -s ./src/index.ts
+robuild ./src/index.ts --format iife --global-name MyLib --platform browser
 ```
 
-### `--config, -c`
-
-指定配置文件：
+### CLI 工具
 
 ```bash
-# 指定配置文件
-npx robuild --config build.config.ts
-
-# 简写形式
-npx robuild -c build.config.ts
+robuild ./src/cli.ts --platform node --minify
 ```
 
-### `--watch, -w`
-
-启用监听模式，文件变化时自动重新构建：
+### Transform 模式
 
 ```bash
-# 启用监听模式
-npx robuild --watch ./src/index.ts
-
-# 简写形式
-npx robuild -w ./src/index.ts
-
-# 监听转换模式
-npx robuild --watch ./src/runtime/:./dist/runtime
-
-# 结合其他选项
-npx robuild --watch --dir ./my-project ./src/index.ts
+robuild ./src/runtime/:./dist/runtime
 ```
 
-**监听模式特性：**
-- 自动检测文件变化并重新构建
-- 智能确定要监听的文件模式
-- 防抖机制避免频繁重建
-- 构建错误后继续监听
-- 清晰的变化和重建日志
-- 使用 Ctrl+C 优雅退出
-
-### `--clean`
-
-清理输出目录：
+### 监听模式
 
 ```bash
-# 构建前清理
-npx robuild --clean ./src/index.ts
+robuild ./src/index.ts -w
 ```
 
-### `--no-cache`
-
-禁用缓存：
+### 开发模式
 
 ```bash
-# 禁用缓存
-npx robuild --no-cache ./src/index.ts
+robuild ./src/index.ts --stub
 ```
 
-### `--minify`
-
-启用压缩：
+### 使用配置文件
 
 ```bash
-# 启用压缩
-npx robuild --minify ./src/index.ts
+robuild                           # 使用 build.config.ts
+robuild --config custom.config.ts # 指定配置文件
 ```
 
-### `--sourcemap`
-
-生成源码映射：
-
-```bash
-# 生成源码映射
-npx robuild --sourcemap ./src/index.ts
-```
-
-### `--dts`
-
-生成 TypeScript 声明文件：
-
-```bash
-# 生成声明文件
-npx robuild --dts ./src/index.ts
-```
-
-### `--out-dir, -o`
-
-指定输出目录：
-
-```bash
-# 指定输出目录
-npx robuild --out-dir ./lib ./src/index.ts
-
-# 简写形式
-npx robuild -o ./lib ./src/index.ts
-```
-
-### `--platform`
-
-指定目标平台：
-
-```bash
-# 指定平台
-npx robuild --platform node ./src/index.ts
-npx robuild --platform browser ./src/index.ts
-npx robuild --platform neutral ./src/index.ts
-```
-
-### `--target`
-
-指定目标环境：
-
-```bash
-# 指定目标环境
-npx robuild --target ES2020 ./src/index.ts
-npx robuild --target node18 ./src/index.ts
-```
-
-### `--external`
-
-指定外部依赖：
-
-```bash
-# 指定外部依赖
-npx robuild --external lodash --external chalk ./src/index.ts
-
-# 使用正则表达式
-npx robuild --external "node:*" ./src/index.ts
-```
-
-### `--format`
-
-指定输出格式：
-
-```bash
-# 指定输出格式
-npx robuild --format esm ./src/index.ts
-npx robuild --format cjs ./src/index.ts
-npx robuild --format iife ./src/index.ts
-
-# 多格式输出
-npx robuild --format esm,cjs ./src/index.ts
-```
-
-### `--name`
-
-指定 IIFE 格式的全局变量名：
-
-```bash
-# 指定全局变量名
-npx robuild --format iife --name MyLibrary ./src/index.ts
-```
-
-### `--silent`
-
-静默模式：
-
-```bash
-# 静默模式
-npx robuild --silent ./src/index.ts
-```
-
-### `--verbose`
-
-详细输出：
-
-```bash
-# 详细输出
-npx robuild --verbose ./src/index.ts
-```
-
-### `--debug`
-
-调试模式：
-
-```bash
-# 调试模式
-npx robuild --debug ./src/index.ts
-```
-
-### `--help, -h`
-
-显示帮助信息：
-
-```bash
-# 显示帮助
-npx robuild --help
-
-# 简写形式
-npx robuild -h
-```
-
-### `--version, -v`
-
-显示版本信息：
-
-```bash
-# 显示版本
-npx robuild --version
-
-# 简写形式
-npx robuild -v
-```
-
-## 环境变量
-
-### `ROBUILD_CWD`
-
-设置工作目录：
-
-```bash
-# 设置工作目录
-ROBUILD_CWD=./packages/core npx robuild ./src/index.ts
-```
-
-### `ROBUILD_CONFIG`
-
-指定配置文件：
-
-```bash
-# 指定配置文件
-ROBUILD_CONFIG=build.config.ts npx robuild ./src/index.ts
-```
-
-### `ROBUILD_CACHE_DIR`
-
-设置缓存目录：
-
-```bash
-# 设置缓存目录
-ROBUILD_CACHE_DIR=./.cache npx robuild ./src/index.ts
-```
-
-### `DEBUG`
-
-启用调试模式：
-
-```bash
-# 启用调试
-DEBUG=robuild:* npx robuild ./src/index.ts
-```
-
-### `NODE_ENV`
-
-设置环境：
-
-```bash
-# 设置环境
-NODE_ENV=production npx robuild ./src/index.ts
-NODE_ENV=development npx robuild ./src/index.ts
-```
-
-## 参数组合示例
-
-### 1. 开发模式
-
-```bash
-# 开发模式配置
-npx robuild \
-  --stub \
-  --watch \
-  --sourcemap \
-  --no-cache \
-  ./src/index.ts
-```
-
-### 2. 生产构建
-
-```bash
-# 生产构建配置
-npx robuild \
-  --minify \
-  --dts \
-  --platform neutral \
-  --target ES2020 \
-  --external lodash \
-  --external chalk \
-  --format esm,cjs \
-  ./src/index.ts
-```
-
-### 3. 库构建
-
-```bash
-# 库构建配置
-npx robuild \
-  --out-dir ./lib \
-  --platform neutral \
-  --external "node:*" \
-  --external /^@types\// \
-  --format esm,cjs,iife \
-  --name MyLibrary \
-  ./src/index.ts
-```
-
-### 4. CLI 工具构建
-
-```bash
-# CLI 工具构建
-npx robuild \
-  --platform node \
-  --target node18 \
-  --external "node:*" \
-  --format cjs \
-  ./src/cli.ts
-```
-
-### 5. 多入口构建
-
-```bash
-# 多入口构建
-npx robuild \
-  --out-dir ./dist \
-  --minify \
-  --dts \
-  ./src/index.ts \
-  ./src/cli.ts \
-  ./src/runtime/:./dist/runtime
-```
-
-## 配置文件与 CLI 参数
-
-### 优先级
-
-CLI 参数的优先级高于配置文件：
-
-```typescript
-// build.config.ts
-export default defineConfig({
-  entries: ['./src/index.ts'],
-  minify: false,
-  sourcemap: false
-})
-```
-
-```bash
-# CLI 参数会覆盖配置文件
-npx robuild --minify --sourcemap ./src/index.ts
-```
-
-### 混合使用
-
-```bash
-# 使用配置文件，但覆盖某些选项
-npx robuild \
-  --config build.config.ts \
-  --minify \
-  --out-dir ./custom-dist
-```
-
-## 错误处理
-
-### 1. 参数验证
-
-```bash
-# 无效参数会显示错误
-npx robuild --invalid-option ./src/index.ts
-# 错误: 未知选项 --invalid-option
-```
-
-### 2. 文件检查
-
-```bash
-# 文件不存在会显示错误
-npx robuild ./nonexistent.ts
-# 错误: 文件不存在 ./nonexistent.ts
-```
-
-### 3. 配置验证
-
-```bash
-# 配置文件错误会显示错误
-npx robuild --config invalid.config.ts
-# 错误: 配置文件格式错误
-```
-
-## 性能优化
-
-### 1. 并行构建
-
-```bash
-# 多个入口会并行构建
-npx robuild ./src/index.ts ./src/cli.ts ./src/utils.ts
-```
-
-### 2. 缓存使用
-
-```bash
-# 默认启用缓存
-npx robuild ./src/index.ts
-
-# 禁用缓存（首次构建或调试）
-npx robuild --no-cache ./src/index.ts
-```
-
-### 3. 增量构建
-
-```bash
-# 只有变化的文件会被重新构建
-npx robuild ./src/index.ts
-# 修改文件后再次运行
-npx robuild ./src/index.ts  # 只构建变化的文件
+## package.json 脚本
+
+```json
+{
+  "scripts": {
+    "build": "robuild ./src/index.ts",
+    "dev": "robuild ./src/index.ts --stub",
+    "watch": "robuild ./src/index.ts -w"
+  }
+}
 ```
 
 ## 下一步
 
-- [配置选项](./config.md) - 详细配置选项
-- [类型定义](./types.md) - 完整的类型定义
-- [API 文档](./) - 程序化 API 使用
-- [CLI 使用指南](../guide/cli.md) - CLI 使用详解
+- [配置选项](./config.md) - 配置文件选项
+- [类型定义](./types.md) - 完整类型
+
