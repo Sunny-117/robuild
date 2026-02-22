@@ -20,7 +20,7 @@ export class Config {
     return this.config[key]
   }
 
-  set(key: keyof AppConfig, value: AppConfig[typeof key]): void {
+  set<K extends keyof AppConfig>(key: K, value: AppConfig[K]): void {
     this.config[key] = value
   }
 }

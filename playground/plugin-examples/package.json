@@ -9,5 +9,8 @@
     "prod": "NODE_ENV=production robuild"
   },
   "keywords": ["robuild", "plugins", "demo"],
-  "author": "robuild team"
+  "author": "robuild team",
+  "devDependencies": {
+    "robuild": "workspace:*"
+  }
 }

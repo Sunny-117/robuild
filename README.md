@@ -97,17 +97,17 @@ Visit our documentation site for detailed guides, API reference, and examples.
 <!-- coverage-start -->
 | File | Stmts | Branch | Funcs | Lines |
 |------|-------|--------|-------|-------|
-| **All files** | **50.30%** | **44.39%** | **49.41%** | **50.34%** |
+| **All files** | **86.44%** | **80.12%** | **92.94%** | **86.32%** |
 | src/build.ts | 84.15% | 67.74% | 100.00% | 83.54% |
-| src/builders | 81.12% | 73.48% | 85.71% | 81.12% |
-| src/config | 42.31% | 26.21% | 56.67% | 42.06% |
-| src/core | 67.74% | 57.14% | 63.16% | 67.74% |
-| src/plugins | 7.50% | 8.33% | 18.42% | 7.63% |
-| src/plugins/builtin | 18.50% | 19.44% | 25.00% | 18.55% |
-| src/plugins/extras | 0.00% | 0.00% | 0.00% | 0.00% |
+| src/builders | 89.89% | 82.80% | 96.43% | 89.89% |
+| src/config | 85.38% | 67.96% | 100.00% | 84.92% |
+| src/core | 74.19% | 57.14% | 68.42% | 74.19% |
+| src/plugins | 97.50% | 95.37% | 97.37% | 97.46% |
+| src/plugins/builtin | 88.15% | 84.92% | 95.59% | 88.12% |
+| src/plugins/extras | 96.55% | 100.00% | 100.00% | 96.30% |
 | src/transforms | 71.43% | 63.77% | 81.82% | 71.27% |
-| src/utils | 73.87% | 61.17% | 95.65% | 73.87% |
-| src/watch.ts | 0.00% | 0.00% | 0.00% | 0.00% |
+| src/utils | 88.29% | 85.44% | 100.00% | 88.29% |
+| src/watch.ts | 81.48% | 81.82% | 57.14% | 81.48% |
 <!-- coverage-end -->
 
 Run coverage locally:
@@ -128,5 +128,5 @@ pnpm test:coverage
 [bundle-href]: https://bundlephobia.com/result?p=robuild
 [license-src]: https://img.shields.io/github/license/Sunny-117/robuild.svg?style=flat&colorA=080f12&colorB=1fa669
 [license-href]: https://github.com/Sunny-117/robuild/blob/main/LICENSE
-[coverage-src]: https://img.shields.io/badge/coverage-50.3%25-yellow?style=flat&colorA=080f12
+[coverage-src]: https://img.shields.io/badge/coverage-86.4%25-brightgreen?style=flat&colorA=080f12
 [coverage-href]: #test-coverage

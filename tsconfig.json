@@ -10,8 +10,20 @@
     "noEmit": true,
     "esModuleInterop": true,
     "isolatedDeclarations": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "jsx": "react-jsx"
   },
-  "include": ["src", "test"],
-  "exclude": ["test/temp"]
+  "include": ["src", "test", "playground"],
+  "exclude": [
+    "test/temp",
+    "playground/**/dist",
+    "playground/**/node_modules",
+    "playground/solid-app",
+    "playground/svelte-app",
+    "playground/vue-app",
+    "playground/asset-handling",
+    "playground/plugin-examples",
+    "playground/unbuild-style",
+    "playground/watch-mode"
+  ]
 }

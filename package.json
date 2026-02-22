@@ -34,7 +34,7 @@
     "test:coverage:raw": "vitest run --coverage && node scripts/update-coverage.mjs",
     "test:coverage:watch": "vitest --coverage",
     "test:ui": "vitest --ui",
-    "test:types": "tsc --noEmit --skipLibCheck src/**/*.ts",
+    "test:types": "tsc --noEmit",
     "docs:dev": "vitepress dev docs",
     "docs:build": "turbo docs:build:raw --filter=robuild",
     "docs:build:raw": "vitepress build docs",

@@ -12,6 +12,6 @@
   },
   "devDependencies": {
     "robuild": "workspace:*",
-    "rolldown-plugin-solid": "^0.1.0"
+    "rolldown-plugin-solid": "^0.2.1"
   }
 }

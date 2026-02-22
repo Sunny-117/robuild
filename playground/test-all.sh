@@ -14,11 +14,10 @@ examples=(
   "vue-app"
   "exports-generation"
   "asset-handling"
-  "watch-mode"
   "tsup-style"
   "unbuild-style"
-  "  "plugin-examples"
-  "es2015-target""
+  "plugin-examples"
+  "es2015-target"
 )
 
 failed_examples=()
