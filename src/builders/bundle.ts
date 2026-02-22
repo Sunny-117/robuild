@@ -281,7 +281,9 @@ export async function rolldownBuild(
 
     // Only add DTS plugin for ESM format (DTS plugin doesn't support CJS)
     if (entry.dts !== false && (format === 'es' || format === 'esm' || format === 'module')) {
-      const dtsPlugins = dts({ ...(entry.dts as DtsOptions) })
+      // Normalize dts options: true becomes empty object, object is passed as-is
+      const dtsOptions: DtsOptions = typeof entry.dts === 'object' ? entry.dts : {}
+      const dtsPlugins = dts(dtsOptions)
       formatConfig.plugins = [
         ...(Array.isArray(formatConfig.plugins) ? formatConfig.plugins : [formatConfig.plugins]),
         ...(Array.isArray(dtsPlugins) ? dtsPlugins : [dtsPlugins]),

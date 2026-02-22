@@ -46,7 +46,9 @@
       "Bash(pnpm test:types:*)",
       "Bash(pnpm --filter wasm-support-example build:*)",
       "Bash(npx husky:*)",
-      "Bash(pnpm lint-staged:*)"
+      "Bash(pnpm lint-staged:*)",
+      "Bash(xargs cat:*)",
+      "Bash(pnpm benchmark:*)"
     ]
   }
 }

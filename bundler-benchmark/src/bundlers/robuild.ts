@@ -19,7 +19,8 @@ export async function build(options: BundlerOptions) {
         target: 'esnext',
         sourcemap: options.sourcemap ?? false,
         minify: options.minify ?? false,
-        dts: options.dts ?? false,
+        // Use oxc isolated declarations for faster DTS generation (same as tsdown)
+        dts: options.dts ? { oxc: options.isolatedDeclarations ?? true } : false,
         clean: true,
       },
     ],
