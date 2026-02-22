@@ -1,0 +1,273 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`build enhancements > advanced banner/footer > should add format-specific banner 1`] = `
+"## index.cjs
+
+\`\`\`js
+/* CommonJS Banner */
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const lib = "my-lib";
+
+//#endregion
+exports.lib = lib;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+/* ES Module Banner */
+//#region index.ts
+const lib = "my-lib";
+
+//#endregion
+export { lib };
+\`\`\`
+"
+`;
+
+exports[`build enhancements > advanced banner/footer > should add format-specific footer 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const lib = "my-lib";
+
+//#endregion
+exports.lib = lib;
+/* CJS End */
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const lib = "my-lib";
+
+//#endregion
+export { lib };
+/* ESM End */
+\`\`\`
+"
+`;
+
+exports[`build enhancements > advanced banner/footer > should support dynamic banner with package info 1`] = `
+"## index.mjs
+
+\`\`\`js
+/*!
+ * test-lib v1.2.3
+ * (c) 2026 Test Author
+ * Released under the MIT License.
+ */
+//#region index.ts
+const lib = "my-lib";
+
+//#endregion
+export { lib };
+\`\`\`
+"
+`;
+
+exports[`build enhancements > combined build flow > should handle complete build flow with all enhancements 1`] = `
+"## LICENSE
+
+\`\`\`txt
+MIT
+\`\`\`
+
+## README.md
+
+\`\`\`md
+# My Library
+\`\`\`
+
+## index.cjs
+
+\`\`\`js
+/* My Library v1.0.0 */
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+let path = require("path");
+
+//#region index.ts
+const version = "1.0.0";
+
+//#endregion
+exports.resolve = path.resolve;
+exports.version = version;
+/* End */
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+/* My Library v1.0.0 */
+import { resolve } from "node:path";
+
+//#region index.ts
+const version = "1.0.0";
+
+//#endregion
+export { resolve, version };
+/* End */
+\`\`\`
+"
+`;
+
+exports[`build enhancements > extension control > should use fixed extensions (.mjs/.cjs) 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const hello = "world";
+
+//#endregion
+exports.hello = hello;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`build enhancements > file copy functionality > should copy in transform mode 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+export declare const value = 42;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+export const value = 42;
+\`\`\`
+
+## logo.txt
+
+\`\`\`txt
+LOGO_PLACEHOLDER
+\`\`\`
+"
+`;
+
+exports[`build enhancements > file copy functionality > should copy simple file paths 1`] = `
+"## LICENSE
+
+\`\`\`txt
+MIT License
+\`\`\`
+
+## README.md
+
+\`\`\`md
+# My Library
+
+Documentation here.
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`build enhancements > file copy functionality > should copy with object config (from/to) 1`] = `
+"## config.json
+
+\`\`\`json
+{"key": "value"}
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`build enhancements > file hash support > should add hash to output filename 1`] = `
+"## index-2f990708.mjs
+
+\`\`\`js
+//#region index.ts
+const version = "1.0.0";
+
+//#endregion
+export { version };
+\`\`\`
+"
+`;
+
+exports[`build enhancements > file hash support > should generate different hash for different content 1`] = `
+"## index-2f990708.mjs
+
+\`\`\`js
+//#region index.ts
+const version = "1.0.0";
+
+//#endregion
+export { version };
+\`\`\`
+"
+`;
+
+exports[`build enhancements > file hash support > should generate different hash for different content 2`] = `
+"## index-6b829d9d.mjs
+
+\`\`\`js
+//#region index.ts
+const version = "2.0.0";
+
+//#endregion
+export { version };
+\`\`\`
+"
+`;
+
+exports[`build enhancements > node protocol handling > should add node: prefix to built-in modules 1`] = `
+"## index.mjs
+
+\`\`\`js
+import { resolve } from "node:path";
+import { createHash } from "node:crypto";
+
+export { createHash, resolve };
+\`\`\`
+"
+`;
+
+exports[`build enhancements > node protocol handling > should strip node: prefix when nodeProtocol is strip 1`] = `
+"## index.mjs
+
+\`\`\`js
+import { resolve } from "path";
+import { createHash } from "crypto";
+
+export { createHash, resolve };
+\`\`\`
+"
+`;

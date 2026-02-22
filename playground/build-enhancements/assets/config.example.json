@@ -1,0 +1,9 @@
+{
+  "apiEndpoint": "https://api.example.com",
+  "timeout": 30000,
+  "retries": 3,
+  "features": {
+    "analytics": true,
+    "notifications": false
+  }
+}

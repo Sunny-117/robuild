@@ -15,9 +15,9 @@ export default defineConfig({
       type: 'bundle',
       input: './src/index.ts',
       copy: [
-        'README.md',                    // 简单路径
-        'assets/logo.png',              // 相对路径
-        { from: 'LICENSE', to: 'dist/LICENSE' } // 对象配置
+        'README.md',                    // 简单路径 - 复制到输出目录，保留文件名
+        'assets/logo.png',              // 相对路径 - 复制到输出目录，保留文件名
+        { from: 'LICENSE', to: 'dist/LICENSE' } // 对象配置 - to 相对于项目根目录
       ]
     }
   ]
@@ -33,22 +33,21 @@ export default defineConfig({
       type: 'bundle',
       input: './src/index.ts',
       copy: [
-        // 复制到输出目录
+        // 简单路径 - 复制到输出目录，保留原文件名
         'README.md',
-        
-        // 复制整个目录
+
+        // 对象配置 - to 是相对于项目根目录 (cwd) 的路径
         { from: 'assets/', to: 'dist/assets/' },
-        
+
         // 重命名复制
         { from: 'src/config.example.json', to: 'dist/config.json' },
-        
-        // 复制到特定位置
-        { from: 'docs/', to: '../docs-output/' }
       ]
     }
   ]
 })
 ```
+
+> **注意**: 使用 `{ from, to }` 对象配置时，`to` 路径是相对于项目根目录 (cwd)，而不是输出目录。
 
 ### CLI 使用
 
@@ -207,48 +206,6 @@ export default defineConfig({
 })
 ```
 
-### 自定义扩展名
-
-```typescript
-export default defineConfig({
-  entries: [
-    {
-      type: 'bundle',
-      input: './src/index.ts',
-      outExtensions: (format, platform) => {
-        if (format === 'esm') return '.esm.js'
-        if (format === 'cjs') return '.common.js'
-        return '.js'
-      }
-    }
-  ]
-})
-```
-
-### 扩展名映射表
-
-```typescript
-export default defineConfig({
-  entries: [
-    {
-      type: 'bundle',
-      input: './src/index.ts',
-      outExtensions: {
-        '.ts': {
-          esm: '.esm.js',
-          cjs: '.cjs.js',
-          iife: '.browser.js'
-        },
-        '.tsx': {
-          esm: '.esm.jsx',
-          cjs: '.cjs.jsx'
-        }
-      }
-    }
-  ]
-})
-```
-
 ### 输出文件示例
 
 ```
@@ -257,11 +214,10 @@ dist/
 ├── index.mjs              # ESM 格式
 └── index.cjs              # CJS 格式
 
-# 自定义扩展名
+# fixedExtension: false (默认)
 dist/
-├── index.esm.js           # ESM 格式
-├── index.common.js        # CJS 格式
-└── index.browser.js       # IIFE 格式
+├── index.mjs              # ESM 格式 (node 平台)
+└── index.cjs              # CJS 格式 (node 平台)
 ```
 
 ## 🔗 Node.js 协议处理

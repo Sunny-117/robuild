@@ -1,0 +1,15 @@
+{
+  "name": "build-enhancements-demo",
+  "version": "1.0.0",
+  "description": "Demo for robuild build enhancements: copy, banner, footer, hash, nodeProtocol",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "build:hash": "robuild --hash",
+    "build:dev": "NODE_ENV=development robuild",
+    "build:prod": "NODE_ENV=production robuild"
+  },
+  "keywords": ["robuild", "build-enhancements", "demo"],
+  "author": "robuild team",
+  "license": "MIT"
+}
