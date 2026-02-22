@@ -22,6 +22,6 @@
     "@my-monorepo/utils": "workspace:*"
   },
   "devDependencies": {
-    "robuild": "^0.1.6"
+    "robuild": "^0.1.7"
   }
 }

@@ -17,6 +17,6 @@
     "cac": "^6.7.14"
   },
   "devDependencies": {
-    "robuild": "^0.1.6"
+    "robuild": "^0.1.7"
   }
 }

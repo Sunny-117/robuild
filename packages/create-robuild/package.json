@@ -1,6 +1,6 @@
 {
   "name": "create-robuild",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Create a new robuild project",
   "type": "module",
   "author": "Sunny-117",
@@ -38,7 +38,7 @@
   },
   "scripts": {
     "dev": "esno ./src/run.ts",
-    "build": "robuild",
+    "build": "node ../../scripts/sync-template-versions.mjs && robuild",
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
