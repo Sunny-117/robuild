@@ -1,0 +1,59 @@
+{
+  "name": "robuild-full-featured-demo",
+  "version": "1.0.0",
+  "description": "A comprehensive demo showcasing all robuild features",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "bin": {
+    "demo-cli": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "robuild",
+    "build:watch": "robuild --watch",
+    "dev": "robuild --stub",
+    "test": "node dist/index.mjs"
+  },
+  "keywords": [
+    "robuild",
+    "demo",
+    "typescript",
+    "esm",
+    "bundler"
+  ],
+  "author": "robuild",
+  "license": "MIT",
+  "devDependencies": {
+    "robuild": "workspace:*",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./cli": "./dist/cli.mjs",
+    "./browser": {
+      "types": "./dist/browser.d.mts",
+      "import": "./dist/browser.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.mts",
+      "import": "./dist/utils/index.mjs",
+      "require": "./dist/utils/index.cjs"
+    },
+    "./services": {
+      "types": "./dist/services/index.d.mts",
+      "import": "./dist/services/index.mjs"
+    }
+  }
+}

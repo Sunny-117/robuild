@@ -1,0 +1,6 @@
+/**
+ * Sample text asset - demonstrates text loader
+ */
+export default `Hello from robuild!
+This text file is loaded as a string module.
+Useful for loading templates, configs, etc.`

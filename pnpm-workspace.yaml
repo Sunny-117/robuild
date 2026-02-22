@@ -1,6 +1,7 @@
 packages:
   - .
   - playground/*
+  - example/*
   - benchmark
   - examples/**/*
   - bundler-benchmark

@@ -157,6 +157,19 @@ importers:
         specifier: ^4.6.3
         version: 4.6.4(vue@3.5.28(typescript@5.9.3))
 
+  example/full-featured-demo:
+    dependencies:
+      chalk:
+        specifier: ^5.4.1
+        version: 5.6.2
+    devDependencies:
+      robuild:
+        specifier: workspace:*
+        version: link:../..
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
   playground/asset-handling:
     devDependencies:
       robuild:
@@ -3927,6 +3940,10 @@ packages:
   chai@6.2.2:
     resolution: {integrity: sha512-NUPRluOfOiTKBKvWPtSD4PhFvWCqOi0BGStNWs57X9js7XGTprSmFoz5F0tWhR4WPjNeR9jXqdC7/UpSJTnlRg==}
     engines: {node: '>=18'}
+
+  chalk@5.6.2:
+    resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   changelogen@0.6.2:
     resolution: {integrity: sha512-QtC7+r9BxoUm+XDAwhLbz3CgU134J1ytfE3iCpLpA4KFzX2P1e6s21RrWDwUBzfx66b1Rv+6lOA2nS2btprd+A==}
@@ -9956,6 +9973,8 @@ snapshots:
   ccount@2.0.1: {}
 
   chai@6.2.2: {}
+
+  chalk@5.6.2: {}
 
   changelogen@0.6.2(magicast@0.5.2):
     dependencies:
