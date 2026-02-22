@@ -2,94 +2,47 @@
 
 ## 安装
 
-### 全局安装
-
 ```bash
-npm install -g robuild
-```
-
-### 项目安装
-
-```bash
+# 项目安装（推荐）
 npm install --save-dev robuild
-```
 
-### 使用 npx
+# 全局安装
+npm install -g robuild
 
-```bash
+# 或直接使用 npx
 npx robuild ./src/index.ts
 ```
 
 ## 基本使用
 
-### 1. 创建项目结构
+### 1. 创建源文件
 
-```bash
-mkdir my-package
-cd my-package
-npm init -y
-```
-
-创建基本的项目结构：
-
-```
-my-package/
-├── package.json
-├── src/
-│   ├── index.ts
-│   └── utils.ts
-└── tsconfig.json
-```
-
-### 2. 编写源码
-
-**src/index.ts**
 ```typescript
-export { add, multiply } from './utils'
-
+// src/index.ts
 export function greet(name: string): string {
   return `Hello, ${name}!`
 }
 ```
 
-**src/utils.ts**
-```typescript
-export function add(a: number, b: number): number {
-  return a + b
-}
-
-export function multiply(a: number, b: number): number {
-  return a * b
-}
-```
-
-### 3. 构建项目
+### 2. 构建
 
 ```bash
-# 使用 npx
 npx robuild ./src/index.ts
-
-# 或使用全局安装的 robuild
-robuild ./src/index.ts
 ```
 
-### 4. 查看构建结果
-
-构建完成后，会在 `dist/` 目录生成以下文件：
+### 3. 查看输出
 
 ```
 dist/
-├── index.mjs          # 主文件
-├── index.d.mts        # 类型声明文件
-└── _chunks/           # 代码分割文件（如果有）
+├── index.mjs      # 主文件
+└── index.d.mts    # 类型声明
 ```
 
-### 5. 配置 package.json
+### 4. 配置 package.json
 
 ```json
 {
   "name": "my-package",
-  "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
@@ -100,38 +53,14 @@ dist/
     }
   },
   "scripts": {
-    "build": "robuild ./src/index.ts",
-    "dev": "robuild ./src/index.ts --stub"
+    "build": "robuild ./src/index.ts"
   }
 }
 ```
 
-## 高级示例
-
-### 多入口构建
-
-```bash
-# 构建多个入口文件
-npx robuild ./src/index.ts,./src/cli.ts
-```
-
-### Transform 模式
-
-```bash
-# 转换整个目录
-npx robuild ./src/runtime/:./dist/runtime
-```
-
-### 开发模式
-
-```bash
-# 使用 stub 模式，快速开发
-npx robuild ./src/index.ts --stub
-```
-
 ## 配置文件
 
-创建 `build.config.ts` 文件进行更精细的配置：
+创建 `build.config.ts` 进行更精细的配置：
 
 ```typescript
 import { defineConfig } from 'robuild'
@@ -140,42 +69,35 @@ export default defineConfig({
   entries: [
     {
       type: 'bundle',
-      input: ['./src/index.ts', './src/cli.ts'],
-      outDir: './dist',
-      minify: false,
+      input: './src/index.ts',
+      format: ['esm', 'cjs'],
       dts: true,
-    },
-    {
-      type: 'transform',
-      input: './src/runtime',
-      outDir: './dist/runtime',
-      minify: false,
     },
   ],
 })
 ```
 
-## 常见问题
+## 常见用法
 
-### Q: 如何处理依赖？
+```bash
+# 多入口
+robuild ./src/index.ts ./src/cli.ts
 
-robuild 会自动处理依赖关系，将外部依赖标记为 external，不会打包进最终文件。
+# 多格式
+robuild ./src/index.ts --format esm --format cjs
 
-### Q: 如何生成类型声明文件？
+# Transform 模式
+robuild ./src/runtime/:./dist/runtime
 
-默认情况下，robuild 会自动生成 TypeScript 声明文件。可以通过 `dts: false` 禁用。
+# Stub 开发模式
+robuild ./src/index.ts --stub
 
-### Q: 如何压缩代码？
-
-在配置中设置 `minify: true` 或使用 `'dce-only'` 进行死代码消除。
-
-### Q: 如何处理 shebang？
-
-robuild 内置了 shebang 处理插件，会自动保留并设置可执行权限。
+# 监听模式
+robuild ./src/index.ts --watch
+```
 
 ## 下一步
 
-- [CLI 使用](./cli.md) - 了解更多命令行选项
-- [配置](./configuration.md) - 详细的配置选项
-- [构建模式](./build-modes.md) - Bundle 和 Transform 模式详解
-- [Stub 模式](./stub-mode.md) - 开发模式的使用
+- [CLI 使用](./cli.md) - 命令行选项
+- [配置](./configuration.md) - 配置文件详解
+- [构建模式](./build-modes.md) - Bundle 与 Transform 模式
