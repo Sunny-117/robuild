@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.1.8
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.7...v0.1.8)
+
+### 🚀 Enhancements
+
+- Add CSS processing support and technical blog ([c2bbae5](https://github.com/Sunny-117/robuild/commit/c2bbae5))
+- **playground:** Add demo page and tsconfig for css-processing example ([203954d](https://github.com/Sunny-117/robuild/commit/203954d))
+- **example:** Add CSS processing demo with LightningCSS support ([04342c6](https://github.com/Sunny-117/robuild/commit/04342c6))
+
+### 🏡 Chore
+
+- 🤖 release create robuild ([aa41832](https://github.com/Sunny-117/robuild/commit/aa41832))
+- 🤖 remove tsbuildinfo ([77bb3f3](https://github.com/Sunny-117/robuild/commit/77bb3f3))
+- 🤖 todo ([3fe93e1](https://github.com/Sunny-117/robuild/commit/3fe93e1))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.7
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.6...v0.1.7)
