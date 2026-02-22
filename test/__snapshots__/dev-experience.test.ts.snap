@@ -1,0 +1,215 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`developer experience > build result structure > should pass build result with duration to callback 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const hello = "world";
+function greet(name) {
+	return \`Hello, \${name}!\`;
+}
+
+//#endregion
+exports.greet = greet;
+exports.hello = hello;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+function greet(name) {
+	return \`Hello, \${name}!\`;
+}
+
+//#endregion
+export { greet, hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > combined options > should handle multiple dev experience options together 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const version = "1.0.0";
+
+//#endregion
+export { version };
+\`\`\`
+"
+`;
+
+exports[`developer experience > failOnWarn option > should not fail by default when there are warnings 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > fromVite option > should accept fromVite option 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > fromVite option > should load vite config when fromVite is true 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > ignoreWatch option > should accept ignore patterns 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > logLevel option > should accept different log levels 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > logLevel option > should accept different log levels 2`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > logLevel option > should accept different log levels 3`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > logLevel option > should accept different log levels 4`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > logLevel option > should accept different log levels 5`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > onSuccess callback > should execute async callback function 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > onSuccess callback > should execute function callback on successful build 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > onSuccess callback > should execute string command on successful build 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`developer experience > onSuccess callback > should pass build result to callback function 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const version = "1.0.0";
+
+//#endregion
+export { version };
+\`\`\`
+"
+`;

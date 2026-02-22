@@ -1,0 +1,15 @@
+{
+  "name": "dev-experience-demo",
+  "version": "1.0.0",
+  "description": "Demo for robuild developer experience features",
+  "type": "module",
+  "scripts": {
+    "build": "robuild",
+    "build:verbose": "robuild --log-level verbose",
+    "build:silent": "robuild --log-level silent",
+    "build:strict": "robuild --fail-on-warn",
+    "watch": "robuild --watch"
+  },
+  "keywords": ["robuild", "dev-experience", "demo"],
+  "author": "robuild team"
+}

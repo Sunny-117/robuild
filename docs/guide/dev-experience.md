@@ -34,11 +34,10 @@ export default defineConfig({
   
   // 字符串命令
   onSuccess: 'echo "Build completed successfully!"',
-  
+
   // 或者函数回调
   onSuccess: (result) => {
-    console.log(`✅ Built ${result.entries.length} entries in ${result.duration}ms`)
-    console.log('📦 Output files:', result.entries.map(e => e.name))
+    console.log(`✅ Build completed in ${result.duration}ms`)
   }
 })
 ```
@@ -53,21 +52,14 @@ export default defineConfig({
       input: './src/index.ts'
     }
   ],
-  
+
   onSuccess: async (result) => {
-    // 分析构建结果
-    const totalSize = result.entries.reduce((sum, entry) => sum + entry.size, 0)
-    console.log(`📊 Total bundle size: ${totalSize} bytes`)
-    
+    console.log(`✅ Build completed in ${result.duration}ms`)
+
     // 执行后续任务
     if (process.env.NODE_ENV === 'production') {
       console.log('🚀 Deploying to production...')
       // 部署逻辑
-    }
-    
-    // 发送通知
-    if (totalSize > 1024 * 1024) {
-      console.warn('⚠️  Bundle size is larger than 1MB')
     }
   }
 })
