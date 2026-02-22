@@ -1,1 +1,0 @@
-import{_ as s,o as n,c as e,ag as i}from"./chunks/framework.CvKhV4u_.js";const h=JSON.parse('{"title":"robuild 官网","description":"","frontmatter":{},"headers":[],"relativePath":"README.md","filePath":"README.md"}'),l={name:"README.md"};function p(r,a,t,d,c,o){return n(),e("div",null,[...a[0]||(a[0]=[i("",34)])])}const u=s(l,[["render",p]]);export{h as __pageData,u as default};

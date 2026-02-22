@@ -1,1 +1,0 @@
-import{_ as a,o as i,c as n,ag as e}from"./chunks/framework.CvKhV4u_.js";const b=JSON.parse('{"title":"CLI 参数","description":"","frontmatter":{},"headers":[],"relativePath":"api/cli.md","filePath":"api/cli.md"}'),l={name:"api/cli.md"};function p(h,s,t,r,k,d){return i(),n("div",null,[...s[0]||(s[0]=[e("",120)])])}const F=a(l,[["render",p]]);export{b as __pageData,F as default};
