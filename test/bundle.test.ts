@@ -280,6 +280,31 @@ describe('bundle mode', () => {
         },
       })
     })
+
+    it('should use custom fileName', async (context) => {
+      await testBuild({
+        context,
+        files: {
+          'index.ts': `export const value = 42`,
+        },
+        config: {
+          entries: [
+            {
+              type: 'bundle',
+              input: 'index.ts',
+              format: 'iife',
+              globalName: 'MyLib',
+              fileName: 'custom-bundle.min.js',
+            },
+          ],
+        },
+        afterBuild: async (outputDir) => {
+          const { existsSync } = await import('node:fs')
+          const { join } = await import('node:path')
+          expect(existsSync(join(outputDir, 'custom-bundle.min.js'))).toBe(true)
+        },
+      })
+    })
   })
 
   describe('platform specific', () => {

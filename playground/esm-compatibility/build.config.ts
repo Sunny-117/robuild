@@ -20,6 +20,7 @@ export default defineConfig({
       outDir: './dist',
       fileName: 'browser.min.js',
       minify: true,
+      clean: false, // Don't clean - first entry already cleaned
     },
   ],
 

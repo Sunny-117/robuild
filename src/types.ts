@@ -111,6 +111,22 @@ export interface _BuildEntry {
   outDir?: string
 
   /**
+   * Custom output file name.
+   *
+   * Overrides the default naming convention. Should include the file extension.
+   * Only works with single-entry builds.
+   *
+   * @example
+   * ```ts
+   * {
+   *   input: './src/index.ts',
+   *   fileName: 'bundle.min.js'
+   * }
+   * ```
+   */
+  fileName?: string
+
+  /**
    * Avoid actual build but instead link to the source files.
    */
   stub?: boolean

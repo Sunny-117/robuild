@@ -6,6 +6,19 @@
   "scripts": {
     "build": "robuild"
   },
-  "keywords": ["robuild", "esm", "cjs", "dual-format", "demo"],
-  "author": "robuild team"
+  "keywords": [
+    "robuild",
+    "esm",
+    "cjs",
+    "dual-format",
+    "demo"
+  ],
+  "author": "robuild team",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.js"
+    }
+  }
 }

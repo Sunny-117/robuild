@@ -105,6 +105,25 @@ export { version };
 "
 `;
 
+exports[`bundle mode > customization > should use custom fileName 1`] = `
+"## custom-bundle.min.js
+
+\`\`\`js
+var MyLib = (function(exports) {
+
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+	const value = 42;
+
+//#endregion
+exports.value = value;
+return exports;
+})({});
+\`\`\`
+"
+`;
+
 exports[`bundle mode > external dependencies > should handle external dependencies 1`] = `
 "## index.mjs
 

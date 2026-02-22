@@ -277,7 +277,11 @@ export async function rolldownBuild(
     const formatOutDir = fullOutDir
     let entryFileName = `[name]${extension}`
 
-    if (isMultiFormat) {
+    // Use custom fileName if provided (only for single-entry builds)
+    if (entry.fileName) {
+      entryFileName = entry.fileName
+    }
+    else if (isMultiFormat) {
       // For multi-format builds, use different extensions to avoid conflicts
       // All formats are placed in the same directory (tsup-style behavior)
       if (format === 'cjs' || format === 'commonjs') {
