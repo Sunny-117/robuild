@@ -1,0 +1,345 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`esm compatibility > ESM interoperability > should handle external ESM dependencies 1`] = `
+"## index.mjs
+
+\`\`\`js
+import lodash from "lodash-es";
+
+export { lodash };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > ESM interoperability > should handle named imports from ESM 1`] = `
+"## index.mjs
+
+\`\`\`js
+import { debounce, throttle } from "lodash-es";
+
+export { debounce, throttle };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > browser compatibility > should generate IIFE for legacy browser support 1`] = `
+"## index.js
+
+\`\`\`js
+var MathLib = (function(exports) {
+
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+	const multiply = (a, b) => a * b;
+
+//#endregion
+exports.multiply = multiply;
+return exports;
+})({});
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > browser compatibility > should generate browser-compatible ESM 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+function add(a, b) {
+	return a + b;
+}
+
+//#endregion
+export { add };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > dynamic imports > should support code splitting with dynamic imports 1`] = `
+"## _chunks/feature-Bj_J-cnl.mjs
+
+\`\`\`js
+//#region feature.ts
+const feature = "feature module";
+
+//#endregion
+export { feature };
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const loadFeature = () => import("./_chunks/feature-Bj_J-cnl.mjs");
+
+//#endregion
+export { loadFeature };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > dynamic imports > should support dynamic import syntax 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+async function loadModule(name) {
+	return (await import(\`./modules/\${name}.js\`)).default;
+}
+
+//#endregion
+export { loadModule };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > file extensions > should generate .d.mts for ESM type declarations 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+//#region index.d.ts
+interface Config {
+  name: string;
+  version: string;
+}
+declare function getConfig(): Config;
+//#endregion
+export { Config, getConfig };
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+function getConfig() {
+	return {
+		name: "test",
+		version: "1.0.0"
+	};
+}
+
+//#endregion
+export { getConfig };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > file extensions > should use .mjs for ESM and .cjs for CJS 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const value = 42;
+
+//#endregion
+exports.value = value;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const value = 42;
+
+//#endregion
+export { value };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > import.meta support > should preserve import.meta.url 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const currentUrl = import.meta.url;
+
+//#endregion
+export { currentUrl };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > multi-format support > should output ESM and CJS formats together 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+function greet(name) {
+	return \`Hello, \${name}!\`;
+}
+
+//#endregion
+exports.greet = greet;
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+function greet(name) {
+	return \`Hello, \${name}!\`;
+}
+
+//#endregion
+export { greet };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > multi-format support > should output ESM, CJS, and IIFE formats 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const PI = 3.14159;
+
+//#endregion
+exports.PI = PI;
+\`\`\`
+
+## index.js
+
+\`\`\`js
+var MyMath = (function(exports) {
+
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+	const PI = 3.14159;
+
+//#endregion
+exports.PI = PI;
+return exports;
+})({});
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const PI = 3.14159;
+
+//#endregion
+export { PI };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > native ESM output > should generate ESM format by default 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+function add(a, b) {
+	return a + b;
+}
+const version = "1.0.0";
+
+//#endregion
+export { add, version };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > native ESM output > should use .mjs extension for ESM output 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > package exports > should generate conditional exports for dual-format build 1`] = `
+"## index.cjs
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const value = 42;
+
+//#endregion
+exports.value = value;
+\`\`\`
+
+## index.d.mts
+
+\`\`\`ts
+//#region index.d.ts
+declare const value = 42;
+//#endregion
+export { value };
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const value = 42;
+
+//#endregion
+export { value };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > package exports > should generate correct exports for ESM-only build 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+//#region index.d.ts
+declare const main = "main";
+//#endregion
+export { main };
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region index.ts
+const main = "main";
+
+//#endregion
+export { main };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > tree shaking > should remove unused exports with tree shaking 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region utils.ts
+const used = "used value";
+
+//#endregion
+export { used };
+\`\`\`
+"
+`;
+
+exports[`esm compatibility > tree shaking > should support advanced tree shaking config 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region lib.ts
+const helper = () => "helper";
+
+//#endregion
+export { helper };
+\`\`\`
+"
+`;

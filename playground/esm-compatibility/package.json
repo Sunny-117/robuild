@@ -1,0 +1,11 @@
+{
+  "name": "esm-compatibility-demo",
+  "version": "1.0.0",
+  "description": "Demo for ESM compatibility features in robuild",
+  "type": "module",
+  "scripts": {
+    "build": "robuild"
+  },
+  "keywords": ["robuild", "esm", "cjs", "dual-format", "demo"],
+  "author": "robuild team"
+}

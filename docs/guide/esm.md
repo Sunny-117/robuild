@@ -46,11 +46,9 @@ export default defineConfig({
     {
       type: 'bundle',
       input: './src/index.ts',
-      rolldown: {
-        output: {
-          format: ['esm', 'cjs', 'iife']
-        }
-      }
+      format: ['esm', 'cjs', 'iife'],
+      globalName: 'MyLibrary', // IIFE 格式需要
+      platform: 'browser',     // IIFE 格式推荐使用 browser 平台
     }
   ]
 })
@@ -101,7 +99,23 @@ export async function loadModule(name: string) {
 }
 ```
 
-### 3. 条件导出
+### 3. import.meta 支持
+
+robuild 完整支持 `import.meta` API：
+
+```typescript
+// 获取当前模块 URL
+export const moduleUrl = import.meta.url
+
+// 在 Node.js 中获取 __dirname 等效值
+import { fileURLToPath } from 'node:url'
+import { dirname } from 'node:path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+```
+
+### 4. 条件导出
 
 支持 Node.js 的条件导出：
 
@@ -163,17 +177,28 @@ if (typeof module !== 'undefined' && module.exports) {
 ### 2. 传统浏览器支持
 
 ```typescript
-// 生成 IIFE 格式用于传统浏览器
-{
-  type: 'bundle',
-  input: './src/index.ts',
-  rolldown: {
-    output: {
-      format: ['esm', 'iife'],
-      name: 'MyLibrary'
+import { defineConfig } from 'robuild'
+
+export default defineConfig({
+  entries: [
+    // ESM for modern browsers
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      format: 'esm',
+      platform: 'browser',
+    },
+    // IIFE for legacy browsers
+    {
+      type: 'bundle',
+      input: './src/index.ts',
+      format: 'iife',
+      globalName: 'MyLibrary',
+      platform: 'browser',
+      minify: true,
     }
-  }
-}
+  ]
+})
 ```
 
 ## 开发工具集成
