@@ -1,12 +1,11 @@
-import type { ModuleFormat, WatchOptions } from 'rolldown'
-import type { BuildConfig, BuildContext } from './types'
+import type { WatchOptions } from 'rolldown'
+import type { BuildConfig, BuildContext, BundleEntry } from './types'
 import { watch } from 'rolldown'
+import { createBundleInputConfig } from './builders/bundle'
 import {
   getBundleEntryInput,
-  normalizeEntryInput,
   parseEntryString,
 } from './config/entry-resolver'
-import { resolveExternalConfig } from './config/external'
 import { logger } from './core/logger'
 import { getFormatExtension } from './utils/extensions'
 
@@ -47,9 +46,8 @@ export async function performWatchBuild(
 /**
  * Start rolldown watch mode for bundle entries
  *
- * Note: Watch mode currently uses simplified rolldown configuration.
- * For full feature parity with build mode, the initial build is performed first.
- * The watch mode then monitors for file changes and triggers rebuilds.
+ * Uses the same configuration logic as build mode via createBundleInputConfig
+ * to ensure consistent behavior between build and watch modes.
  */
 export async function startRolldownWatch(
   config: BuildConfig,
@@ -58,88 +56,55 @@ export async function startRolldownWatch(
 ): Promise<void> {
   logger.info('Watching for changes...')
 
-  // Import plugin manager
-  const { RobuildPluginManager } = await import('./plugins/manager')
+  // Import inheritConfig from build module to apply top-level config to entries
+  const { inheritConfig } = await import('./build')
 
   // Create rolldown watch configurations for each bundle entry
   const watchConfigs: WatchOptions[] = []
 
   for (const rawEntry of bundleEntries) {
     // Parse string entries using shared logic
-    const entry = typeof rawEntry === 'string'
-      ? parseEntryString(rawEntry)
+    let entry: BundleEntry = typeof rawEntry === 'string'
+      ? parseEntryString(rawEntry) as BundleEntry
       : rawEntry
 
-    // Get the actual input using shared logic
+    // Inherit top-level config fields (same as build mode)
+    entry = inheritConfig(entry, config)
+
+    // Check for valid input before creating config
     const entryInput = getBundleEntryInput(entry)
     if (!entryInput) {
       logger.warn('Skipping entry without input:', entry)
       continue
     }
 
-    // Normalize input path using shared logic
-    const normalizedInput = normalizeEntryInput(entryInput, ctx.pkgDir)
+    // Use shared config creation logic from bundle.ts
+    const {
+      inputConfig,
+      formats,
+      platform,
+      fullOutDir,
+    } = await createBundleInputConfig(ctx, entry, config)
 
-    // Get target and other options from entry
-    const target = entry.target || 'es2022'
-    const platform = entry.platform || 'node'
-    const format = entry.format || 'es'
+    // Create watch config for each format
+    for (const format of formats) {
+      const extension = getFormatExtension(format, platform)
 
-    // Determine the correct file extension using shared logic
-    const rolldownFormat = Array.isArray(format) ? format[0] : format
-    const extension = getFormatExtension(rolldownFormat, platform)
+      const watchConfig: WatchOptions = {
+        ...inputConfig,
+        output: {
+          dir: fullOutDir,
+          format: format === 'esm' ? 'es' : format as any,
+          entryFileNames: `[name]${extension}`,
+          sourcemap: typeof entry.sourcemap === 'object' ? undefined : entry.sourcemap,
+          minify: entry.minify,
+          banner: entry.banner as any,
+          footer: entry.footer as any,
+        },
+      }
 
-    const formatMap: Record<string, ModuleFormat> = {
-      esm: 'es',
-      cjs: 'cjs',
-      iife: 'iife',
-      umd: 'umd',
+      watchConfigs.push(watchConfig)
     }
-
-    // Determine the input for rolldown watch
-    // For arrays, use the first entry; for objects, use the object directly
-    let rolldownInput: string | Record<string, string>
-    if (Array.isArray(normalizedInput)) {
-      rolldownInput = normalizedInput[0]
-    }
-    else if (typeof normalizedInput === 'object') {
-      rolldownInput = normalizedInput
-    }
-    else {
-      rolldownInput = normalizedInput
-    }
-
-    // Create plugin manager for this entry to get rolldown plugins
-    const pluginManager = new RobuildPluginManager(config, entry, ctx.pkgDir)
-    const rolldownPlugins = [
-      ...pluginManager.getRolldownPlugins(),
-      ...(entry.rolldown?.plugins || []),
-    ]
-
-    // Build external dependencies using shared logic
-    const externalConfig = resolveExternalConfig(ctx, {
-      external: entry.external,
-      noExternal: entry.noExternal,
-    })
-
-    // Create rolldown config for this entry with proper transform options
-    const watchConfig = {
-      input: rolldownInput,
-      output: {
-        dir: entry.outDir,
-        format: formatMap[rolldownFormat] || 'es',
-        entryFileNames: `[name]${extension}`,
-        sourcemap: entry.sourcemap,
-      },
-      platform: platform === 'node' ? 'node' : 'neutral',
-      external: externalConfig,
-      transform: {
-        target,
-      },
-      plugins: rolldownPlugins,
-    } satisfies WatchOptions
-
-    watchConfigs.push(watchConfig)
   }
 
   // Start watching with rolldown

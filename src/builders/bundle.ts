@@ -7,7 +7,7 @@ import type {
   Plugin,
 } from 'rolldown'
 import type { Options as DtsOptions } from 'rolldown-plugin-dts'
-import type { BuildConfig, BuildContext, BuildHooks, BundleEntry } from '../types'
+import type { BuildConfig, BuildContext, BuildHooks, BundleEntry, Platform, Target } from '../types'
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises'
 import { builtinModules } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve } from 'node:path'
@@ -38,12 +38,24 @@ import { getFormatExtension } from '../utils/extensions'
 import { addHashToFilename, hasHash } from '../utils/hash'
 import { distSize, fmtPath, sideEffectSize } from '../utils/index'
 
-export async function rolldownBuild(
+/**
+ * Create rolldown InputOptions config for a bundle entry.
+ * This is shared between build mode and watch mode to ensure consistent behavior.
+ */
+export async function createBundleInputConfig(
   ctx: BuildContext,
   entry: BundleEntry,
-  hooks: BuildHooks,
   config?: BuildConfig,
-): Promise<void> {
+): Promise<{
+  inputConfig: InputOptions
+  pluginManager: RobuildPluginManager
+  formats: string[]
+  platform: Platform
+  target: Target
+  fullOutDir: string
+  isMultiFormat: boolean
+  userOutputConfig?: any
+}> {
   // Support both 'input' and 'entry' (tsup compatibility)
   const entryInput = getBundleEntryInput(entry)
   if (!entryInput) {
@@ -69,56 +81,6 @@ export async function rolldownBuild(
 
   // Update plugin context with build parameters
   pluginManager.updateContext({ format: formats, platform, target, outDir: fullOutDir })
-
-  // Execute robuild buildStart hooks
-  await pluginManager.executeRobuildBuildStart()
-
-  // Clean output directory if requested
-  await cleanOutputDir(ctx.pkgDir, fullOutDir, entry.clean ?? true)
-
-  // Handle dtsOnly mode (only generate declaration files)
-  if (entry.dtsOnly) {
-    logger.info('Running in dtsOnly mode - only generating declaration files')
-    // Force dts to be enabled
-    entry.dts = entry.dts === false ? true : (entry.dts || true)
-    // Force ESM format since DTS plugin only works with ESM
-    formats.length = 0
-    formats.push('esm')
-  }
-
-  if (entry.stub) {
-    for (const [distName, srcPath] of Object.entries(inputs)) {
-      const distPath = join(ctx.pkgDir, 'dist', `${distName}.mjs`)
-      await mkdir(dirname(distPath), { recursive: true })
-      logger.log(
-        `${c.cyan('Stub')}  ${c.green(fmtPath(distPath))}`,
-      )
-      const srcContents = await readFile(srcPath, 'utf8')
-      const parsed = parseSync(srcPath, srcContents)
-      const exportNames = parsed.module.staticExports.flatMap(e =>
-        e.entries.map(e =>
-          e.exportName.kind === 'Default' ? 'default' : e.exportName.name,
-        ),
-      )
-      const hasDefaultExport = exportNames.includes('default')
-      const firstLine = srcContents.split('\n')[0]
-      const hasShebangLine = firstLine.startsWith('#!')
-      await writeFile(
-        distPath,
-        `${hasShebangLine ? `${firstLine}\n` : ''}export * from "${srcPath}";\n${hasDefaultExport ? `export { default } from "${srcPath}";\n` : ''}`,
-        'utf8',
-      )
-      if (hasShebangLine) {
-        await makeExecutable(distPath)
-      }
-      await writeFile(
-        distPath.replace(/\.mjs$/, '.d.mts'),
-        `export * from "${srcPath}";\n${hasDefaultExport ? `export { default } from "${srcPath}";\n` : ''}`,
-        'utf8',
-      )
-    }
-    return
-  }
 
   // Build external dependencies using shared logic
   const externalConfig = resolveExternalConfig(ctx, {
@@ -232,9 +194,9 @@ export async function rolldownBuild(
   // Build moduleTypes config from loaders
   const moduleTypes: ModuleTypes = {}
   if (entry.loaders) {
-    for (const [ext, config] of Object.entries(entry.loaders)) {
+    for (const [ext, loaderConfig] of Object.entries(entry.loaders)) {
       // Cast to ModuleType since LoaderType extends ModuleType
-      moduleTypes[ext] = config.loader as any
+      moduleTypes[ext] = loaderConfig.loader as any
     }
   }
 
@@ -270,7 +232,7 @@ export async function rolldownBuild(
   // Extract output config separately as it's handled per-format
   const { output: userOutputConfig, plugins: userPlugins, ...userRolldownConfig } = entry.rolldown || {}
 
-  const baseRolldownConfig: InputOptions = {
+  const inputConfig: InputOptions = {
     ...robuildGeneratedConfig,
     ...userRolldownConfig,
     // Merge plugins array (robuild plugins + user plugins)
@@ -278,6 +240,99 @@ export async function rolldownBuild(
       ...rolldownPlugins,
       ...(Array.isArray(userPlugins) ? userPlugins : userPlugins ? [userPlugins] : []),
     ],
+  }
+
+  return {
+    inputConfig,
+    pluginManager,
+    formats,
+    platform,
+    target,
+    fullOutDir,
+    isMultiFormat,
+    userOutputConfig,
+  }
+}
+
+export async function rolldownBuild(
+  ctx: BuildContext,
+  entry: BundleEntry,
+  hooks: BuildHooks,
+  config?: BuildConfig,
+): Promise<void> {
+  // Support both 'input' and 'entry' (tsup compatibility)
+  const entryInput = getBundleEntryInput(entry)
+  if (!entryInput) {
+    throw new Error('Entry input is required')
+  }
+
+  const inputs: Record<string, string> = normalizeBundleInputs(
+    entryInput,
+    ctx,
+  )
+
+  // Get configuration with defaults
+  const formats = Array.isArray(entry.format) ? entry.format : [entry.format || 'es']
+  const outDir = entry.outDir || 'dist'
+  const fullOutDir = resolve(ctx.pkgDir, outDir)
+
+  // Create shared input config
+  const {
+    inputConfig: baseRolldownConfig,
+    pluginManager,
+    platform,
+    isMultiFormat,
+    userOutputConfig,
+  } = await createBundleInputConfig(ctx, entry, config)
+
+  // Execute robuild buildStart hooks
+  await pluginManager.executeRobuildBuildStart()
+
+  // Clean output directory if requested
+  await cleanOutputDir(ctx.pkgDir, fullOutDir, entry.clean ?? true)
+
+  // Handle dtsOnly mode (only generate declaration files)
+  if (entry.dtsOnly) {
+    logger.info('Running in dtsOnly mode - only generating declaration files')
+    // Force dts to be enabled
+    entry.dts = entry.dts === false ? true : (entry.dts || true)
+    // Force ESM format since DTS plugin only works with ESM
+    formats.length = 0
+    formats.push('esm')
+  }
+
+  if (entry.stub) {
+    for (const [distName, srcPath] of Object.entries(inputs)) {
+      const distPath = join(ctx.pkgDir, 'dist', `${distName}.mjs`)
+      await mkdir(dirname(distPath), { recursive: true })
+      logger.log(
+        `${c.cyan('Stub')}  ${c.green(fmtPath(distPath))}`,
+      )
+      const srcContents = await readFile(srcPath, 'utf8')
+      const parsed = parseSync(srcPath, srcContents)
+      const exportNames = parsed.module.staticExports.flatMap(e =>
+        e.entries.map(e =>
+          e.exportName.kind === 'Default' ? 'default' : e.exportName.name,
+        ),
+      )
+      const hasDefaultExport = exportNames.includes('default')
+      const firstLine = srcContents.split('\n')[0]
+      const hasShebangLine = firstLine.startsWith('#!')
+      await writeFile(
+        distPath,
+        `${hasShebangLine ? `${firstLine}\n` : ''}export * from "${srcPath}";\n${hasDefaultExport ? `export { default } from "${srcPath}";\n` : ''}`,
+        'utf8',
+      )
+      if (hasShebangLine) {
+        await makeExecutable(distPath)
+      }
+      await writeFile(
+        distPath.replace(/\.mjs$/, '.d.mts'),
+        `export * from "${srcPath}";\n${hasDefaultExport ? `export { default } from "${srcPath}";\n` : ''}`,
+        'utf8',
+      )
+    }
+    return
   }
 
   await hooks.rolldownConfig?.(baseRolldownConfig, ctx)

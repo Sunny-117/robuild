@@ -57,7 +57,7 @@ const SHARED_CONFIG_FIELDS = [
  * Inherit configuration from parent config to entry
  * Only inherits fields that are not already set in the entry
  */
-function inheritConfig<T extends Partial<BuildEntry>>(
+export function inheritConfig<T extends Partial<BuildEntry>>(
   entry: T,
   config: BuildConfig,
   additionalMappings?: Record<string, string>,
