@@ -57,6 +57,11 @@
     "./services": {
       "types": "./dist/services/index.d.mts",
       "import": "./dist/services/index.mjs"
+    },
+    "./components/Button": {
+      "types": "./dist/components/Button.d.mts",
+      "import": "./dist/components/Button.mjs",
+      "require": "./dist/components/Button.cjs"
     }
   }
 }

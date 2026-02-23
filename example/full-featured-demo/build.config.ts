@@ -100,6 +100,14 @@ export default defineConfig({
       generateExports: true,
       exportPath: './services',
     },
+    {
+      type: 'bundle',
+      input: './src/components/Button.js',
+      format: ['esm', 'cjs'],
+      loaders: {
+        '.js': { loader: 'jsx' },
+      },
+    },
   ],
 
   // ============================================
