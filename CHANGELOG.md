@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.12
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.11...v0.1.12)
+
+### 🚀 Enhancements
+
+- **vite:** Add vite config sharing example and fix --from-vite entry merging ([89009a2](https://github.com/Sunny-117/robuild/commit/89009a2))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.11
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.10...v0.1.11)
