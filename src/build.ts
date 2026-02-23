@@ -19,7 +19,7 @@ import {
   normalizeEntryInput,
   parseEntryString,
 } from './config/entry-resolver'
-import { loadViteConfig } from './config/vite-config'
+import { loadViteConfig, mergeViteConfig } from './config/vite-config'
 import { configureLogger, logger, resetLogCounts, shouldFailOnWarnings } from './core/logger'
 import { generatePackageExports, updatePackageJsonExports } from './transforms/exports'
 import { createBuildResult, executeOnSuccess } from './transforms/on-success'
@@ -137,7 +137,7 @@ export async function build(config: BuildConfig): Promise<void> {
   if (config.fromVite) {
     logger.verbose('Loading configuration from Vite config file')
     const viteConfig = await loadViteConfig(pkgDir)
-    finalConfig = { ...viteConfig, ...config } // config overrides vite config
+    finalConfig = mergeViteConfig(viteConfig, config)
   }
 
   // Normalize tsup-style config to entries-based config

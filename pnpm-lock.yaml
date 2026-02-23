@@ -329,6 +329,15 @@ importers:
         specifier: workspace:*
         version: link:../..
 
+  playground/vite-config-sharing:
+    devDependencies:
+      robuild:
+        specifier: workspace:*
+        version: link:../..
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
+
   playground/vue-app:
     dependencies:
       vue:
@@ -13229,7 +13238,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.6
-      rollup: 4.58.0
+      rollup: 4.59.0
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 25.3.0

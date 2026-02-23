@@ -50,7 +50,8 @@
       "Bash(xargs cat:*)",
       "Bash(pnpm benchmark:*)",
       "Bash(pnpm exec tsc:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(pnpm esno:*)"
     ]
   }
 }

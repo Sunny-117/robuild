@@ -173,3 +173,43 @@ function convertTarget(target?: string): import('../types').Target | undefined {
 function convertExternal(external?: string[] | ((id: string) => boolean)): string[] | ((id: string) => boolean) | undefined {
   return external
 }
+
+/**
+ * Check if entries are auto-generated defaults (single entry pointing to src/index.ts)
+ */
+function isDefaultEntries(entries?: (BuildEntry | string)[]): boolean {
+  if (!entries || entries.length !== 1)
+    return false
+
+  const entry = entries[0]
+  if (typeof entry === 'string')
+    return false
+  if (entry.type !== 'bundle')
+    return false
+
+  // Check if input is the default src/index.ts
+  const input = (entry as any).input
+  if (Array.isArray(input) && input.length === 1) {
+    return input[0] === 'src/index.ts' || input[0].endsWith('/src/index.ts')
+  }
+  if (typeof input === 'string') {
+    return input === 'src/index.ts' || input.endsWith('/src/index.ts')
+  }
+
+  return false
+}
+
+/**
+ * Merge Vite config with robuild config
+ * Vite entries take precedence over auto-generated default entries
+ */
+export function mergeViteConfig(viteConfig: Partial<BuildConfig>, config: BuildConfig): BuildConfig {
+  // If vite config has entries and current config only has default entries,
+  // use vite config's entries
+  if (viteConfig.entries && viteConfig.entries.length > 0 && isDefaultEntries(config.entries)) {
+    return { ...viteConfig, ...config, entries: viteConfig.entries }
+  }
+
+  // Otherwise, config entries take precedence
+  return { ...viteConfig, ...config }
+}
