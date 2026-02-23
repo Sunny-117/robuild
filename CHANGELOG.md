@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.1.9
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.8...v0.1.9)
+
+### 🚀 Enhancements
+
+- **example:** Add JSX support demo for .js files ([9bfe839](https://github.com/Sunny-117/robuild/commit/9bfe839))
+
+### 🩹 Fixes
+
+- **cli:** Pass loaders and clean options to bundle entries ([e7daa79](https://github.com/Sunny-117/robuild/commit/e7daa79))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.8
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.7...v0.1.8)
