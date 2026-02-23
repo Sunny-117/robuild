@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.11
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.10...v0.1.11)
+
+### 💅 Refactors
+
+- **watch:** Share bundle config logic between build and watch modes ([de337d3](https://github.com/Sunny-117/robuild/commit/de337d3))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.10
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.9...v0.1.10)
