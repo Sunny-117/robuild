@@ -134,6 +134,8 @@ async function runBuild(entries: string[], flags: any): Promise<void> {
       footer: config.footer,
       shims: config.shims,
       rolldown: config.rolldown,
+      loaders: config.loaders,
+      clean: config.clean,
     }]
   }
   else {
