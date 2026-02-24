@@ -58,6 +58,7 @@ export default defineConfig({
             { text: 'CSS 处理', link: '/options/css' },
             { text: '日志级别', link: '/options/log-level' },
             { text: '兼容性垫片', link: '/options/shims' },
+            { text: 'CJS 默认导出', link: '/options/cjs-default' },
             { text: '包导出生成', link: '/options/package-exports' },
           ],
         },

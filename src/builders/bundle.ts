@@ -372,6 +372,13 @@ export async function rolldownBuild(
       ]
     }
 
+    // For CJS format with dts enabled and cjsDefault, we need a separate DTS build pass
+    // to generate .d.cts files with export = syntax
+    const needsCjsDts = entry.dts !== false
+      && (format === 'cjs' || format === 'commonjs')
+      && isMultiFormat
+      && (entry.cjsDefault ?? true)
+
     const res = await rolldown(formatConfig)
 
     // Determine output directory for this format
@@ -397,10 +404,17 @@ export async function rolldownBuild(
       }
     }
 
+    // Determine exports mode based on cjsDefault option
+    // When cjsDefault is enabled, use 'auto' to allow default exports to be
+    // converted to module.exports = ... for better CJS compatibility
+    const cjsDefault = entry.cjsDefault ?? true // Default to true like tsdown
+    const exportsMode = cjsDefault ? 'auto' : 'named'
+
     // Build base output config from robuild options
     const robuildOutputConfig: OutputOptions = {
       dir: formatOutDir,
       format,
+      exports: exportsMode as any,
       entryFileNames: entryFileName,
       // Use function to handle dts chunks - output to root dir without hash for stable output
       chunkFileNames: (chunk) => {
@@ -455,6 +469,67 @@ export async function rolldownBuild(
 
     const { output } = await res.write(outConfig)
     await res.close()
+
+    // Generate CJS DTS files if needed (separate pass for .d.cts with export = syntax)
+    if (needsCjsDts) {
+      const cjsDtsConfig = { ...baseRolldownConfig }
+      const dtsOptions: DtsOptions = {
+        cwd: ctx.pkgDir,
+        emitDtsOnly: true,
+        cjsDefault: true, // Enable export = syntax for CJS DTS
+        ...(typeof entry.dts === 'object' ? entry.dts : {}),
+      }
+      const dtsPlugins = dts(dtsOptions)
+      cjsDtsConfig.plugins = [
+        ...(Array.isArray(cjsDtsConfig.plugins) ? cjsDtsConfig.plugins : [cjsDtsConfig.plugins]),
+        ...(Array.isArray(dtsPlugins) ? dtsPlugins : [dtsPlugins]),
+      ]
+
+      const cjsDtsRes = await rolldown(cjsDtsConfig)
+      const cjsDtsOutput = await cjsDtsRes.write({
+        dir: formatOutDir,
+        format: 'es', // DTS plugin outputs ES format, it handles .d.cts naming internally
+        entryFileNames: '[name].d.cts',
+        chunkFileNames: '[name]2.d.cts',
+      })
+      await cjsDtsRes.close()
+
+      // Post-process: find the actual DTS file (non-empty) and rename if needed
+      // rolldown-plugin-dts emitDtsOnly mode outputs:
+      // - An empty entry file ([name].d.cts)
+      // - The actual DTS content in a chunk file ([name]2.d.cts)
+      // We need to delete the empty entry and rename the chunk
+      const { readFile: rf, unlink: ul, rename: rn, stat } = await import('node:fs/promises')
+      for (const chunk of cjsDtsOutput.output) {
+        if (chunk.type !== 'chunk')
+          continue
+        const filePath = join(formatOutDir, chunk.fileName)
+        const content = await rf(filePath, 'utf8')
+        // If this is the empty entry file, delete it
+        if (content.trim() === 'export { };' || content.trim() === '') {
+          await ul(filePath)
+        }
+        // If this is the chunk with content, rename it to the expected entry name
+        else if (chunk.fileName.includes('2.d.cts')) {
+          const newFileName = chunk.fileName.replace('2.d.cts', '.d.cts')
+          const newFilePath = join(formatOutDir, newFileName)
+          // Check if target already exists and is empty
+          try {
+            const existingStat = await stat(newFilePath)
+            if (existingStat.isFile()) {
+              const existingContent = await rf(newFilePath, 'utf8')
+              if (existingContent.trim() === 'export { };' || existingContent.trim() === '') {
+                await ul(newFilePath)
+              }
+            }
+          }
+          catch {
+            // Target doesn't exist, that's fine
+          }
+          await rn(filePath, newFilePath)
+        }
+      }
+    }
 
     // Process output for this format
     const depsCache = new Map<OutputChunk, Set<string>>()

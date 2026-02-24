@@ -1,0 +1,28 @@
+{
+  "name": "cjs-default-example",
+  "version": "1.0.0",
+  "description": "CJS Default Export example - demonstrates module.exports and export = for CJS output",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "build": "robuild",
+    "test": "node --test test.mjs"
+  },
+  "devDependencies": {
+    "robuild": "workspace:*"
+  }
+}

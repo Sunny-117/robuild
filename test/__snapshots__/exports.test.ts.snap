@@ -36,6 +36,15 @@ const hello = "world";
 exports.hello = hello;
 \`\`\`
 
+## index.d.cts
+
+\`\`\`ts
+//#region index.d.ts
+declare const hello = "world";
+//#endregion
+export { hello };
+\`\`\`
+
 ## index.d.mts
 
 \`\`\`ts

@@ -275,6 +275,15 @@ const value = 42;
 exports.value = value;
 \`\`\`
 
+## index.d.cts
+
+\`\`\`ts
+//#region index.d.ts
+declare const value = 42;
+//#endregion
+export { value };
+\`\`\`
+
 ## index.d.mts
 
 \`\`\`ts
