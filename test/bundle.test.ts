@@ -432,4 +432,99 @@ describe('bundle mode', () => {
       })
     })
   })
+
+  describe('entry path formats', () => {
+    it('should handle entry path without ./ prefix', async (context) => {
+      await testBuild({
+        context,
+        files: {
+          'src/main.ts': `export const hello = "world"`,
+          'package.json': JSON.stringify({ name: 'test-pkg', version: '1.0.0' }),
+        },
+        config: (cwd) => ({
+          cwd,
+          entries: [], // Clear default entries
+          // Entry without './' prefix - should work same as './src/main.ts'
+          entry: 'src/main.ts',
+          format: ['esm'],
+        }),
+      })
+    })
+
+    it('should handle entry path with ./ prefix', async (context) => {
+      await testBuild({
+        context,
+        files: {
+          'src/main.ts': `export const hello = "world"`,
+          'package.json': JSON.stringify({ name: 'test-pkg', version: '1.0.0' }),
+        },
+        config: (cwd) => ({
+          cwd,
+          entries: [], // Clear default entries
+          // Entry with './' prefix
+          entry: './src/main.ts',
+          format: ['esm'],
+        }),
+      })
+    })
+
+    it('should handle entry array without ./ prefix', async (context) => {
+      await testBuild({
+        context,
+        files: {
+          'src/index.ts': `export const a = 1`,
+          'src/utils.ts': `export const b = 2`,
+          'package.json': JSON.stringify({ name: 'test-pkg', version: '1.0.0' }),
+        },
+        config: (cwd) => ({
+          cwd,
+          entries: [], // Clear default entries
+          // Entry array without './' prefix
+          entry: ['src/index.ts', 'src/utils.ts'],
+          format: ['esm'],
+        }),
+      })
+    })
+
+    it('should handle named entries without ./ prefix', async (context) => {
+      await testBuild({
+        context,
+        files: {
+          'src/main.ts': `export const main = "main"`,
+          'src/cli.ts': `export const cli = "cli"`,
+          'package.json': JSON.stringify({ name: 'test-pkg', version: '1.0.0' }),
+        },
+        config: (cwd) => ({
+          cwd,
+          entries: [], // Clear default entries
+          // Named entries without './' prefix
+          entry: {
+            main: 'src/main.ts',
+            cli: 'src/cli.ts',
+          },
+          format: ['esm'],
+        }),
+      })
+    })
+
+    it('should handle entries-based config without ./ prefix', async (context) => {
+      await testBuild({
+        context,
+        files: {
+          'src/index.ts': `export const value = 42`,
+          'package.json': JSON.stringify({ name: 'test-pkg', version: '1.0.0' }),
+        },
+        config: (cwd) => ({
+          cwd,
+          entries: [
+            {
+              type: 'bundle',
+              input: 'src/index.ts', // Without './' prefix
+              format: ['esm'],
+            },
+          ],
+        }),
+      })
+    })
+  })
 })

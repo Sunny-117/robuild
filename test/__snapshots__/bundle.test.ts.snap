@@ -152,6 +152,145 @@ export { User, greet };
 "
 `;
 
+exports[`bundle mode > entry path formats > should handle entries-based config without ./ prefix 1`] = `
+"## index.mjs
+
+\`\`\`js
+//#region src/index.ts
+const value = 42;
+
+//#endregion
+export { value };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > entry path formats > should handle entry array without ./ prefix 1`] = `
+"## index.d.mts
+
+\`\`\`ts
+//#region src/index.d.ts
+declare const a = 1;
+//#endregion
+export { a };
+\`\`\`
+
+## index.mjs
+
+\`\`\`js
+//#region src/index.ts
+const a = 1;
+
+//#endregion
+export { a };
+\`\`\`
+
+## utils.d.mts
+
+\`\`\`ts
+//#region src/utils.d.ts
+declare const b = 2;
+//#endregion
+export { b };
+\`\`\`
+
+## utils.mjs
+
+\`\`\`js
+//#region src/utils.ts
+const b = 2;
+
+//#endregion
+export { b };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > entry path formats > should handle entry path with ./ prefix 1`] = `
+"## main.d.mts
+
+\`\`\`ts
+//#region src/main.d.ts
+declare const hello = "world";
+//#endregion
+export { hello };
+\`\`\`
+
+## main.mjs
+
+\`\`\`js
+//#region src/main.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > entry path formats > should handle entry path without ./ prefix 1`] = `
+"## main.d.mts
+
+\`\`\`ts
+//#region src/main.d.ts
+declare const hello = "world";
+//#endregion
+export { hello };
+\`\`\`
+
+## main.mjs
+
+\`\`\`js
+//#region src/main.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
+exports[`bundle mode > entry path formats > should handle named entries without ./ prefix 1`] = `
+"## cli.d.mts
+
+\`\`\`ts
+//#region src/cli.d.ts
+declare const cli = "cli";
+//#endregion
+export { cli };
+\`\`\`
+
+## cli.mjs
+
+\`\`\`js
+//#region src/cli.ts
+const cli = "cli";
+
+//#endregion
+export { cli };
+\`\`\`
+
+## main.d.mts
+
+\`\`\`ts
+//#region src/main.d.ts
+declare const main = "main";
+//#endregion
+export { main };
+\`\`\`
+
+## main.mjs
+
+\`\`\`js
+//#region src/main.ts
+const main = "main";
+
+//#endregion
+export { main };
+\`\`\`
+"
+`;
+
 exports[`bundle mode > external dependencies > should handle external dependencies 1`] = `
 "## index.mjs
 

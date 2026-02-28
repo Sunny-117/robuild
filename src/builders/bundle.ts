@@ -10,7 +10,7 @@ import type { Options as DtsOptions } from 'rolldown-plugin-dts'
 import type { BuildConfig, BuildContext, BuildHooks, BundleEntry, Platform, Target } from '../types'
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises'
 import { builtinModules } from 'node:module'
-import { basename, dirname, extname, join, relative, resolve } from 'node:path'
+import { basename, dirname, extname, isAbsolute, join, relative, resolve } from 'node:path'
 import { colors as c } from 'consola/utils'
 import { resolveModulePath } from 'exsolve'
 import { parseSync } from 'oxc-parser'
@@ -679,6 +679,18 @@ export async function rolldownBuild(
   )
 }
 
+/**
+ * Ensure a path is properly formatted for resolveModulePath.
+ * Adds './' prefix for relative paths that don't start with './' or '../'
+ */
+function ensureRelativePrefix(path: string): string {
+  // Skip if already absolute or has relative prefix
+  if (isAbsolute(path) || path.startsWith('./') || path.startsWith('../')) {
+    return path
+  }
+  return `./${path}`
+}
+
 export function normalizeBundleInputs(
   input: string | string[] | Record<string, string>,
   ctx: BuildContext,
@@ -688,7 +700,7 @@ export function normalizeBundleInputs(
   // Handle object format (tsup-style named entries)
   if (typeof input === 'object' && !Array.isArray(input)) {
     for (const [name, src] of Object.entries(input)) {
-      const resolvedSrc = resolveModulePath(src, {
+      const resolvedSrc = resolveModulePath(ensureRelativePrefix(src), {
         from: ctx.pkgDir,
         extensions: ['.ts', '.js', '.mjs', '.cjs', '.json'],
       })
@@ -699,7 +711,7 @@ export function normalizeBundleInputs(
 
   // Handle string or array format
   for (let src of Array.isArray(input) ? input : [input]) {
-    src = resolveModulePath(src, {
+    src = resolveModulePath(ensureRelativePrefix(src), {
       from: ctx.pkgDir,
       extensions: ['.ts', '.js', '.mjs', '.cjs', '.json'],
     })
