@@ -1,7 +1,7 @@
 import { defineConfig } from 'robuild'
 
 export default defineConfig({
-  entry: './src/main.tsx',
+  entry: 'src/main.tsx',
   format: ['esm'],
   dts: true,
   sourcemap: true,

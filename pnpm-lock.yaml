@@ -218,6 +218,12 @@ importers:
 
   playground/build-enhancements: {}
 
+  playground/cjs-default:
+    devDependencies:
+      robuild:
+        specifier: workspace:*
+        version: link:../..
+
   playground/css-processing:
     dependencies:
       lightningcss:
