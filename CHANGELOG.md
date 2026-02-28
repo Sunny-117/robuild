@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.1.13
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.12...v0.1.13)
+
+### 🚀 Enhancements
+
+- **cjs-default:** Implement cjsDefault option for better CJS compatibility ([2f0c450](https://github.com/Sunny-117/robuild/commit/2f0c450))
+
+### 🩹 Fixes
+
+- **bundle:** Support entry paths without ./ prefix ([fe2359b](https://github.com/Sunny-117/robuild/commit/fe2359b))
+
+### 🏡 Chore
+
+- 🤖 entry path demo ([b388253](https://github.com/Sunny-117/robuild/commit/b388253))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.12
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.11...v0.1.12)
