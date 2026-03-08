@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.14
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.13...v0.1.14)
+
+### 🚀 Enhancements
+
+- **bundle:** Implement outExtensions support for custom output file extensions ([32b36c5](https://github.com/Sunny-117/robuild/commit/32b36c5))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.1.13
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.12...v0.1.13)
