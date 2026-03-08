@@ -34,7 +34,7 @@ import { RobuildPluginManager } from '../plugins/manager'
 import { resolveChunkAddon } from '../transforms/banner'
 import { cleanOutputDir } from '../transforms/clean'
 import { copyFiles } from '../transforms/copy'
-import { getFormatExtension } from '../utils/extensions'
+import { applyOutExtensions, getFormatExtension } from '../utils/extensions'
 import { addHashToFilename, hasHash } from '../utils/hash'
 import { distSize, fmtPath, sideEffectSize } from '../utils/index'
 
@@ -388,6 +388,11 @@ export async function rolldownBuild(
     // Use custom fileName if provided (only for single-entry builds)
     if (entry.fileName) {
       entryFileName = entry.fileName
+    }
+    else if (entry.outExtensions) {
+      // Apply custom outExtensions function
+      const customExt = applyOutExtensions(format, entry.outExtensions)
+      entryFileName = `[name].${customExt.js}`
     }
     else if (isMultiFormat) {
       // For multi-format builds, use different extensions to avoid conflicts

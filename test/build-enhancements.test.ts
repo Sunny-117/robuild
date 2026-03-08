@@ -200,9 +200,7 @@ describe('build enhancements', () => {
       })
     })
 
-    // Note: outExtensions function is defined in types but not implemented in bundle.ts
-    // This test is skipped until the feature is implemented
-    it.skip('should use custom extensions via outExtensions function', async (context) => {
+    it('should use custom extensions via outExtensions function', async (context) => {
       await testBuild({
         context,
         files: {

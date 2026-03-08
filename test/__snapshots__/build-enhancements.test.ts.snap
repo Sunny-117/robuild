@@ -117,6 +117,31 @@ export { resolve, version };
 "
 `;
 
+exports[`build enhancements > extension control > should use custom extensions via outExtensions function 1`] = `
+"## index.common.js
+
+\`\`\`js
+Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+
+//#region index.ts
+const hello = "world";
+
+//#endregion
+exports.hello = hello;
+\`\`\`
+
+## index.esm.js
+
+\`\`\`js
+//#region index.ts
+const hello = "world";
+
+//#endregion
+export { hello };
+\`\`\`
+"
+`;
+
 exports[`build enhancements > extension control > should use fixed extensions (.mjs/.cjs) 1`] = `
 "## index.cjs
 
