@@ -6,7 +6,6 @@ exports[`bundle mode > basic bundling > should bundle multiple entries 1`] = `
 \`\`\`js
 //#region entry1.ts
 const a = 1;
-
 //#endregion
 export { a };
 \`\`\`
@@ -16,7 +15,6 @@ export { a };
 \`\`\`js
 //#region entry2.ts
 const b = 2;
-
 //#endregion
 export { b };
 \`\`\`
@@ -29,7 +27,6 @@ exports[`bundle mode > basic bundling > should bundle simple file 1`] = `
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -57,7 +54,6 @@ export { User, greet };
 function greet(user) {
 	return \`Hello, \${user.name}!\`;
 }
-
 //#endregion
 export { greet };
 \`\`\`
@@ -71,7 +67,6 @@ exports[`bundle mode > customization > should add banner and footer 1`] = `
 // Copyright 2024
 //#region index.ts
 const lib = "my-lib";
-
 //#endregion
 export { lib };
 // End
@@ -85,7 +80,6 @@ exports[`bundle mode > customization > should handle define constants 1`] = `
 \`\`\`js
 //#region index.ts
 const mode = "production";
-
 //#endregion
 export { mode };
 \`\`\`
@@ -98,7 +92,6 @@ exports[`bundle mode > customization > should handle environment variables 1`] =
 \`\`\`js
 //#region index.ts
 const version = "1.0.0";
-
 //#endregion
 export { version };
 \`\`\`
@@ -110,15 +103,10 @@ exports[`bundle mode > customization > should use custom fileName 1`] = `
 
 \`\`\`js
 var MyLib = (function(exports) {
-
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
-//#region index.ts
-	const value = 42;
-
-//#endregion
-exports.value = value;
-return exports;
+	Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+	//#endregion
+	exports.value = 42;
+	return exports;
 })({});
 \`\`\`
 "
@@ -158,7 +146,6 @@ exports[`bundle mode > entry path formats > should handle entries-based config w
 \`\`\`js
 //#region src/index.ts
 const value = 42;
-
 //#endregion
 export { value };
 \`\`\`
@@ -180,7 +167,6 @@ export { a };
 \`\`\`js
 //#region src/index.ts
 const a = 1;
-
 //#endregion
 export { a };
 \`\`\`
@@ -199,7 +185,6 @@ export { b };
 \`\`\`js
 //#region src/utils.ts
 const b = 2;
-
 //#endregion
 export { b };
 \`\`\`
@@ -221,7 +206,6 @@ export { hello };
 \`\`\`js
 //#region src/main.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -243,7 +227,6 @@ export { hello };
 \`\`\`js
 //#region src/main.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -265,7 +248,6 @@ export { cli };
 \`\`\`js
 //#region src/cli.ts
 const cli = "cli";
-
 //#endregion
 export { cli };
 \`\`\`
@@ -284,7 +266,6 @@ export { main };
 \`\`\`js
 //#region src/main.ts
 const main = "main";
-
 //#endregion
 export { main };
 \`\`\`
@@ -296,7 +277,6 @@ exports[`bundle mode > external dependencies > should handle external dependenci
 
 \`\`\`js
 import React from "react";
-
 export { React };
 \`\`\`
 "
@@ -307,7 +287,6 @@ exports[`bundle mode > external dependencies > should handle regex external patt
 
 \`\`\`js
 import { foo } from "@scope/package";
-
 export { foo };
 \`\`\`
 "
@@ -319,9 +298,9 @@ exports[`bundle mode > optimization > should generate sourcemap 1`] = `
 \`\`\`js
 //#region index.ts
 const version = "1.0.0";
-
 //#endregion
 export { version };
+
 //# sourceMappingURL=index.mjs.map
 \`\`\`
 
@@ -346,12 +325,10 @@ exports[`bundle mode > output formats > should output CJS format 1`] = `
 "## index.cjs
 
 \`\`\`js
-
 //#region index.ts
 function hello() {
 	return "hello";
 }
-
 //#endregion
 module.exports = hello;
 \`\`\`
@@ -364,7 +341,6 @@ exports[`bundle mode > output formats > should output ESM format 1`] = `
 \`\`\`js
 //#region index.ts
 const value = 42;
-
 //#endregion
 export { value };
 \`\`\`
@@ -376,15 +352,10 @@ exports[`bundle mode > output formats > should output IIFE format 1`] = `
 
 \`\`\`js
 var MyLib = (function(exports) {
-
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
-//#region index.ts
-	const PI = 3.14;
-
-//#endregion
-exports.PI = PI;
-return exports;
+	Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+	//#endregion
+	exports.PI = 3.14;
+	return exports;
 })({});
 \`\`\`
 "
@@ -394,13 +365,11 @@ exports[`bundle mode > output formats > should output multiple formats 1`] = `
 "## index.cjs
 
 \`\`\`js
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 function add(a, b) {
 	return a + b;
 }
-
 //#endregion
 exports.add = add;
 \`\`\`
@@ -412,7 +381,6 @@ exports.add = add;
 function add(a, b) {
 	return a + b;
 }
-
 //#endregion
 export { add };
 \`\`\`
@@ -424,7 +392,6 @@ exports[`bundle mode > platform specific > should handle node protocol 1`] = `
 
 \`\`\`js
 import { readFile } from "fs/promises";
-
 export { readFile };
 \`\`\`
 "
@@ -436,7 +403,6 @@ exports[`bundle mode > platform specific > should target browser platform 1`] = 
 \`\`\`js
 //#region index.ts
 const platform = "browser";
-
 //#endregion
 export { platform };
 \`\`\`
@@ -449,7 +415,6 @@ exports[`bundle mode > platform specific > should target node platform 1`] = `
 \`\`\`js
 //#region index.ts
 const platform = "node";
-
 //#endregion
 export { platform };
 \`\`\`

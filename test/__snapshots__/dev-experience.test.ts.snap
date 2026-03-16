@@ -4,14 +4,12 @@ exports[`developer experience > build result structure > should pass build resul
 "## index.cjs
 
 \`\`\`js
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 const hello = "world";
 function greet(name) {
 	return \`Hello, \${name}!\`;
 }
-
 //#endregion
 exports.greet = greet;
 exports.hello = hello;
@@ -25,7 +23,6 @@ const hello = "world";
 function greet(name) {
 	return \`Hello, \${name}!\`;
 }
-
 //#endregion
 export { greet, hello };
 \`\`\`
@@ -38,7 +35,6 @@ exports[`developer experience > combined options > should handle multiple dev ex
 \`\`\`js
 //#region index.ts
 const version = "1.0.0";
-
 //#endregion
 export { version };
 \`\`\`
@@ -51,7 +47,6 @@ exports[`developer experience > failOnWarn option > should not fail by default w
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -64,7 +59,6 @@ exports[`developer experience > fromVite option > should accept fromVite option 
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -77,7 +71,6 @@ exports[`developer experience > fromVite option > should load vite config when f
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -90,7 +83,6 @@ exports[`developer experience > ignoreWatch option > should accept ignore patter
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -103,7 +95,6 @@ exports[`developer experience > logLevel option > should accept different log le
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -116,7 +107,6 @@ exports[`developer experience > logLevel option > should accept different log le
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -129,7 +119,6 @@ exports[`developer experience > logLevel option > should accept different log le
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -142,7 +131,6 @@ exports[`developer experience > logLevel option > should accept different log le
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -155,7 +143,6 @@ exports[`developer experience > logLevel option > should accept different log le
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -168,7 +155,6 @@ exports[`developer experience > onSuccess callback > should execute async callba
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -181,7 +167,6 @@ exports[`developer experience > onSuccess callback > should execute function cal
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -194,7 +179,6 @@ exports[`developer experience > onSuccess callback > should execute string comma
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -207,7 +191,6 @@ exports[`developer experience > onSuccess callback > should pass build result to
 \`\`\`js
 //#region index.ts
 const version = "1.0.0";
-
 //#endregion
 export { version };
 \`\`\`

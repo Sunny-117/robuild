@@ -6,7 +6,6 @@ exports[`hooks > BuildContext > should provide pkg info in context 1`] = `
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -19,7 +18,6 @@ exports[`hooks > BuildContext > should provide pkgDir in context 1`] = `
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -32,7 +30,6 @@ exports[`hooks > end hook > should execute end hook after build completes 1`] = 
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -45,7 +42,6 @@ exports[`hooks > end hook > should support async end hook 1`] = `
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -67,7 +63,6 @@ exports[`hooks > entries hook > should execute entries hook with normalized entr
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -80,7 +75,6 @@ exports[`hooks > hook execution order > should execute hooks in correct order: s
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -93,7 +87,6 @@ exports[`hooks > multiple hooks combined > should support all hooks together 1`]
 \`\`\`js
 //#region index.ts
 const version = "1.0.0";
-
 //#endregion
 export { version };
 \`\`\`
@@ -106,7 +99,6 @@ exports[`hooks > rolldownConfig hook > should execute rolldownConfig hook before
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -119,7 +111,6 @@ exports[`hooks > rolldownOutput hook > should execute rolldownOutput hook before
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -132,7 +123,6 @@ exports[`hooks > start hook > should execute start hook at the beginning of buil
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -145,7 +135,6 @@ exports[`hooks > start hook > should support async start hook 1`] = `
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`

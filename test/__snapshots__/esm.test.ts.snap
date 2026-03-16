@@ -5,7 +5,6 @@ exports[`esm compatibility > ESM interoperability > should handle external ESM d
 
 \`\`\`js
 import lodash from "lodash-es";
-
 export { lodash };
 \`\`\`
 "
@@ -16,7 +15,6 @@ exports[`esm compatibility > ESM interoperability > should handle named imports 
 
 \`\`\`js
 import { debounce, throttle } from "lodash-es";
-
 export { debounce, throttle };
 \`\`\`
 "
@@ -27,15 +25,12 @@ exports[`esm compatibility > browser compatibility > should generate IIFE for le
 
 \`\`\`js
 var MathLib = (function(exports) {
-
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
-//#region index.ts
+	Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+	//#region index.ts
 	const multiply = (a, b) => a * b;
-
-//#endregion
-exports.multiply = multiply;
-return exports;
+	//#endregion
+	exports.multiply = multiply;
+	return exports;
 })({});
 \`\`\`
 "
@@ -49,7 +44,6 @@ exports[`esm compatibility > browser compatibility > should generate browser-com
 function add(a, b) {
 	return a + b;
 }
-
 //#endregion
 export { add };
 \`\`\`
@@ -57,12 +51,11 @@ export { add };
 `;
 
 exports[`esm compatibility > dynamic imports > should support code splitting with dynamic imports 1`] = `
-"## _chunks/feature-Bj_J-cnl.mjs
+"## _chunks/feature-B-t43iDH.mjs
 
 \`\`\`js
 //#region feature.ts
 const feature = "feature module";
-
 //#endregion
 export { feature };
 \`\`\`
@@ -71,8 +64,7 @@ export { feature };
 
 \`\`\`js
 //#region index.ts
-const loadFeature = () => import("./_chunks/feature-Bj_J-cnl.mjs");
-
+const loadFeature = () => import("./_chunks/feature-B-t43iDH.mjs");
 //#endregion
 export { loadFeature };
 \`\`\`
@@ -87,7 +79,6 @@ exports[`esm compatibility > dynamic imports > should support dynamic import syn
 async function loadModule(name) {
 	return (await import(\`./modules/\${name}.js\`)).default;
 }
-
 //#endregion
 export { loadModule };
 \`\`\`
@@ -118,7 +109,6 @@ function getConfig() {
 		version: "1.0.0"
 	};
 }
-
 //#endregion
 export { getConfig };
 \`\`\`
@@ -129,11 +119,9 @@ exports[`esm compatibility > file extensions > should use .mjs for ESM and .cjs 
 "## index.cjs
 
 \`\`\`js
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 const value = 42;
-
 //#endregion
 exports.value = value;
 \`\`\`
@@ -143,7 +131,6 @@ exports.value = value;
 \`\`\`js
 //#region index.ts
 const value = 42;
-
 //#endregion
 export { value };
 \`\`\`
@@ -156,7 +143,6 @@ exports[`esm compatibility > import.meta support > should preserve import.meta.u
 \`\`\`js
 //#region index.ts
 const currentUrl = import.meta.url;
-
 //#endregion
 export { currentUrl };
 \`\`\`
@@ -167,13 +153,11 @@ exports[`esm compatibility > multi-format support > should output ESM and CJS fo
 "## index.cjs
 
 \`\`\`js
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 function greet(name) {
 	return \`Hello, \${name}!\`;
 }
-
 //#endregion
 exports.greet = greet;
 \`\`\`
@@ -185,7 +169,6 @@ exports.greet = greet;
 function greet(name) {
 	return \`Hello, \${name}!\`;
 }
-
 //#endregion
 export { greet };
 \`\`\`
@@ -196,11 +179,9 @@ exports[`esm compatibility > multi-format support > should output ESM, CJS, and 
 "## index.cjs
 
 \`\`\`js
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 const PI = 3.14159;
-
 //#endregion
 exports.PI = PI;
 \`\`\`
@@ -209,15 +190,10 @@ exports.PI = PI;
 
 \`\`\`js
 var MyMath = (function(exports) {
-
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
-//#region index.ts
-	const PI = 3.14159;
-
-//#endregion
-exports.PI = PI;
-return exports;
+	Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+	//#endregion
+	exports.PI = 3.14159;
+	return exports;
 })({});
 \`\`\`
 
@@ -226,7 +202,6 @@ return exports;
 \`\`\`js
 //#region index.ts
 const PI = 3.14159;
-
 //#endregion
 export { PI };
 \`\`\`
@@ -242,7 +217,6 @@ function add(a, b) {
 	return a + b;
 }
 const version = "1.0.0";
-
 //#endregion
 export { add, version };
 \`\`\`
@@ -255,7 +229,6 @@ exports[`esm compatibility > native ESM output > should use .mjs extension for E
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -266,11 +239,9 @@ exports[`esm compatibility > package exports > should generate conditional expor
 "## index.cjs
 
 \`\`\`js
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 const value = 42;
-
 //#endregion
 exports.value = value;
 \`\`\`
@@ -298,7 +269,6 @@ export { value };
 \`\`\`js
 //#region index.ts
 const value = 42;
-
 //#endregion
 export { value };
 \`\`\`
@@ -320,7 +290,6 @@ export { main };
 \`\`\`js
 //#region index.ts
 const main = "main";
-
 //#endregion
 export { main };
 \`\`\`
@@ -333,7 +302,6 @@ exports[`esm compatibility > tree shaking > should remove unused exports with tr
 \`\`\`js
 //#region utils.ts
 const used = "used value";
-
 //#endregion
 export { used };
 \`\`\`
@@ -346,7 +314,6 @@ exports[`esm compatibility > tree shaking > should support advanced tree shaking
 \`\`\`js
 //#region lib.ts
 const helper = () => "helper";
-
 //#endregion
 export { helper };
 \`\`\`

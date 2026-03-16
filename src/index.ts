@@ -8,6 +8,7 @@ export * from './plugins'
 export { resolveCssOptions } from './features/css'
 export { createLightningCSSPlugin } from './features/css/lightningcss'
 export { createCssCodeSplitPlugin } from './features/css/splitting'
+export { createBuiltinCssPlugin } from './plugins/builtin/css'
 export type { CssOptions } from './features/css'
 export type { LightningCSSPluginOptions } from './features/css/lightningcss'
 

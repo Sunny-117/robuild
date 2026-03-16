@@ -23,6 +23,7 @@ import { resolveExternalConfig } from '../config/external'
 import { resolveCssOptions } from '../features/css'
 import { createLightningCSSPlugin } from '../features/css/lightningcss'
 import { createCssCodeSplitPlugin } from '../features/css/splitting'
+import { createBuiltinCssPlugin } from '../plugins/builtin/css'
 import { logger } from '../core/logger'
 import { createGlobImportPlugin } from '../plugins/builtin/glob-import'
 import { nodeProtocolPlugin } from '../plugins/builtin/node-protocol'
@@ -170,6 +171,9 @@ export async function createBundleInputConfig(
   // Add CSS plugins if configured
   const cssOptions = resolveCssOptions(config?.css)
 
+  // Check if user has configured a custom CSS loader (e.g., 'text' for raw CSS content)
+  const hasCssLoader = entry.loaders?.['.css'] !== undefined
+
   // Add LightningCSS plugin for CSS transformation/minification
   if (cssOptions.lightningcss) {
     const lightningPlugin = await createLightningCSSPlugin({ target })
@@ -181,11 +185,22 @@ export async function createBundleInputConfig(
       logger.warn('Install it with: pnpm add -D unplugin-lightningcss lightningcss')
     }
   }
+  else if (!hasCssLoader) {
+    // Since rolldown 1.0.0-rc.9 removed native CSS bundling support,
+    // use the built-in CSS plugin to handle CSS files via rolldown plugin API.
+    // Skip if user has configured a custom CSS loader (e.g., 'text' for raw CSS import).
+    rolldownPlugins.push(
+      createBuiltinCssPlugin({
+        fileName: cssOptions.fileName,
+        splitting: cssOptions.splitting,
+      }),
+    )
 
-  // Add CSS code splitting plugin
-  const cssSplitPlugin = createCssCodeSplitPlugin(cssOptions)
-  if (cssSplitPlugin) {
-    rolldownPlugins.push(cssSplitPlugin)
+    // Add CSS code splitting plugin (for post-processing when splitting is disabled)
+    const cssSplitPlugin = createCssCodeSplitPlugin(cssOptions)
+    if (cssSplitPlugin) {
+      rolldownPlugins.push(cssSplitPlugin)
+    }
   }
 
   // Add user plugins from plugin manager

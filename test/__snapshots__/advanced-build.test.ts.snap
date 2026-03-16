@@ -6,17 +6,14 @@ exports[`advanced build features > CommonJS default export handling > should han
 \`\`\`js
 //#region \\0rolldown/runtime.js
 var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
-
 //#endregion
 //#region index.js
 var require_should_handle_cjsDefault_auto_mode = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = { hello: "world" };
 }));
-
 //#endregion
 export default require_should_handle_cjsDefault_auto_mode();
-
-export {  };
+export {};
 \`\`\`
 "
 `;
@@ -27,7 +24,6 @@ exports[`advanced build features > CommonJS default export handling > should han
 \`\`\`js
 //#region \\0rolldown/runtime.js
 var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
-
 //#endregion
 //#region index.js
 var require_should_handle_mixed_CommonJS_exports = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -35,11 +31,9 @@ var require_should_handle_mixed_CommonJS_exports = /* @__PURE__ */ __commonJSMin
 	exports.version = "1.0.0";
 	module.exports.default = "main";
 }));
-
 //#endregion
 export default require_should_handle_mixed_CommonJS_exports();
-
-export {  };
+export {};
 \`\`\`
 "
 `;
@@ -51,7 +45,6 @@ exports[`advanced build features > compatibility shims > should add Node.js shim
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import { createRequire } from "node:module";
-
 //#region index.ts
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -59,7 +52,6 @@ createRequire(import.meta.url);
 const path = __dirname;
 const file = __filename;
 const env = process.env.NODE_ENV;
-
 //#endregion
 export { env, file, path };
 \`\`\`
@@ -73,13 +65,11 @@ exports[`advanced build features > compatibility shims > should handle selective
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 import { createRequire } from "node:module";
-
 //#region index.ts
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 const dir = __dirname;
 const req = require;
-
 //#endregion
 export { dir, req };
 \`\`\`
@@ -87,7 +77,7 @@ export { dir, req };
 `;
 
 exports[`advanced build features > file loaders > should handle custom loader options 1`] = `
-"## assets/image-i-wPQXXQ.png
+"## assets/image-D8YpQGIk.png
 
 \`\`\`png
 fake-image-data
@@ -96,21 +86,42 @@ fake-image-data
 ## index.mjs
 
 \`\`\`js
+//#region \\0rolldown/runtime.js
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+var __copyProps = (to, from, except, desc) => {
+	if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
+		key = keys[i];
+		if (!__hasOwnProp.call(to, key) && key !== except) __defProp(to, key, {
+			get: ((k) => from[k]).bind(null, key),
+			enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+		});
+	}
+	return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", {
+	value: mod,
+	enumerable: true
+}) : target, mod));
+//#endregion
 //#region styles.css
 var styles_default = ".test { background: red; }";
-
 //#endregion
-//#region image.png
-var image_default = "assets/image-i-wPQXXQ.png";
-
-//#endregion
-export { image_default as image, styles_default as styles };
+var image = (/* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
+	module.exports = "./assets/image-D8YpQGIk.png";
+})))(), 1)).default;
+export { image, styles_default as styles };
 \`\`\`
 "
 `;
 
 exports[`advanced build features > file loaders > should handle different file types with loaders 1`] = `
-"## assets/logo-C_uiUYIt.png
+"## assets/logo-Z3_nBM2d.png
 
 \`\`\`png
 fake-png-data
@@ -119,30 +130,49 @@ fake-png-data
 ## index.mjs
 
 \`\`\`js
+//#region \\0rolldown/runtime.js
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+var __copyProps = (to, from, except, desc) => {
+	if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
+		key = keys[i];
+		if (!__hasOwnProp.call(to, key) && key !== except) __defProp(to, key, {
+			get: ((k) => from[k]).bind(null, key),
+			enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+		});
+	}
+	return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", {
+	value: mod,
+	enumerable: true
+}) : target, mod));
+//#endregion
 //#region config.json
 var config_default = {
 	version: "1.0.0",
 	name: "test"
 };
-
 //#endregion
 //#region styles.css
 var styles_default = ".button { color: blue; }";
-
 //#endregion
 //#region README.md
 var README_default = "# Hello World\\nThis is a test.";
-
-//#endregion
-//#region logo.png
-var logo_default = "assets/logo-C_uiUYIt.png";
-
 //#endregion
 //#region icon.svg
+var import_logo = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
+	module.exports = "./assets/logo-Z3_nBM2d.png";
+})))(), 1);
 var icon_default = "data:image/svg+xml,<svg><circle r=\\"10\\"/></svg>";
-
 //#endregion
-export { config_default as config, icon_default as icon, logo_default as logo, README_default as readme, styles_default as styles };
+var logo = import_logo.default;
+export { config_default as config, icon_default as icon, logo, README_default as readme, styles_default as styles };
 \`\`\`
 "
 `;
@@ -153,7 +183,6 @@ exports[`advanced build features > rolldown config passthrough > should handle a
 \`\`\`js
 //#region utils.ts
 const used = "used";
-
 //#endregion
 export { used };
 \`\`\`
@@ -166,9 +195,9 @@ exports[`advanced build features > rolldown config passthrough > should handle o
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
+
 //# sourceMappingURL=index.mjs.map
 \`\`\`
 
@@ -186,7 +215,6 @@ exports[`advanced build features > rolldown config passthrough > should pass thr
 \`\`\`js
 //#region utils.ts
 const helper = () => "help";
-
 //#endregion
 export { helper };
 \`\`\`
@@ -199,7 +227,6 @@ exports[`advanced build features > skip node modules > should bundle everything 
 \`\`\`js
 //#region utils.ts
 const helper = () => "help";
-
 //#endregion
 export { helper };
 \`\`\`
@@ -212,10 +239,8 @@ exports[`advanced build features > skip node modules > should skip node_modules 
 \`\`\`js
 import "node:module";
 import lodash from "lodash";
-
 //#region utils.ts
 const helper = () => "help";
-
 //#endregion
 export { helper, lodash };
 \`\`\`

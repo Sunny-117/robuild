@@ -5,11 +5,9 @@ exports[`build enhancements > advanced banner/footer > should add format-specifi
 
 \`\`\`js
 /* CommonJS Banner */
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 const lib = "my-lib";
-
 //#endregion
 exports.lib = lib;
 \`\`\`
@@ -20,7 +18,6 @@ exports.lib = lib;
 /* ES Module Banner */
 //#region index.ts
 const lib = "my-lib";
-
 //#endregion
 export { lib };
 \`\`\`
@@ -31,11 +28,9 @@ exports[`build enhancements > advanced banner/footer > should add format-specifi
 "## index.cjs
 
 \`\`\`js
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 const lib = "my-lib";
-
 //#endregion
 exports.lib = lib;
 /* CJS End */
@@ -46,7 +41,6 @@ exports.lib = lib;
 \`\`\`js
 //#region index.ts
 const lib = "my-lib";
-
 //#endregion
 export { lib };
 /* ESM End */
@@ -59,13 +53,12 @@ exports[`build enhancements > advanced banner/footer > should support dynamic ba
 
 \`\`\`js
 /*!
- * test-lib v1.2.3
- * (c) 2026 Test Author
- * Released under the MIT License.
- */
+* test-lib v1.2.3
+* (c) 2026 Test Author
+* Released under the MIT License.
+*/
 //#region index.ts
 const lib = "my-lib";
-
 //#endregion
 export { lib };
 \`\`\`
@@ -89,12 +82,10 @@ MIT
 
 \`\`\`js
 /* My Library v1.0.0 */
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 let path = require("path");
-
 //#region index.ts
 const version = "1.0.0";
-
 //#endregion
 exports.resolve = path.resolve;
 exports.version = version;
@@ -106,10 +97,8 @@ exports.version = version;
 \`\`\`js
 /* My Library v1.0.0 */
 import { resolve } from "node:path";
-
 //#region index.ts
 const version = "1.0.0";
-
 //#endregion
 export { resolve, version };
 /* End */
@@ -121,11 +110,9 @@ exports[`build enhancements > extension control > should use custom extensions v
 "## index.common.js
 
 \`\`\`js
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 const hello = "world";
-
 //#endregion
 exports.hello = hello;
 \`\`\`
@@ -135,7 +122,6 @@ exports.hello = hello;
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -146,11 +132,9 @@ exports[`build enhancements > extension control > should use fixed extensions (.
 "## index.cjs
 
 \`\`\`js
-Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 //#region index.ts
 const hello = "world";
-
 //#endregion
 exports.hello = hello;
 \`\`\`
@@ -160,7 +144,6 @@ exports.hello = hello;
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -208,7 +191,6 @@ Documentation here.
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -227,7 +209,6 @@ exports[`build enhancements > file copy functionality > should copy with object 
 \`\`\`js
 //#region index.ts
 const hello = "world";
-
 //#endregion
 export { hello };
 \`\`\`
@@ -235,12 +216,11 @@ export { hello };
 `;
 
 exports[`build enhancements > file hash support > should add hash to output filename 1`] = `
-"## index-2f990708.mjs
+"## index-3c5e7f5a.mjs
 
 \`\`\`js
 //#region index.ts
 const version = "1.0.0";
-
 //#endregion
 export { version };
 \`\`\`
@@ -248,12 +228,11 @@ export { version };
 `;
 
 exports[`build enhancements > file hash support > should generate different hash for different content 1`] = `
-"## index-2f990708.mjs
+"## index-3c5e7f5a.mjs
 
 \`\`\`js
 //#region index.ts
 const version = "1.0.0";
-
 //#endregion
 export { version };
 \`\`\`
@@ -261,12 +240,11 @@ export { version };
 `;
 
 exports[`build enhancements > file hash support > should generate different hash for different content 2`] = `
-"## index-6b829d9d.mjs
+"## index-faf4efb7.mjs
 
 \`\`\`js
 //#region index.ts
 const version = "2.0.0";
-
 //#endregion
 export { version };
 \`\`\`
@@ -279,7 +257,6 @@ exports[`build enhancements > node protocol handling > should add node: prefix t
 \`\`\`js
 import { resolve } from "node:path";
 import { createHash } from "node:crypto";
-
 export { createHash, resolve };
 \`\`\`
 "
@@ -291,7 +268,6 @@ exports[`build enhancements > node protocol handling > should strip node: prefix
 \`\`\`js
 import { resolve } from "path";
 import { createHash } from "crypto";
-
 export { createHash, resolve };
 \`\`\`
 "
