@@ -25,7 +25,13 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '指南', link: '/guide/' },
       { text: 'API 参考', link: '/reference/cli' },
-      { text: '博客', link: '/blog/bundler-revolution' },
+      {
+        text: '博客',
+        items: [
+          { text: '构建工具的第三次革命', link: '/blog/bundler-revolution' },
+          { text: '当 rolldown 移除 CSS 支持后，我是如何修复构建工具的', link: '/blog/rolldown-breaking-changes' },
+        ],
+      },
       { text: 'GitHub', link: 'https://github.com/Sunny-117/robuild' },
     ],
     sidebar: {
@@ -94,6 +100,7 @@ export default defineConfig({
           text: '博客',
           items: [
             { text: '构建工具的第三次革命', link: '/blog/bundler-revolution' },
+            { text: '当 rolldown 移除 CSS 支持后，我是如何修复构建工具的', link: '/blog/rolldown-breaking-changes' },
           ],
         },
       ],
