@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.2.2
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.2.1...v0.2.2)
+
+### 🚀 Enhancements
+
+- **css:** Improve CSS splitting with importer chain tracking ([32ada4b](https://github.com/Sunny-117/robuild/commit/32ada4b))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.2.1
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.16...v0.2.1)
