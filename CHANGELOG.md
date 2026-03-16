@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v0.2.1
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.16...v0.2.1)
+
 ## v0.1.16
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.1.15...v0.1.16)
