@@ -185,8 +185,8 @@ export const cli = true
     })
   })
 
-  describe('stub uses absolute paths', () => {
-    it('should use absolute path in re-export', async (context) => {
+  describe('stub uses relative paths', () => {
+    it('should use relative path in re-export', async (context) => {
       await testBuild({
         context,
         files: {
@@ -205,8 +205,8 @@ export const cli = true
           const stubPath = path.join(outputDir, 'index.mjs')
           const content = readFileSync(stubPath, 'utf-8')
 
-          // Should use absolute path (starts with /)
-          expect(content).toMatch(/export \* from ["']\//)
+          // Should use relative path
+          expect(content).toMatch(/export \* from ["']\.\.?\//)
         },
       })
     })

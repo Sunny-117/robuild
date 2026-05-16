@@ -4,13 +4,13 @@ exports[`stub mode > bundle stub > should create .d.mts stub for types 1`] = `
 "## index.d.mts
 
 \`\`\`ts
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-create-d-mts-stub-for-types/index.ts";
+export * from "../index.ts";
 \`\`\`
 
 ## index.mjs
 
 \`\`\`js
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-create-d-mts-stub-for-types/index.ts";
+export * from "../index.ts";
 \`\`\`
 "
 `;
@@ -19,13 +19,13 @@ exports[`stub mode > bundle stub > should create stub file that re-exports sourc
 "## index.d.mts
 
 \`\`\`ts
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-create-stub-file-that-re-exports-source/index.ts";
+export * from "../index.ts";
 \`\`\`
 
 ## index.mjs
 
 \`\`\`js
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-create-stub-file-that-re-exports-source/index.ts";
+export * from "../index.ts";
 \`\`\`
 "
 `;
@@ -34,15 +34,15 @@ exports[`stub mode > bundle stub > should handle default export in stub 1`] = `
 "## index.d.mts
 
 \`\`\`ts
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-handle-default-export-in-stub/index.ts";
-export { default } from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-handle-default-export-in-stub/index.ts";
+export * from "../index.ts";
+export { default } from "../index.ts";
 \`\`\`
 
 ## index.mjs
 
 \`\`\`js
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-handle-default-export-in-stub/index.ts";
-export { default } from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-handle-default-export-in-stub/index.ts";
+export * from "../index.ts";
+export { default } from "../index.ts";
 \`\`\`
 "
 `;
@@ -51,14 +51,14 @@ exports[`stub mode > bundle stub > should make stub executable when source has s
 "## cli.d.mts
 
 \`\`\`ts
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-make-stub-executable-when-source-has-shebang/cli.ts";
+export * from "../cli.ts";
 \`\`\`
 
 ## cli.mjs
 
 \`\`\`js
 #!/usr/bin/env node
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-make-stub-executable-when-source-has-shebang/cli.ts";
+export * from "../cli.ts";
 \`\`\`
 "
 `;
@@ -67,29 +67,29 @@ exports[`stub mode > bundle stub > should preserve shebang in stub file 1`] = `
 "## cli.d.mts
 
 \`\`\`ts
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-preserve-shebang-in-stub-file/cli.ts";
+export * from "../cli.ts";
 \`\`\`
 
 ## cli.mjs
 
 \`\`\`js
 #!/usr/bin/env node
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/bundle-stub/should-preserve-shebang-in-stub-file/cli.ts";
+export * from "../cli.ts";
 \`\`\`
 "
 `;
 
-exports[`stub mode > stub uses absolute paths > should use absolute path in re-export 1`] = `
+exports[`stub mode > stub uses relative paths > should use relative path in re-export 1`] = `
 "## index.d.mts
 
 \`\`\`ts
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/stub-uses-absolute-paths/should-use-absolute-path-in-re-export/index.ts";
+export * from "../index.ts";
 \`\`\`
 
 ## index.mjs
 
 \`\`\`js
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/stub-uses-absolute-paths/should-use-absolute-path-in-re-export/index.ts";
+export * from "../index.ts";
 \`\`\`
 "
 `;
@@ -98,25 +98,25 @@ exports[`stub mode > stub with multiple entries > should create stubs for multip
 "## index.d.mts
 
 \`\`\`ts
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/stub-with-multiple-entries/should-create-stubs-for-multiple-entries/index.ts";
+export * from "../index.ts";
 \`\`\`
 
 ## index.mjs
 
 \`\`\`js
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/stub-with-multiple-entries/should-create-stubs-for-multiple-entries/index.ts";
+export * from "../index.ts";
 \`\`\`
 
 ## utils.d.mts
 
 \`\`\`ts
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/stub-with-multiple-entries/should-create-stubs-for-multiple-entries/utils.ts";
+export * from "../utils.ts";
 \`\`\`
 
 ## utils.mjs
 
 \`\`\`js
-export * from "/Users/olive/Desktop/code/Sunny-117/robuild/test/temp/stub-with-multiple-entries/should-create-stubs-for-multiple-entries/utils.ts";
+export * from "../utils.ts";
 \`\`\`
 "
 `;

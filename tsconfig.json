@@ -13,7 +13,7 @@
     "skipLibCheck": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "test", "playground"],
+  "include": ["src", "test"],
   "exclude": [
     "test/temp",
     "playground/**/dist",

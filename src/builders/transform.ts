@@ -262,7 +262,9 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
 
   sourceText = magicString.toString()
 
-  const transformed = await transform(entryPath, sourceText, {
+  const relativeSrcPath = relative(entry.outDir!, entryPath)
+
+  const transformed = await transform(relativeSrcPath, sourceText, {
     ...entry.oxc,
     ...sourceOptions,
     cwd: dirname(entryPath),
@@ -293,7 +295,7 @@ async function transformModule(entryPath: string, entry: TransformEntry) {
 
   if (entry.minify) {
     const res = await minify(
-      entryPath,
+      relativeSrcPath,
       transformed.code,
       entry.minify === true ? {} : entry.minify,
     )
