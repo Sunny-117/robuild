@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.2.3
+
+[compare changes](https://github.com/Sunny-117/robuild/compare/v0.2.1...v0.2.3)
+
+### 🚀 Enhancements
+
+- **css:** Improve CSS splitting with importer chain tracking ([32ada4b](https://github.com/Sunny-117/robuild/commit/32ada4b))
+
+### 📖 Documentation
+
+- Rolldown-breaking-changes ([65c1b68](https://github.com/Sunny-117/robuild/commit/65c1b68))
+
+### 🏡 Chore
+
+- **release:** V0.2.2 ([3600e8f](https://github.com/Sunny-117/robuild/commit/3600e8f))
+- Upgrade all dependencies to latest, use relative paths in stub and sourcemap outputs ([0bd9808](https://github.com/Sunny-117/robuild/commit/0bd9808))
+
+### ❤️ Contributors
+
+- Sunny-117 <zhiqiangfu6@gmail.com>
+
 ## v0.2.2
 
 [compare changes](https://github.com/Sunny-117/robuild/compare/v0.2.1...v0.2.2)
