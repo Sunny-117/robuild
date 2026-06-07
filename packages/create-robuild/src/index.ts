@@ -3,7 +3,6 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { styleText } from 'node:util'
-import { createRequire } from 'node:module'
 import {
   cancel,
   intro,
@@ -16,14 +15,8 @@ import {
 import { getUserAgent } from 'package-manager-detector'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const require = createRequire(import.meta.url)
 
-function getRobuildVersion(): string {
-  // Read from create-robuild's own package.json which always lists the correct robuild version
-  const selfPkg = require('../package.json')
-  const version = selfPkg.devDependencies?.robuild ?? selfPkg.dependencies?.robuild
-  return version ?? 'latest'
-}
+declare const __ROBUILD_VERSION__: string
 
 export const templateOptions = [
   { value: 'default', label: 'Default - Standard TypeScript library' },
@@ -107,8 +100,7 @@ export async function create(
   copyDir(templateDir, targetDir)
 
   // Rewrite robuild version in all copied package.json files
-  const robuildVersion = getRobuildVersion()
-  rewriteRobuildVersion(targetDir, robuildVersion)
+  rewriteRobuildVersion(targetDir, __ROBUILD_VERSION__)
 
   s.stop('Template copied')
 
