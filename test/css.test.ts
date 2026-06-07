@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { testBuild } from './helpers'
 
@@ -65,6 +67,11 @@ describe('css processing', () => {
               format: 'esm',
             },
           ],
+        },
+        afterBuild: async (outputDir) => {
+          const css = await readFile(path.join(outputDir, 'index.css'), 'utf-8')
+          expect(css).toContain('margin: 0')
+          expect(css).toContain('--primary: #007bff')
         },
       })
     })

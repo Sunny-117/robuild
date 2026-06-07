@@ -221,16 +221,16 @@ exports[`css processing > basic CSS bundling > should bundle multiple CSS files 
 
 \`\`\`css
 
+            :root {
+              --primary: #007bff;
+              --secondary: #6c757d;
+            }
+          
+
             * {
               margin: 0;
               padding: 0;
               box-sizing: border-box;
-            }
-          
-
-            :root {
-              --primary: #007bff;
-              --secondary: #6c757d;
             }
 \`\`\`
 
