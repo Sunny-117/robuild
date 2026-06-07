@@ -3,6 +3,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { styleText } from 'node:util'
+import { createRequire } from 'node:module'
 import {
   cancel,
   intro,
@@ -15,6 +16,12 @@ import {
 import { getUserAgent } from 'package-manager-detector'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const require = createRequire(import.meta.url)
+
+function getRobuildVersion(): string {
+  const pkg = require('robuild/package.json')
+  return `^${pkg.version}`
+}
 
 export const templateOptions = [
   { value: 'default', label: 'Default - Standard TypeScript library' },
@@ -60,6 +67,21 @@ function getTemplatesDir(): string {
   return prodPath
 }
 
+function rewriteRobuildVersion(dir: string, version: string): void {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      rewriteRobuildVersion(fullPath, version)
+    } else if (entry.name === 'package.json') {
+      const pkg = JSON.parse(fs.readFileSync(fullPath, 'utf-8'))
+      let changed = false
+      if (pkg.devDependencies?.robuild) { pkg.devDependencies.robuild = version; changed = true }
+      if (pkg.dependencies?.robuild) { pkg.dependencies.robuild = version; changed = true }
+      if (changed) fs.writeFileSync(fullPath, `${JSON.stringify(pkg, null, 2)}\n`)
+    }
+  }
+}
+
 export async function create(
   pathArg: string | undefined,
   options: Options,
@@ -81,6 +103,10 @@ export async function create(
   }
 
   copyDir(templateDir, targetDir)
+
+  // Rewrite robuild version in all copied package.json files
+  const robuildVersion = getRobuildVersion()
+  rewriteRobuildVersion(targetDir, robuildVersion)
 
   s.stop('Template copied')
 

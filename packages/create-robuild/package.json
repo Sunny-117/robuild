@@ -38,7 +38,7 @@
   },
   "scripts": {
     "dev": "esno ./src/run.ts",
-    "build": "node ../../scripts/sync-template-versions.mjs && robuild",
+    "build": "robuild",
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
