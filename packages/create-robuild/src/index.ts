@@ -19,8 +19,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
 
 function getRobuildVersion(): string {
-  const pkg = require('robuild/package.json')
-  return `^${pkg.version}`
+  // Read from create-robuild's own package.json which always lists the correct robuild version
+  const selfPkg = require('../package.json')
+  const version = selfPkg.devDependencies?.robuild ?? selfPkg.dependencies?.robuild
+  return version ?? 'latest'
 }
 
 export const templateOptions = [
