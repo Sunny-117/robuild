@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`css processing > CSS code splitting > should merge all CSS into single file when splitting is disabled 1`] = `
-"## _chunks/component-CQPcLfV6.mjs
+"## _chunks/component-Z92OQn0b.mjs
 
 \`\`\`js
 //#region component.ts
@@ -25,7 +25,7 @@ export { Component };
 \`\`\`js
 //#region index.ts
 async function loadComponent() {
-	return import("./_chunks/component-CQPcLfV6.mjs");
+	return import("./_chunks/component-Z92OQn0b.mjs");
 }
 //#endregion
 export { loadComponent };
@@ -34,14 +34,14 @@ export { loadComponent };
 `;
 
 exports[`css processing > CSS code splitting > should preserve CSS splitting by default 1`] = `
-"## _chunks/component-CQPcLfV6.css
+"## _chunks/component-Z92OQn0b.css
 
 \`\`\`css
 
             .component { color: green; }
 \`\`\`
 
-## _chunks/component-CQPcLfV6.mjs
+## _chunks/component-Z92OQn0b.mjs
 
 \`\`\`js
 //#region component.ts
@@ -62,7 +62,7 @@ export { Component };
 \`\`\`js
 //#region index.ts
 async function loadComponent() {
-	return import("./_chunks/component-CQPcLfV6.mjs");
+	return import("./_chunks/component-Z92OQn0b.mjs");
 }
 //#endregion
 export { loadComponent };

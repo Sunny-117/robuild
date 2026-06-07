@@ -51,7 +51,7 @@ export { add };
 `;
 
 exports[`esm compatibility > dynamic imports > should support code splitting with dynamic imports 1`] = `
-"## _chunks/feature-B-t43iDH.mjs
+"## _chunks/feature-7epET7tL.mjs
 
 \`\`\`js
 //#region feature.ts
@@ -64,7 +64,7 @@ export { feature };
 
 \`\`\`js
 //#region index.ts
-const loadFeature = () => import("./_chunks/feature-B-t43iDH.mjs");
+const loadFeature = () => import("./_chunks/feature-7epET7tL.mjs");
 //#endregion
 export { loadFeature };
 \`\`\`
