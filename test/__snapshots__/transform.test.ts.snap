@@ -187,7 +187,7 @@ export function double(n) {
 ## helper.mjs.map
 
 \`\`\`map
-{"mappings":"AAAA,OAAO,SAAS,OAAO,GAAW;AAAE,QAAO,IAAI","names":[],"sources":["../src/helper.ts"],"version":3,"sourcesContent":["export function double(n: number) { return n * 2 }"]}
+{"mappings":"AAAA,OAAO,SAAS,OAAO,GAAW;CAAE,OAAO,IAAI;AAAE","names":[],"sources":["../src/helper.ts"],"version":3,"sourcesContent":["export function double(n: number) { return n * 2 }"]}
 \`\`\`
 
 ## index.d.mts
